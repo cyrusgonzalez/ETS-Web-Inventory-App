@@ -9,14 +9,25 @@
 <body>
     <form id="form1" runat="server">
         <div>
-            <asp:TextBox ID="txtText" runat="server"></asp:TextBox>
             <asp:DataGrid
                 runat="server"
                 ID="dgitem"></asp:DataGrid>
         </div>
-        <asp:TextBox ID="txtErr" runat="server" ForeColor="Red">Test Error</asp:TextBox>
+        <asp:Label ID="lblErr" runat="server" ForeColor="Red"></asp:Label>
         <p>
-            <asp:Button ID="btnFill" runat="server" OnClick="Button1_Click" Text="Fill Grid" />
+            <asp:Button ID="btnCreate" runat="server" OnClick="Button1_Click" Text="Create Table" />
+        </p>
+        <p>
+            <asp:Label ID="Label1" runat="server">Key:   </asp:Label><asp:TextBox ID="TextBox1" runat="server" ></asp:TextBox>
+            <asp:Label ID="Label2" runat="server">Value:   </asp:Label><asp:TextBox ID="TextBox2" runat="server" ></asp:TextBox>
+            <br />
+            <asp:Button ID="btnInsert" runat="server" Text="Insert" OnClick="btnInsert_Click"/>
+        </p>
+        <p>
+            <asp:Label ID="lblkey" runat="server">Key:   </asp:Label><asp:TextBox ID="txtKey" runat="server" ></asp:TextBox>
+            <asp:Label ID="lblval" runat="server">Value:   </asp:Label><asp:TextBox ID="txtValue" runat="server" ></asp:TextBox>
+            <br />
+            <asp:Button ID="btnUpdate" runat="server" Text="Update" OnClick="btnUpdate_Click"/>
         </p>
     </form>
 </body>
