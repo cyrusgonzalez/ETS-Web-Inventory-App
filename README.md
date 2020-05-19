@@ -1,0 +1,2 @@
+This repository is a host for the code I write as part of an Inventory tool built for the Engineering Technical Services at CSU. It consists of a thin client-server tool accessible via hosting it on localhost. Currently the tool can perform CRUD operations and allow a user to insert, update records to build a catalog of items. I am working on a the inventory handling for stock of each item as well.
+
