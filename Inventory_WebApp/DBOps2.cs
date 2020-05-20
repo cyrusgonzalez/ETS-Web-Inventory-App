@@ -247,7 +247,7 @@ namespace Inventory_WebApp
                 using(SQLiteConnection con = new SQLiteConnection(this.DataBaseSource))
                 {
                     //string sql = "Select ItemCode,ItemName,Supplier,LastUpdatedOn from Items;";
-                    string sql = "Select * from Cars";
+                    string sql = "Select * from inventory";
                     using (SQLiteCommand command = new SQLiteCommand(sql,con))
                      {
                         SQLiteDataAdapter da = new SQLiteDataAdapter(command);
