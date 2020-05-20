@@ -30,6 +30,7 @@ namespace Inventory_WebApp
 
                 }
             }
+            RefreshTable();
             
 
         }
@@ -49,20 +50,27 @@ namespace Inventory_WebApp
         protected void RefreshTable()
         {
             DBOps db = new DBOps();
-            //db.ReadTable();
-            //
+            //DataTable dt = db.ReadItems();
+            //dgitem.DataSource = dt;
+            //dgitem.Visible = true;
+            DataSet ds = db.ReadTable();
+            dgitem.DataSource = ds;
+            dgitem.DataBind();
+                        
         }
 
         protected void btnInsert_Click(object sender, EventArgs e)
         {
             DBOps db = new DBOps();
             db.InsertTable();
+            RefreshTable();
         }
 
         protected void btnUpdate_Click(object sender, EventArgs e)
         {
             DBOps db = new DBOps();
             db.UpdateTable("BMW",1023300);
+            RefreshTable();
         }
     }
 }

@@ -206,6 +206,84 @@ namespace Inventory_WebApp
                 Console.WriteLine("row inserted");
             }
         }
+
+        public DataTable ReadItems()
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                using (var con = new SQLiteConnection(this.DataBaseSource))
+                {
+                    con.Open();
+                    string sql = "SELECT * FROM cars LIMIT 5";
+                    using (SQLiteCommand mycommand = new SQLiteCommand(con))
+                    {
+                        mycommand.CommandText = sql;
+                        using (SQLiteDataReader reader = mycommand.ExecuteReader())
+                        {
+                            dt.Load(reader);
+                            while (reader.Read())
+                            {
+                                logger.WriteLine($"{reader.GetInt32(0)} {reader.GetString(1)} {reader.GetInt32(2)}");
+                            }
+                            reader.Close();
+                        }
+                    }
+                    con.Close();
+                }
+            }
+            catch( Exception e)
+            {
+                logger.WriteLine("ReadItems Method: " + e.Message);
+            }
+            return dt;
+        }
+
+        public DataSet ReadTable()
+        {
+            DataSet ds = new DataSet();
+            try
+            {
+                using(SQLiteConnection con = new SQLiteConnection(this.DataBaseSource))
+                {
+                    //string sql = "Select ItemCode,ItemName,Supplier,LastUpdatedOn from Items;";
+                    string sql = "Select * from Cars";
+                    using (SQLiteCommand command = new SQLiteCommand(sql,con))
+                     {
+                        SQLiteDataAdapter da = new SQLiteDataAdapter(command);
+                        da.Fill(ds);
+                    }
+                }
+            }
+            catch( Exception ex)
+            {
+                logger.WriteLine(ex.Message);
+            }
+            return ds;
+        }
+
+        public DataSet getDBs()
+        {
+            DataSet dbs = new DataSet();
+            try
+            {
+                using(var con = new SQLiteConnection(this.DataBaseSource))
+                {
+                    string sql = "SELECT name FROM sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%'; ";
+                    using(var command = new SQLiteCommand(sql, con))
+                    {
+                        SQLiteDataAdapter da = new SQLiteDataAdapter(command);
+                        da.Fill(dbs);
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+                logger.WriteLine(ex.Message);
+                throw ex;
+            }
+            return dbs;
+        }
     }
     
 }
