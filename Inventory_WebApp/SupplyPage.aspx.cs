@@ -10,22 +10,23 @@ using System.Data;
 
 namespace Inventory_WebApp
 {
-    public partial class WebForm1 : System.Web.UI.Page
+    public partial class InventoryETS: System.Web.UI.Page
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            //string DataBaseSource = "Data Source=C:\\Users\\sanketm\\Documents\\ETS_Inventory\\sample_inventory.db";
             //First time page load commands to go inside this if block
             if (!IsPostBack)
             {
                 try
                 {
                     DBOps db = new DBOps();
-                    db.CheckVersion();
+                    //db.CheckVersion();
+                    //db.InitConfig();
                 }
                 catch (Exception ex)
                 {
                     lblErr.Text = ex.ToString();
+                    lblErr.DataBind();
                     throw ex;
 
                 }
@@ -35,24 +36,17 @@ namespace Inventory_WebApp
 
         }
         
-        protected void Button1_Click(object sender, EventArgs e)
+        protected void btnLoad_Click(object sender, EventArgs e)
         {
             DBOps db = new DBOps();
-            db.CheckVersion();
             db.CreateTable();
             RefreshTable();
-            //db.InsertTable();
-            //db.UpdateTable();
-            //db.ReadTable();
-            //db.DeleteTable();
         }
 
         protected void RefreshTable()
         {
             DBOps db = new DBOps();
-            //DataTable dt = db.ReadItems();
-            //dgitem.DataSource = dt;
-            //dgitem.Visible = true;
+            
             DataSet ds = db.ReadTable();
             dgitem.DataSource = ds;
             dgitem.DataBind();
@@ -62,15 +56,55 @@ namespace Inventory_WebApp
         protected void btnInsert_Click(object sender, EventArgs e)
         {
             DBOps db = new DBOps();
-            db.InsertTable();
+            
+            string _key = txtInsertKey.Text;
+            long _value = long.Parse(txtInsertValue.Text);
+
+            int retval = db.InsertInventoryTable(_key,_value);
+            lblInsertInfo.Text = retval.ToString() + " rows inserted";
+            lblInsertInfo.DataBind();
+
             RefreshTable();
         }
 
         protected void btnUpdate_Click(object sender, EventArgs e)
         {
             DBOps db = new DBOps();
-            db.UpdateTable("BMW",1023300);
+            
+            string _key = txtKey.Text;
+            long _value = long.Parse(txtValue.Text);
+
+            int retval = db.UpdateInventoryTable(_key,_value);
+            lblUpdateInfo.Text = retval.ToString() + " rows updated";
+            lblUpdateInfo.DataBind();
+
             RefreshTable();
         }
+
+        protected void dgitem_PageIndexChanged(object source, DataGridPageChangedEventArgs e)
+        {
+            dgitem.CurrentPageIndex = e.NewPageIndex;
+            RefreshTable();
+
+            //Dim currentSortExpression As String
+            //            Dim currentSortOrder As enuSortOrder
+
+            //            'set new page index and rebind the data
+            //            dgBooks.CurrentPageIndex = e.NewPageIndex
+
+            //            'get the current sort expression and order from the viewstate
+            //            currentSortExpression = CStr(viewstate(VS_CURRENT_SORT_EXPRESSION))
+            //            currentSortOrder = CType(viewstate(VS_CURRENT_SORT_ORDER), enuSortOrder)
+
+            //            'rebind the data in the datagrid
+            //            bindData(currentSortExpression, _
+            //                     currentSortOrder)
+
+        }
+
+        //private Enum enuSortOrder {
+        //    soAscending = 0
+        //    soDescending = 1
+        //}
     }
 }

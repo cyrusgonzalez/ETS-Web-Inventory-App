@@ -64,14 +64,5 @@ namespace Inventory_WebApp
             sql_conn.Close();
         }
 
-        void InsertTable(SQLiteConnection sql_conn, String tablename)
-        {
-
-        }
-
-        void UpdateTable(SQLiteConnection sql_conn, String tablename)
-        {
-
-        }
     }
 }

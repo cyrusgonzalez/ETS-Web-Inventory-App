@@ -21,68 +21,68 @@ namespace Inventory_WebApp
   
         private string DataBaseSource = "Data Source=C:\\Users\\sanketm\\Documents\\ETS_Inventory\\sample_inventory.db";
         private XmlTextReader config;
-        private StreamWriter logger;
+        //private StreamWriter logger = new StreamWriter("C:\\Users\\sanketm\\Documents\\ETS_Inventory\\Log\\log.log");
         
-        void InitLogger()
-        {
-            string logFile = "C:\\Users\\sanketm\\Documents\\ETS_Inventory\\log_" + DateTime.Now.ToFileTimeUtc().ToString() + ".txt";
+        //public void InitLogger()
+        //{
+        //    string logFile = "C:\\Users\\sanketm\\Documents\\ETS_Inventory\\Log\\log_" + DateTime.Now.ToFileTimeUtc().ToString() + ".txt";
 
-            try
-            {
-                // Open the file
-                this.logger = new StreamWriter(logFile);
-                logger.WriteLine("Logger initialized on " + DateTime.Now.ToString());
-            }
-            catch (Exception ex)
-            {
-                if
-                (
-                    ex is UnauthorizedAccessException
-                    || ex is ArgumentNullException
-                    || ex is PathTooLongException
-                    || ex is DirectoryNotFoundException
-                    || ex is NotSupportedException
-                    || ex is ArgumentException
-                    || ex is SecurityException
-                    || ex is IOException
-                )
-                {
-                    throw new Exception("Failed to create log file: " + ex.Message);
-                }
-                else
-                {
-                    // Unexpected failure
-                    throw;
-                }
-            }
-        }
+        //    try
+        //    {
+        //        // Open the file
+        //        this.logger = new StreamWriter(logFile);
+        //        this.logger.WriteAsync("Logger initialized on " + DateTime.Now.ToString());
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        if
+        //        (
+        //            ex is UnauthorizedAccessException
+        //            || ex is ArgumentNullException
+        //            || ex is PathTooLongException
+        //            || ex is DirectoryNotFoundException
+        //            || ex is NotSupportedException
+        //            || ex is ArgumentException
+        //            || ex is SecurityException
+        //            || ex is IOException
+        //        )
+        //        {
+        //            throw new Exception("Failed to create log file: " + ex.Message);
+        //        }
+        //        else
+        //        {
+        //            // Unexpected failure
+        //            throw;
+        //        }
+        //    }
+        //}
 
-        void InitConfig()
-        {
-            config = new XmlTextReader("C:\\Users\\sanketm\\source\\repos\\Inventory_WebApp\\Inventory_WebApp\\properties.xml");
-            while (config.Read())
-            {
-                switch (config.NodeType)
-                {
-                    case XmlNodeType.Element: // The node is an element.
-                        Console.Write("<" + config.Name);
-                        Console.WriteLine(">");
-                        break;
-                    case XmlNodeType.Text: //Display the text in each element.
-                        Console.WriteLine(config.Value);
-                        break;
-                    case XmlNodeType.EndElement: //Display the end of the element.
-                        Console.Write("</" + config.Name);
-                        Console.WriteLine(">");
-                        break;
-                }
-            }
-            //Console.ReadLine();   
-        }
+        //public void InitConfig()
+        //{
+        //    this.config = new XmlTextReader("C:\\Users\\sanketm\\source\\repos\\Inventory_WebApp\\Inventory_WebApp\\properties.xml");
+        //    while (config.Read())
+        //    {
+        //        switch (config.NodeType)
+        //        {
+        //            case XmlNodeType.Element: // The node is an element.
+        //                this.logger.Write("<" + config.Name);
+        //                this.logger.WriteAsync(">");
+        //                break;
+        //            case XmlNodeType.Text: //Display the text in each element.
+        //                this.logger.WriteAsync(config.Value);
+        //                break;
+        //            case XmlNodeType.EndElement: //Display the end of the element.
+        //                this.logger.Write("</" + config.Name);
+        //                this.logger.WriteAsync(">");
+        //                break;
+        //        }
+        //    }
+        //    //Console.ReadLine();   
+        //}
         public DBOps()
         {
-            InitConfig();
-            InitLogger();
+            //InitLogger();
+            //InitConfig();
             string path;
             XmlDocument conf = new XmlDocument();
             conf.Load("C:\\Users\\sanketm\\source\\repos\\Inventory_WebApp\\Inventory_WebApp\\properties.xml");
@@ -100,6 +100,13 @@ namespace Inventory_WebApp
             }
         }
 
+         ~DBOps()
+        {
+            //this.logger.Close();
+            this.config.Close();
+            this.DataBaseSource = null;
+        }
+
         public void CheckVersion()
         {
             string version;
@@ -114,16 +121,14 @@ namespace Inventory_WebApp
                     using (var cmd = new SQLiteCommand(sqlcmd, con))
                     {
                         string ver = cmd.ExecuteScalar().ToString();
-                        Console.WriteLine(ver);
+                        //this.logger.WriteAsync("SQLite Version : "+ ver);
                         version = ver;
                     }
                 }
             }
             catch (Exception ex)
             {
-                //txtErr.Text = ex.ToString();
-                throw ex;
-
+                //this.logger.WriteAsync(ex.Message);
             }
         }
 
@@ -167,77 +172,108 @@ namespace Inventory_WebApp
                     cmd.CommandText = "INSERT INTO cars(name, price) VALUES('Volkswagen',21600)";
                     cmd.ExecuteNonQuery();
                 }
-                Console.WriteLine("Table cars created");
+                //this.logger.WriteAsync("Table cars created");
             }
         }
 
-        public void InsertTable()
+        public int InsertInventoryTable(String key, Int64 value)
         {
-            using(var con = new SQLiteConnection(this.DataBaseSource))
-            {
-                con.Open();
-                var cmd = new SQLiteCommand(con);
-                cmd.CommandText = "INSERT INTO cars(name, price) VALUES(@name, @price)";
-
-                cmd.Parameters.AddWithValue("@name", "BMW");
-                cmd.Parameters.AddWithValue("@price", 36600);
-                cmd.Prepare();
-
-                cmd.ExecuteNonQuery();
-
-                Console.WriteLine("row inserted");
-            }            
-        }
-
-        public void UpdateTable(String name, Int64 price)
-        {
-            using (var con = new SQLiteConnection(this.DataBaseSource))
-            {
-                con.Open();
-                var cmd = new SQLiteCommand(con);
-                cmd.CommandText = "Update cars set price = @price where name = @name";
-
-                cmd.Parameters.AddWithValue("@name", name);
-                cmd.Parameters.AddWithValue("@price", price);
-                cmd.Prepare();
-
-                cmd.ExecuteNonQuery();
-
-                Console.WriteLine("row inserted");
-            }
-        }
-
-        public DataTable ReadItems()
-        {
-            DataTable dt = new DataTable();
+            int retval = 0;
             try
             {
                 using (var con = new SQLiteConnection(this.DataBaseSource))
                 {
                     con.Open();
-                    string sql = "SELECT * FROM cars LIMIT 5";
-                    using (SQLiteCommand mycommand = new SQLiteCommand(con))
+                    var cmd = new SQLiteCommand(con);
+                    cmd.CommandText = "INSERT INTO inventory(itemcode, quantity) VALUES(@itemcode, @quantity)";
+
+                    cmd.Parameters.AddWithValue("@itemcode", key);
+                    cmd.Parameters.AddWithValue("@quantity", value);
+                    cmd.Prepare();
+
+                    retval = cmd.ExecuteNonQuery();
+                    if (retval != 0)
                     {
-                        mycommand.CommandText = sql;
-                        using (SQLiteDataReader reader = mycommand.ExecuteReader())
-                        {
-                            dt.Load(reader);
-                            while (reader.Read())
-                            {
-                                logger.WriteLine($"{reader.GetInt32(0)} {reader.GetString(1)} {reader.GetInt32(2)}");
-                            }
-                            reader.Close();
-                        }
+                        //this.logger.WriteAsync("row inserted");
                     }
-                    con.Close();
+                    else
+                    {
+                        //this.logger.WriteAsync("No row inserted");
+                    }
                 }
             }
-            catch( Exception e)
+            catch(Exception ex)
             {
-                logger.WriteLine("ReadItems Method: " + e.Message);
+                //this.logger.WriteAsync("InsertInventoryTable: " + ex.Message);
             }
-            return dt;
+            return retval; 
         }
+
+        public int UpdateInventoryTable(String key, Int64 value)
+        {
+            int retval = 0;
+            try
+            {
+                using (var con = new SQLiteConnection(this.DataBaseSource))
+                {
+                    con.Open();
+                    var cmd = new SQLiteCommand(con);
+                    cmd.CommandText = "update inventory set quantity = @quantity where itemcode = @itemcode";
+
+                    cmd.Parameters.AddWithValue("@itemcode", key);
+                    cmd.Parameters.AddWithValue("@quantity", value);
+                    cmd.Prepare();
+
+                    retval = cmd.ExecuteNonQuery();
+                    if (retval <= 0)
+                    {
+                        //this.logger.WriteAsync("no row updated");
+                    }
+                    else
+                    {
+                        //this.logger.WriteAsync(retval + " Rows updated");
+                    }
+
+                }
+            }
+            catch(Exception ex)
+            {
+                //this.logger.WriteAsync("Update Inventory Table: " + ex.Message);
+            }
+            return retval;
+        }
+
+        //public DataTable ReadItems()
+        //{
+        //    DataTable dt = new DataTable();
+        //    try
+        //    {
+        //        using (var con = new SQLiteConnection(this.DataBaseSource))
+        //        {
+        //            con.Open();
+        //            string sql = "SELECT * FROM cars LIMIT 5";
+        //            using (SQLiteCommand mycommand = new SQLiteCommand(con))
+        //            {
+        //                mycommand.CommandText = sql;
+        //                using (SQLiteDataReader reader = mycommand.ExecuteReader())
+        //                {
+        //                    dt.Load(reader);
+        //                    while (reader.Read())
+        //                    {
+        //                        this.logger.WriteAsync($"{reader.GetInt32(0)} {reader.GetString(1)} {reader.GetInt32(2)}");
+        //                    }
+        //                    reader.Close();
+        //                }
+        //            }
+        //            con.Close();
+        //        }
+        //    }
+        //    catch( Exception e)
+        //    {
+        //        this.logger.WriteAsync("ReadItems Method: " + e.Message);
+        //    }
+        //    return dt;
+        //}
 
         public DataSet ReadTable()
         {
@@ -257,7 +293,7 @@ namespace Inventory_WebApp
             }
             catch( Exception ex)
             {
-                logger.WriteLine(ex.Message);
+                //this.logger.WriteAsync(ex.Message);
             }
             return ds;
         }
@@ -279,11 +315,12 @@ namespace Inventory_WebApp
             }
             catch(Exception ex)
             {
-                logger.WriteLine(ex.Message);
-                throw ex;
+                //this.logger.WriteAsync(ex.Message);
+                //throw ex;
             }
             return dbs;
         }
     }
+
     
 }

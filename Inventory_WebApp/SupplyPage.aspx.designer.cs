@@ -10,7 +10,7 @@
 namespace Inventory_WebApp {
     
     
-    public partial class WebForm1 {
+    public partial class InventoryETS {
         
         /// <summary>
         /// form1 control.
@@ -58,13 +58,13 @@ namespace Inventory_WebApp {
         protected global::System.Web.UI.WebControls.Label Label1;
         
         /// <summary>
-        /// TextBox1 control.
+        /// txtInsertKey control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox TextBox1;
+        protected global::System.Web.UI.WebControls.TextBox txtInsertKey;
         
         /// <summary>
         /// Label2 control.
@@ -76,13 +76,13 @@ namespace Inventory_WebApp {
         protected global::System.Web.UI.WebControls.Label Label2;
         
         /// <summary>
-        /// TextBox2 control.
+        /// txtInsertValue control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox TextBox2;
+        protected global::System.Web.UI.WebControls.TextBox txtInsertValue;
         
         /// <summary>
         /// btnInsert control.
@@ -92,6 +92,15 @@ namespace Inventory_WebApp {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnInsert;
+        
+        /// <summary>
+        /// lblInsertInfo control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblInsertInfo;
         
         /// <summary>
         /// lblkey control.
@@ -137,5 +146,14 @@ namespace Inventory_WebApp {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnUpdate;
+        
+        /// <summary>
+        /// lblUpdateInfo control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblUpdateInfo;
     }
 }
