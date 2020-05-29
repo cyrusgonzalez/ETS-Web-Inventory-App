@@ -85,53 +85,72 @@
   <ItemGroup>
     <Content Include="App_Data\bulma.min.css" />
     <Content Include="Global.asax" />
+    <Content Include="Temp\leaflet.drawplugin.html" />
+    <Content Include="Temp\OpenLayer_js_map.html" />
+    <Content Include="Pages\ItemsPage.aspx" />
+    <Content Include="Pages\SuppliersPage.aspx" />
+    <Content Include="Temp\Quick Start - Leaflet.html" />
     <Content Include="Web.config" />
-    <Content Include="SupplyPage.aspx" />
+    <Content Include="Pages\InventoryPage.aspx" />
     <Content Include="properties.xml">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="DB_Select_Page.aspx" />
-    <Content Include="WebForm3.aspx" />
+    <Content Include="Pages\DB_Select_Page.aspx" />
+    <Content Include="Temp\MasterPageExperiment.aspx" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DBOps2.cs" />
-    <Compile Include="DBOps1.cs" />
+    <Compile Include="DatabaseInterface\DBOps2.cs" />
+    <Compile Include="DatabaseInterface\DBOps1.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Pages\ItemsPage.aspx.cs">
+      <DependentUpon>ItemsPage.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\ItemsPage.aspx.designer.cs">
+      <DependentUpon>ItemsPage.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Site1.Master.cs">
+    <Compile Include="Temp\Site1.Master.cs">
       <DependentUpon>Site1.Master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Site1.Master.designer.cs">
+    <Compile Include="Temp\Site1.Master.designer.cs">
       <DependentUpon>Site1.Master</DependentUpon>
     </Compile>
-    <Compile Include="SupplyPage.aspx.cs">
-      <DependentUpon>SupplyPage.aspx</DependentUpon>
+    <Compile Include="Pages\InventoryPage.aspx.cs">
+      <DependentUpon>InventoryPage.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="SupplyPage.aspx.designer.cs">
-      <DependentUpon>SupplyPage.aspx</DependentUpon>
+    <Compile Include="Pages\InventoryPage.aspx.designer.cs">
+      <DependentUpon>InventoryPage.aspx</DependentUpon>
     </Compile>
-    <Compile Include="DB_Select_Page.aspx.cs">
+    <Compile Include="Pages\DB_Select_Page.aspx.cs">
       <DependentUpon>DB_Select_Page.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="DB_Select_Page.aspx.designer.cs">
+    <Compile Include="Pages\DB_Select_Page.aspx.designer.cs">
       <DependentUpon>DB_Select_Page.aspx</DependentUpon>
     </Compile>
-    <Compile Include="WebForm3.aspx.cs">
-      <DependentUpon>WebForm3.aspx</DependentUpon>
+    <Compile Include="Temp\MasterPageExperiment.aspx.cs">
+      <DependentUpon>MasterPageExperiment.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="WebForm3.aspx.designer.cs">
-      <DependentUpon>WebForm3.aspx</DependentUpon>
+    <Compile Include="Temp\MasterPageExperiment.aspx.designer.cs">
+      <DependentUpon>MasterPageExperiment.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\SuppliersPage.aspx.cs">
+      <DependentUpon>SuppliersPage.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\SuppliersPage.aspx.designer.cs">
+      <DependentUpon>SuppliersPage.aspx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <Content Include="Site1.Master" />
+    <Content Include="Temp\Site1.Master" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -139,9 +158,7 @@
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Models\" />
-  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
