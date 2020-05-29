@@ -1,0 +1,44 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site1.master.cs" Inherits="Inventory_WebApp.Site1" %>
+
+<!DOCTYPE html>
+
+<html>
+<head runat="server">
+    <title></title>
+    <asp:ContentPlaceHolder ID="head" runat="server">
+         <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Inventory at ETS</title>
+    </asp:ContentPlaceHolder>
+    <link rel="stylesheet" href="App_Data/bulma.min.css"/>
+</head>
+<body>
+     <section class="hero is-primary is-bold">
+      <div class="hero-body">
+        <div class="container">
+          <h1 class="title">
+            Inventory @ ETS
+          </h1>
+          <h2 class="subtitle">
+            Department of Engineering
+          </h2>
+        </div>
+      </div>
+    </section>
+    <form id="form1" runat="server">
+        <div class="tabs">
+          <ul>
+            <li><a>Items</a></li>
+            <li><a>Inventory</a></li>
+            <li><a>Suppliers</a></li>
+            <li><a>Departmental Allocations</a></li>
+            <li><a href="DB_Select_Page.aspx">Choose your view :- DB</a></li>
+          </ul>
+        </div>
+        <div>
+            <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+            </asp:ContentPlaceHolder>
+        </div>
+    </form>
+</body>
+</html>
