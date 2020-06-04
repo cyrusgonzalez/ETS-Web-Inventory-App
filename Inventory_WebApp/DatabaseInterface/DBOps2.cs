@@ -18,7 +18,7 @@ namespace Inventory_WebApp
     /// </summary>
     public class DBOps
     {
-  
+
         private string DataBaseSource = "Data Source=C:\\Users\\sanketm\\Documents\\ETS_Inventory\\sample_inventory.db";
         private XmlTextReader config;
         //private StreamWriter logger = new StreamWriter("C:\\Users\\sanketm\\Documents\\ETS_Inventory\\Log\\log.log");
@@ -43,7 +43,7 @@ namespace Inventory_WebApp
             }
         }
 
-         ~DBOps()
+        ~DBOps()
         {
             //this.logger.Close();
             this.config.Close();
@@ -78,12 +78,12 @@ namespace Inventory_WebApp
                     }
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
                 //this.logger.WriteAsync("InsertInventoryTable: " + ex.Message);
             }
-            return retval; 
+            return retval;
         }
 
         public int UpdateInventoryTable(String key, Int64 value)
@@ -113,7 +113,7 @@ namespace Inventory_WebApp
 
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
                 //this.logger.WriteAsync("Update Inventory Table: " + ex.Message);
@@ -127,23 +127,45 @@ namespace Inventory_WebApp
             DataSet ds = new DataSet();
             try
             {
-                using(SQLiteConnection con = new SQLiteConnection(this.DataBaseSource))
+                using (SQLiteConnection con = new SQLiteConnection(this.DataBaseSource))
                 {
                     //string sql = "Select ItemCode,ItemName,Supplier,LastUpdatedOn from Items;";
                     string sql = "Select * from inventory";
-                    using (SQLiteCommand command = new SQLiteCommand(sql,con))
-                     {
+                    using (SQLiteCommand command = new SQLiteCommand(sql, con))
+                    {
                         SQLiteDataAdapter da = new SQLiteDataAdapter(command);
                         da.Fill(ds);
                     }
                 }
             }
-            catch( Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
                 //this.logger.WriteAsync(ex.Message);
             }
             return ds;
+        }
+
+        public DataSet getInventoryColumns()
+        {
+            DataSet dbs = new DataSet();
+            try
+            {
+                using (var con = new SQLiteConnection(this.DataBaseSource))
+                {
+                    string sql = "PRAGMA table_info(inventory)";
+                    using (var command = new SQLiteCommand(sql, con))
+                    {
+                        SQLiteDataAdapter da = new SQLiteDataAdapter(command);
+                        da.Fill(dbs);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dbs;
         }
         #endregion
 
@@ -244,7 +266,7 @@ namespace Inventory_WebApp
         #endregion
 
         #region Supplier DB Interface
-        public int InsertSupplierTable(String key, String value,Int64 contactno)
+        public int InsertSupplierTable(String key, String value, Int64 contactno)
         {
             int retval = 0;
             try
@@ -340,37 +362,112 @@ namespace Inventory_WebApp
         }
         #endregion
 
-        public DataSet getDBs()
+        #region Labs DB Interface
+
+        public DataSet ReadLabsTable()
         {
-            DataSet dbs = new DataSet();
+            DataSet ds = new DataSet();
             try
             {
-                using(var con = new SQLiteConnection(this.DataBaseSource))
+                using (SQLiteConnection con = new SQLiteConnection(this.DataBaseSource))
                 {
-                    string sql = "SELECT name FROM sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%'; ";
-                    using(var command = new SQLiteCommand(sql, con))
+                    //string sql = "Select ItemCode,ItemName,Supplier,LastUpdatedOn from Supplier;";
+                    string sql = "Select * from Labs";
+                    using (SQLiteCommand command = new SQLiteCommand(sql, con))
                     {
                         SQLiteDataAdapter da = new SQLiteDataAdapter(command);
-                        da.Fill(dbs);
+                        da.Fill(ds);
                     }
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                //this.logger.WriteAsync(ex.Message);
                 throw ex;
+                //this.logger.WriteAsync(ex.Message);
             }
-            return dbs;
+            return ds;
         }
 
-        public DataSet getColumns()
+        public int InsertLabsTable(string labname, string building, string roomno)
+        {
+            int retval = 0;
+            try
+            {
+                using (var conn = new SQLiteConnection(this.DataBaseSource))
+                {
+                    conn.Open();
+                    string sqlstring = "Insert into labs(name,building,roomno) values (@lab,@bldg,@roomno)";
+                    using (var command = new SQLiteCommand(sqlstring, conn))
+                    {
+                        command.Parameters.AddWithValue("@lab", labname);
+                        command.Parameters.AddWithValue("@bldg", building);
+                        command.Parameters.AddWithValue("@roomno", roomno);
+
+                        command.Prepare();
+
+                        retval = command.ExecuteNonQuery();
+                        if (retval != 0)
+                        {
+                            //this.logger.WriteAsync("row inserted");
+                        }
+                        else
+                        {
+                            //this.logger.WriteAsync("No row inserted");
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return retval;
+        }
+
+        public int UpdateLabsTable(string labname, string building, string roomno)
+        {
+            int retval = 0;
+            try
+            {
+                using (var conn = new SQLiteConnection(this.DataBaseSource))
+                {
+                    conn.Open();
+                    string sqlstring = "update labs set building = @bldg,roomno = @roomno where name = @lab ";
+                    using (var command = new SQLiteCommand(sqlstring, conn))
+                    {
+                        command.Parameters.AddWithValue("@lab", labname);
+                        command.Parameters.AddWithValue("@bldg", building);
+                        command.Parameters.AddWithValue("@roomno", roomno);
+
+                        command.Prepare();
+
+                        retval = command.ExecuteNonQuery();
+                        if (retval != 0)
+                        {
+                            //this.logger.WriteAsync("row updated");
+                        }
+                        else
+                        {
+                            //this.logger.WriteAsync("No row updated");
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return retval;
+        }
+
+        public DataSet getLabColumns()
         {
             DataSet dbs = new DataSet();
             try
             {
-                using(var con = new SQLiteConnection(this.DataBaseSource))
+                using (var con = new SQLiteConnection(this.DataBaseSource))
                 {
-                    string sql = "PRAGMA table_info(inventory)";
+                    string sql = "PRAGMA table_info(labs)";
                     using (var command = new SQLiteCommand(sql, con))
                     {
                         SQLiteDataAdapter da = new SQLiteDataAdapter(command);
@@ -378,12 +475,38 @@ namespace Inventory_WebApp
                     }
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
             return dbs;
         }
+        #endregion
+
+        public DataSet getDBs()
+        {
+            DataSet dbs = new DataSet();
+            try
+            {
+                using (var con = new SQLiteConnection(this.DataBaseSource))
+                {
+                    string sql = "SELECT name FROM sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%'; ";
+                    using (var command = new SQLiteCommand(sql, con))
+                    {
+                        SQLiteDataAdapter da = new SQLiteDataAdapter(command);
+                        da.Fill(dbs);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                //this.logger.WriteAsync(ex.Message);
+                throw ex;
+            }
+            return dbs;
+        }
+
+        
         //TODO: DEVELOP THE BELOW FUNCTIONS - RIGHT NOW  WE'RE DOING THIS MANUALLY
         //public void InitLogger()
         //{
@@ -468,7 +591,7 @@ namespace Inventory_WebApp
         //        //this.logger.WriteAsync(ex.Message);
         //    }
         //}
-       
+
         //public DataTable ReadItems()
         //{
         //    DataTable dt = new DataTable();

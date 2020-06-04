@@ -13,42 +13,42 @@
     <section class="hero is-primary is-bold">
         <div class="hero-body">
             <div class="container">
-                <h1 class="title">Inventory @ ETS
-                </h1>
-                <h2 class="subtitle">Department of Engineering
-                </h2>
+                <h1 class="title">Inventory @ ETS</h1>
+                <h2 class="subtitle">Department of Engineering</h2>
             </div>
+        </div>
+        <div class="hero-foot">
         </div>
     </section>
     <div class="tabs">
         <ul>
+            <li><a href="LabPage.aspx">Labs</a></li>
             <li><a href="ItemsPage.aspx">Items</a></li>
             <li class="is-active"><a href="InventoryPage.aspx">Inventory</a></li>
             <li><a href="SuppliersPage.aspx">Suppliers</a></li>
-            <li><a>Departmental Allocations</a></li>
             <li><a href="DB_Select_Page.aspx">Choose your DB</a></li>
         </ul>
     </div>
-    
-    <form id="form1" runat="server">
 
+    <form id="form1" runat="server">
         <div class="columns ">
             <div class="column box has-text-centered">
-                <asp:DataGrid runat="server" ID="dgitem" CssClass="table" 
-                    HorizontalAlign="Center" 
-                    BorderColor="000080" 
-                    BorderWidth="2px" 
-                    width="100%" 
-                    AllowSorting="True" 
+                <asp:DataGrid runat="server" ID="dgitem" CssClass="table"
+                    HorizontalAlign="Center"
+                    BorderColor="000080"
+                    BorderWidth="2px"
+                    Width="100%"
+                    AllowSorting="True"
                     AllowPaging="True"
                     PageSize="5"
                     PagerStyle-Mode="NumericPages"
                     PagerStyle-PageButtonCount="5"
                     PagerStyle-Position="Bottom"
-                    PagerStyle-HorizontalAlign="Center" 
+                    PagerStyle-HorizontalAlign="Center"
                     PagerStyle-NextPageText="Next"
-                    PagerStyle-PrevPageText="Prev" OnPageIndexChanged="dgitem_PageIndexChanged" OnSortCommand="dgitem_SortCommand"></asp:DataGrid>
-                    
+                    PagerStyle-PrevPageText="Prev" OnPageIndexChanged="dgitem_PageIndexChanged" OnSortCommand="dgitem_SortCommand">
+                </asp:DataGrid>
+
                 <asp:Label ID="lblErr" runat="server" ForeColor="Red"></asp:Label>
                 <asp:Button ID="btnLoad" runat="server" OnClick="btnLoad_Click" Text="Load Table" CssClass="button" />
             </div>
@@ -67,7 +67,8 @@
                     <asp:Label ID="lblUpdateInfo" runat="server" ForeColor="Red"></asp:Label>
                 </div>
                 <div class="box has-text-centered">
-                    <asp:Label runat="server">Column: </asp:Label> <asp:DropDownList ID="ddlColumn" runat="server"></asp:DropDownList>
+                    <asp:Label runat="server">Column: </asp:Label>
+                    <asp:DropDownList ID="ddlColumn" runat="server"></asp:DropDownList>
                     <asp:TextBox ID="txtSearchtext" runat="server"></asp:TextBox>
                     <asp:Button runat="server" ID="btnSearch" OnClick="btnSearch_Click" Text="Search" CssClass="button" />
                     <asp:Label ID="lblSearchInfo" runat="server" ForeColor="Red"></asp:Label>

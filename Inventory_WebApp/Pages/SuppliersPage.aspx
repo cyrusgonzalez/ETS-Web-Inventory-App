@@ -6,48 +6,48 @@
 <head runat="server">
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Inventory at ETS</title>
+    <title>Suppliers at ETS</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.2/css/bulma.min.css" />
 </head>
 <body>
     <section class="hero is-primary is-bold">
         <div class="hero-body">
             <div class="container">
-                <h1 class="title">Inventory @ ETS
-                </h1>
-                <h2 class="subtitle">Department of Engineering
-                </h2>
+                <h1 class="title">Inventory @ ETS</h1>
+                <h2 class="subtitle">Department of Engineering</h2>
             </div>
+        </div>
+        <div class="hero-foot">
         </div>
     </section>
     <div class="tabs">
         <ul>
-            <li ><a href="ItemsPage.aspx">Items</a></li>
+            <li><a href="LabPage.aspx">Labs</a></li>
+            <li><a href="ItemsPage.aspx">Items</a></li>
             <li><a href="InventoryPage.aspx">Inventory</a></li>
             <li class="is-active"><a href="SuppliersPage.aspx">Suppliers</a></li>
-            <li><a>Departmental Allocations</a></li>
             <li><a href="DB_Select_Page.aspx">Choose your DB</a></li>
         </ul>
     </div>
     <form id="form1" runat="server">
-
         <div class="columns ">
             <div class="column box has-text-centered">
-                <asp:DataGrid runat="server" ID="dgitem" CssClass="table" 
-                    HorizontalAlign="Center" 
-                    BorderColor="000080" 
-                    BorderWidth="2px" 
-                    width="100%" 
-                    AllowSorting="True" 
+                <asp:DataGrid runat="server" ID="dgitem" CssClass="table"
+                    HorizontalAlign="Center"
+                    BorderColor="000080"
+                    BorderWidth="2px"
+                    Width="100%"
+                    AllowSorting="True"
                     AllowPaging="True"
                     PageSize="5"
                     PagerStyle-Mode="NumericPages"
                     PagerStyle-PageButtonCount="5"
                     PagerStyle-Position="Bottom"
-                    PagerStyle-HorizontalAlign="Center" 
+                    PagerStyle-HorizontalAlign="Center"
                     PagerStyle-NextPageText="Next"
-                    PagerStyle-PrevPageText="Prev" OnPageIndexChanged="dgitem_PageIndexChanged" ></asp:DataGrid>
-                    
+                    PagerStyle-PrevPageText="Prev" OnPageIndexChanged="dgitem_PageIndexChanged">
+                </asp:DataGrid>
+
                 <asp:Label ID="lblErr" runat="server" ForeColor="Red"></asp:Label>
                 <asp:Button ID="btnLoad" runat="server" OnClick="btnLoad_Click" Text="Load Table" CssClass="button green" />
             </div>

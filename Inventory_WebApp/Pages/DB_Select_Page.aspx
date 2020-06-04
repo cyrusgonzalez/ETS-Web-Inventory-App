@@ -14,22 +14,22 @@
         <section class="hero is-primary is-bold">
             <div class="hero-body">
                 <div class="container">
-                    <h1 class="title">Inventory @ ETS
-                    </h1>
-                    <h2 class="subtitle">Department of Engineering
-                    </h2>
+                    <h1 class="title">Inventory @ ETS</h1>
+                    <h2 class="subtitle">Department of Engineering</h2>
                 </div>
+            </div>
+            <div class="hero-foot">
             </div>
         </section>
         <div class="tabs">
-        <ul>
-            <li><a href="ItemsPage.aspx">Items</a></li>
-            <li><a href="InventoryPage.aspx">Inventory</a></li>
-            <li><a href="SuppliersPage.aspx">Suppliers</a></li>
-            <li><a>Departmental Allocations</a></li>
-            <li class="is-active"><a href="DB_Select_Page.aspx">Choose your DB</a></li>
-        </ul>
-    </div>
+                    <ul>
+                        <li><a href="LabPage.aspx">Labs</a></li>
+                        <li><a href="ItemsPage.aspx">Items</a></li>
+                        <li><a href="InventoryPage.aspx">Inventory</a></li>
+                        <li><a href="SuppliersPage.aspx">Suppliers</a></li>
+                        <li class="is-active"><a href="DB_Select_Page.aspx">Choose your DB</a></li>
+                    </ul>
+                </div>
         <div>
             <div>
                 <div>
