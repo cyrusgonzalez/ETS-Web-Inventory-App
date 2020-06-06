@@ -41,8 +41,6 @@ namespace Inventory_WebApp.Pages
             DBOps db = new DBOps();
 
             DataSet ds = db.ReadLabsTable();
-            dgitem.DataSource = ds;
-            dgitem.DataBind();
 
             gvitem.DataSource = ds;
             gvitem.DataBind();
@@ -89,9 +87,9 @@ namespace Inventory_WebApp.Pages
             RefreshTable();
         }
 
-        protected void dgitem_PageIndexChanged(object source, DataGridPageChangedEventArgs e)
+        protected void gvitem_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {
-            dgitem.CurrentPageIndex = e.NewPageIndex;
+            gvitem.PageIndex = e.NewPageIndex;
             RefreshTable();
         }
 
@@ -129,7 +127,7 @@ namespace Inventory_WebApp.Pages
 
             Type searchColumnType = GetMyType(type.ToArray()[0]);
 
-            DataSet ds = (DataSet)dgitem.DataSource;
+            DataSet ds = (DataSet)gvitem.DataSource;
             DataTable dt = ds.Tables["Table"];
             DataTable result;
 
@@ -157,20 +155,6 @@ namespace Inventory_WebApp.Pages
             dgSearchResult.DataSource = result;
             dgSearchResult.DataBind();
         }
-
-        protected void dgitem_SortCommand(object source, DataGridSortCommandEventArgs e)
-        {
-            string sortby = e.SortExpression;
-        }
-
-        protected void gvitem_PageIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        protected void gvitem_Sorted(object sender, EventArgs e)
-        {
-
-        }
+        
     }
 }

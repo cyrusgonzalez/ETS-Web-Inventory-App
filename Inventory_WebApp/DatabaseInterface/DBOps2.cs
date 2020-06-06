@@ -20,7 +20,7 @@ namespace Inventory_WebApp
     {
 
         private string DataBaseSource = "Data Source=C:\\Users\\sanketm\\Documents\\ETS_Inventory\\sample_inventory.db";
-        private XmlTextReader config;
+        //private XmlTextReader config;
         //private StreamWriter logger = new StreamWriter("C:\\Users\\sanketm\\Documents\\ETS_Inventory\\Log\\log.log");
 
         #region Constructor and Destructor
@@ -46,7 +46,7 @@ namespace Inventory_WebApp
         ~DBOps()
         {
             //this.logger.Close();
-            this.config.Close();
+            //this.config.Close();
             this.DataBaseSource = null;
         }
         #endregion
@@ -86,7 +86,7 @@ namespace Inventory_WebApp
             return retval;
         }
 
-        public int UpdateInventoryTable(String key, Int64 value)
+        public int UpdateInventoryTable(string itemcode, Int64 quantity,string lab)
         {
             int retval = 0;
             try
@@ -95,10 +95,11 @@ namespace Inventory_WebApp
                 {
                     con.Open();
                     var cmd = new SQLiteCommand(con);
-                    cmd.CommandText = "update inventory set quantity = @quantity where itemcode = @itemcode";
+                    cmd.CommandText = "update inventory set quantity = @quantity where itemcode = @itemcode and lab = @lab";
 
-                    cmd.Parameters.AddWithValue("@itemcode", key);
-                    cmd.Parameters.AddWithValue("@quantity", value);
+                    cmd.Parameters.AddWithValue("@itemcode", itemcode);
+                    cmd.Parameters.AddWithValue("@quantity", quantity);
+                    cmd.Parameters.AddWithValue("@lab", lab);
                     cmd.Prepare();
 
                     retval = cmd.ExecuteNonQuery();

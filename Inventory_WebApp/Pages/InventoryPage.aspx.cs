@@ -43,8 +43,8 @@ namespace Inventory_WebApp
             DBOps db = new DBOps();
             
             DataSet ds = db.ReadInventoryTable();
-            dgitem.DataSource = ds;
-            dgitem.DataBind();
+            gvitem.DataSource = ds;
+            gvitem.DataBind();
                         
         }
 
@@ -78,19 +78,16 @@ namespace Inventory_WebApp
             
             string _key = txtKey.Text;
             long _value = long.Parse(txtValue.Text);
+            string _lab = "Lockheed Martin Magellan Lab and Design Studios";
 
-            int retval = db.UpdateInventoryTable(_key,_value);
+            int retval = db.UpdateInventoryTable(_key,_value,_lab);
             lblUpdateInfo.Text = retval.ToString() + " row updated";
             lblUpdateInfo.DataBind();
 
             RefreshTable();
         }
 
-        protected void dgitem_PageIndexChanged(object source, DataGridPageChangedEventArgs e)
-        {
-            dgitem.CurrentPageIndex = e.NewPageIndex;
-            RefreshTable();
-        }
+
 
         protected Type GetMyType(string SQLiteType)
         {
@@ -126,7 +123,7 @@ namespace Inventory_WebApp
 
             Type searchColumnType = GetMyType(type.ToArray()[0]);
 
-            DataSet ds = (DataSet)dgitem.DataSource;
+            DataSet ds = (DataSet)gvitem.DataSource;
             DataTable dt = ds.Tables["Table"];
             DataTable result;
 
@@ -154,9 +151,42 @@ namespace Inventory_WebApp
             dgSearchResult.DataBind();
         }
 
-        protected void dgitem_SortCommand(object source, DataGridSortCommandEventArgs e)
+       
+        protected void gvitem_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {
-            string sortby = e.SortExpression;
+            gvitem.PageIndex = e.NewPageIndex;
+            RefreshTable();
+        }
+
+        protected void gvitem_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            //Add formatting code, if any
+        }
+
+        protected void gvitem_RowEditing(object sender, GridViewEditEventArgs e)
+        {
+            gvitem.EditIndex = e.NewEditIndex;
+            RefreshTable();
+        }
+
+        protected void gvitem_RowCancelingEdit(object sender, GridViewCancelEditEventArgs e)
+        {
+            gvitem.EditIndex = -1;
+            RefreshTable();
+        }
+
+        protected void gvitem_RowCreated(object sender, GridViewRowEventArgs e)
+        {
+            GridViewRow row = e.Row;
+
+            TableCell cell = row.Cells[0];
+            row.Cells.Remove(cell);
+            row.Cells.Add(cell);
+        }
+
+        protected void gvitem_RowUpdating(object sender, GridViewUpdateEventArgs e)
+        {
+
         }
     }
 }
