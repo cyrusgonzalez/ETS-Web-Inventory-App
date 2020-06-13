@@ -168,6 +168,41 @@ namespace Inventory_WebApp
             }
             return dbs;
         }
+
+        public int DeleteInventoryTable(string itemcode, string lab)
+        {
+            int retval = 0;
+            try
+            {
+                using (var con = new SQLiteConnection(this.DataBaseSource))
+                {
+                    con.Open();
+                    var cmd = new SQLiteCommand(con);
+                    cmd.CommandText = "delete from inventory where itemcode = @itemcode and lab = @lab";
+
+                    cmd.Parameters.AddWithValue("@itemcode", itemcode);
+                    cmd.Parameters.AddWithValue("@lab", lab);
+                    cmd.Prepare();
+
+                    retval = cmd.ExecuteNonQuery();
+                    if (retval <= 0)
+                    {
+                        //this.logger.WriteAsync("no row updated");
+                    }
+                    else
+                    {
+                        //this.logger.WriteAsync(retval + " Rows updated");
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+                //this.logger.WriteAsync("Update Inventory Table: " + ex.Message);
+            }
+            return retval;
+        }
         #endregion
 
         #region Items DB Interface

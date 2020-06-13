@@ -83,7 +83,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Data\bulma-collapsible.min.css" />
+    <Content Include="App_Data\bulma-collapsible.min.js" />
     <Content Include="App_Data\bulma.min.css" />
+    <Content Include="App_Data\clear-24px.svg" />
     <Content Include="Global.asax" />
     <Content Include="Pages\LabPage.aspx" />
     <Content Include="Temp\leaflet.drawplugin.html" />

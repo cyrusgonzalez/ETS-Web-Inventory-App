@@ -71,7 +71,7 @@ namespace Inventory_WebApp
             string _key = txtKey.Text;
             long _value = long.Parse(txtValue.Text);
 
-            int retval = db.UpdateInventoryTable(_key, _value);
+            int retval = db.UpdateInventoryTable(_key, _value,"");
             lblUpdateInfo.Text = retval.ToString() + " rows updated";
             lblUpdateInfo.DataBind();
 

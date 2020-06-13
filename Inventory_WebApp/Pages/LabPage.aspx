@@ -6,6 +6,8 @@
 <head runat="server">
     <title>Add a New Lab</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.2/css/bulma.min.css" />
+    <link rel="stylesheet" href="../App_Data/bulma-collapsible.min.css" />
+    <script src="../App_Data/bulma-collapsible.min.js"></script>
     <!-- Load Font Awesome 5 -->
     <script defer="" src="https://use.fontawesome.com/releases/v5.8.1/js/all.js"></script>
 </head>
@@ -31,6 +33,21 @@
                 <li><a href="SuppliersPage.aspx">Suppliers</a></li>
                 <li><a href="DB_Select_Page.aspx">Choose your DB</a></li>
             </ul>
+            <a onclick="showHideInsertPane(this);"><i class="fa fa-bars"></i></a>
+            <script type="text/javascript">
+                function showHideInsertPane(e) {
+                    //e is the whole a tage and all its attributes
+                    var element = document.getElementById("insert_lab");
+                    if (element.style.display == "none") {
+                        element.style.removeProperty("display");
+                    }
+                    else {
+                        element.style.display = "none";
+                    }
+                }
+            </script>
+        </div>
+        <div class="column" style="direction: rtl;">
         </div>
         <div class="columns ">
             <div class="column box has-text-centered">
@@ -54,7 +71,7 @@
                 <asp:Label ID="lblErr" runat="server" ForeColor="Red"></asp:Label>
                 <asp:Button ID="btnLoad" runat="server" OnClick="btnLoad_Click" Text="Load Table" CssClass="button" />
             </div>
-            <div class="column">
+            <div class="column" id="insert_lab" style="display: none">
                 <div class="box">
                     <div class="columns">
                         <div class="column">
