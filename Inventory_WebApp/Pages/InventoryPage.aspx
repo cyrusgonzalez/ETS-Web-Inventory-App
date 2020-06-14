@@ -8,6 +8,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Inventory at ETS</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.2/css/bulma.min.css" />
+    <script src="../App_Data/bulma-collapsible.js">    </script>
+    <link rel="stylesheet" href="../App_Data/bulma-collapsible.css" />
     <!-- Load Font Awesome 5 -->
     <script defer="" src="https://use.fontawesome.com/releases/v5.8.1/js/all.js"></script>
 </head>
@@ -17,43 +19,44 @@
                     <h2 class="title">Inventory @ ETS</h2><h3 class="subtitle">Department of Engineering</h3>
                 </div>
     </section>--%>
-     <section class="hero is-primary is-bold" style="height:120px">
-            <div class="hero-body">
-                    <h2 class="title">Inventory @ ETS
-                    </h2>
-                    <h3 class="subtitle">Department of Engineering
-                    </h3>
-            </div>
-            <div class="hero-foot is-primary">
-            </div>
-        </section>
+    <section class="hero is-primary is-bold" style="height: 120px">
+        <div class="hero-body">
+            <h2 class="title">Inventory @ ETS
+            </h2>
+            <h3 class="subtitle">Department of Engineering
+            </h3>
+        </div>
+        <div class="hero-foot is-primary">
+        </div>
+    </section>
     <div class="tabs">
         <ul>
             <li><a href="LabPage.aspx">Labs</a></li>
-            <li><a href="ItemsPage.aspx">Items</a></li>
+            <%--<li><a href="ItemsPage.aspx">Items</a></li>--%>
             <li class="is-active"><a href="InventoryPage.aspx">Inventory</a></li>
-            <li><a href="SuppliersPage.aspx">Suppliers</a></li>
-            <li><a href="DB_Select_Page.aspx">Choose your DB</a></li>
+            <%--<li><a href="SuppliersPage.aspx">Suppliers</a></li>
+            <li><a href="DB_Select_Page.aspx">Choose your DB</a></li>--%>
         </ul>
-            <a onclick="showHideInsertPane(this);" style="direction: rtl;"><i class="fa fa-bars"></i></a>
-            <script type="text/javascript">
-                function showHideInsertPane(e) {
-                    //e is the whole a tage and all its attributes
-                    var element = document.getElementById("insert_inventory");
-                    if (element.style.display == "none") {
-                        element.style.removeProperty("display");
-                    }
-                    else {
-                        element.style.display = "none";
-                    }
+        <a onclick="showHideInsertPane(this);" style="direction: rtl;"><i class="fa fa-bars"></i></a>
+        <script type="text/javascript">
+            function showHideInsertPane(e) {
+                //e is the whole a tage and all its attributes
+                var element = document.getElementById("insert_inventory");
+                if (element.style.display == "none") {
+                    element.style.removeProperty("display");
                 }
-            </script>
+                else {
+                    element.style.display = "none";
+                }
+            }
+        </script>
     </div>
 
     <form id="form1" runat="server">
-        <div class="columns" style="height:50px">
+        <div class="columns" style="height: 50px">
             <div class="column">
-                <asp:DropDownList ID="ddlLabselect" CssClass="select" runat="server" EnableTheming="true"></asp:DropDownList>
+                <asp:Label runat="server"> Lab: </asp:Label>
+                <asp:DropDownList ID="ddlLabselect" CssClass="select" runat="server" EnableTheming="true" OnSelectedIndexChanged="ddlLabselect_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
             </div>
             <div class="column">
                 <asp:Label ID="lblPageInfo" CssClass="label" runat="server" ForeColor="#0099ff"></asp:Label>
@@ -123,30 +126,91 @@
                 <%--<asp:Button ID="btnLoad" runat="server" OnClick="btnLoad_Click" Text="Load Table" CssClass="button" />--%>
             </div>
             <div id="insert_inventory" style="display: none" class="column">
-                <div class="box has-text-centered">
-                    <asp:Label ID="Label1" runat="server">Key:   </asp:Label><asp:TextBox ID="txtInsertKey" runat="server"></asp:TextBox>
-                    <asp:Label ID="Label2" runat="server">Value:   </asp:Label><asp:TextBox ID="txtInsertValue" runat="server"></asp:TextBox>
-                    <asp:Button ID="btnInsert" runat="server" Text="Insert" OnClick="btnInsert_Click" CssClass="button" />
-                    <br />
-                    <asp:Label ID="lblInsertInfo" runat="server" ForeColor="Red"></asp:Label>
+                <div class="box">
+                    <div class="columns">
+                        <div class="column">
+                            <div class="field">
+                                <asp:Label ID="Label1" CssClass="label" runat="server">Item Name/Code:   </asp:Label>
+                                <div class="control">
+                                    <asp:TextBox ID="txtInsertItem" CssClass="input" placeholder="Text input" runat="server"></asp:TextBox>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <asp:Label ID="Label3" CssClass="label" runat="server">Quantity:   </asp:Label>
+                                <div class="control">
+                                    <asp:TextBox ID="txtInsertQuantity" runat="server"></asp:TextBox>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <asp:Label ID="Label2" CssClass="label" runat="server">Lab:   </asp:Label>
+                                <div class="control">
+                                    <asp:DropDownList ID="ddlInsertLab" runat="server"></asp:DropDownList>
+                                </div>
+                            </div>
+                            <div class="field is-grouped">
+                                <div class="control">
+                                    <asp:Button ID="btnInsert" runat="server" Text="Insert" OnClick="btnInsert_Click" CssClass="button" />
+                                </div>
+                                <asp:Label ID="lblInsertInfo" CssClass="label" runat="server" ForeColor="Red"></asp:Label>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
-                <div class="box has-text-centered">
+
+                <div class="box has-text-centered" style="display: none;">
                     <asp:Label ID="lblkey" runat="server">Key:   </asp:Label><asp:TextBox ID="txtKey" runat="server"></asp:TextBox>
                     <asp:Label ID="lblval" runat="server">Value:   </asp:Label><asp:TextBox ID="txtValue" runat="server"></asp:TextBox>
                     <asp:Button ID="btnUpdate" runat="server" Text="Update" OnClick="btnUpdate_Click" CssClass="button" />
                     <asp:Label ID="lblUpdateInfo" runat="server" ForeColor="Red"></asp:Label>
                 </div>
-                <div class="box has-text-centered">
-                    <asp:Label runat="server">Column: </asp:Label>
-                    <asp:DropDownList ID="ddlColumn" runat="server"></asp:DropDownList>
-                    <asp:TextBox ID="txtSearchtext" runat="server"></asp:TextBox>
+                <div class="box message" id="search_inventory">
+                    <div class="message-header"> <h4>Search</h4>
+                    </div>
+                    <div class="message-body">
+                        <div class="columns">
+                            <div class="column">
+                                <div class="field is-grouped">
+                                    <asp:Label CssClass="label" runat="server">Column: </asp:Label>
+                                    <div class="control select">
+                                        <asp:DropDownList ID="ddlColumn" runat="server"></asp:DropDownList>
+                                    </div>
+                                </div>
+
+                                <%--<div class="field">
+                                        <asp:Label ID="Label6" runat="server">Lab:   </asp:Label>
+                                        <div class="control select">
+                                            <asp:DropDownList ID="ddlSearchInventory" runat="server"></asp:DropDownList>
+                                        </div>
+                                    </div>--%>
+                                <div class="field is-grouped">
+                                    <div class="control">
+                                        <asp:DataGrid runat="server" ID="dgSearchResult" AllowPaging="true" PageSize="5" CssClass="table"></asp:DataGrid>
+                                    </div>
+                                    <asp:Label ID="Label7" runat="server" ForeColor="Red"></asp:Label>
+                                </div>
+                            </div>
+                            <div class="column">
+                                <div class="field">
+                                    <asp:Label ID="Label4" CssClass="label" runat="server">Value:   </asp:Label>
+                                    <div class="control">
+                                        <asp:TextBox ID="txtSearchtext" CssClass="input" runat="server"></asp:TextBox>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
                     <asp:Button runat="server" ID="btnSearch" OnClick="btnSearch_Click" Text="Search" CssClass="button" />
                     <asp:Label ID="lblSearchInfo" runat="server" ForeColor="Red"></asp:Label>
-                    <asp:DataGrid runat="server" ID="dgSearchResult" AllowPaging="true" PageSize="5" CssClass="table"></asp:DataGrid>
+
                 </div>
             </div>
         </div>
 
     </form>
+    <script></script>
 </body>
 </html>

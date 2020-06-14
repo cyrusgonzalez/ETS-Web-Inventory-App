@@ -21,7 +21,9 @@ namespace Inventory_WebApp
                 try
                 {
                     PopulateSearchColumnsDropdown();
+                    PopulateLabsDropdown();
                     RefreshTable();
+                    gvitem.AllowSorting = true;
                 }
                 catch (Exception ex)
                 {
@@ -29,6 +31,13 @@ namespace Inventory_WebApp
                     lblErr.DataBind();
                     throw ex;
                 }
+            }
+            else
+            {
+                lblInsertInfo.Text = "";
+                lblPageInfo.Text = "";
+                lblSearchInfo.Text = "";
+                lblUpdateInfo.Text = "";                
             }
         }
 
@@ -42,15 +51,37 @@ namespace Inventory_WebApp
         {
             try
             {
-                DBOps db = new DBOps();
+                if (ddlLabselect.SelectedValue == "All")
+                {
+                    DBOps db = new DBOps();
 
-                DataSet ds = db.ReadInventoryTable();
-                gvitem.DataSource = ds;
-                gvitem.DataBind();
+                    DataSet ds = db.ReadInventoryTable();
+                    gvitem.DataSource = ds;
+                    gvitem.DataBind();
+                    ViewState["gvitems"] = ds;
+                }
+                else
+                {
+                    DBOps db = new DBOps();
+                    //DataSet ds = (DataSet)ViewState["gvitems"];    // Apparently grid view items are not stored persistently across postabacks so then either I have to hit the db again or use the viewstate i.e. gvitems.DataSource doesnt work here
+                    DataSet ds = db.ReadInventoryTable();
+                    DataTable dt = ds.Tables["Table"];
+                    var query = from row in dt.AsEnumerable()
+                                where row.Field<string>("lab") == (ddlLabselect.SelectedValue)
+                                select row;
+                    DataTable result = query.CopyToDataTable();
+
+                    gvitem.DataSource = result;
+                    gvitem.DataBind();
+                }
             }
             catch (Exception ex)
             {
-                throw ex;
+                if (ex.Message.Contains("no rows"))
+                {
+                    lblPageInfo.Text = "There are no items in this lab";
+                }
+
             }
 
 
@@ -74,14 +105,59 @@ namespace Inventory_WebApp
 
         }
 
+        protected void PopulateLabsDropdown()
+        {
+            try
+            {
+                DBOps db = new DBOps();
+                DataSet ds = db.getLabs();
+                DataRow dr = ds.Tables["table"].NewRow();
+                dr["name"] = "All";
+                ds.Tables["table"].Rows.InsertAt(dr, 0);
+                ddlLabselect.DataSource = ds;
+                ddlLabselect.DataTextField = "name";
+                ddlLabselect.DataValueField = "name";
+                ddlLabselect.DataBind();
+
+                ddlInsertLab.DataSource = ds;
+                ddlInsertLab.DataTextField = "name";
+                ddlInsertLab.DataValueField = "name";
+                ddlInsertLab.DataBind();
+
+                //ddlSearchInventory.DataSource = ds;
+                //ddlSearchInventory.DataTextField = "name";
+                //ddlSearchInventory.DataValueField = "name";
+                //ddlSearchInventory.DataBind();
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+
+        protected void ddlLabselect_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                RefreshTable();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
         protected void btnInsert_Click(object sender, EventArgs e)
         {
             DBOps db = new DBOps();
 
-            string _key = txtInsertKey.Text;
-            long _value = long.Parse(txtInsertValue.Text);
+            string _key = txtInsertItem.Text;
+            long _value = long.Parse(txtInsertQuantity.Text);
+            string lab = ddlInsertLab.SelectedValue;
 
-            int retval = db.InsertInventoryTable(_key, _value);
+            int retval = db.InsertInventoryTable(_key, _value,lab);
             lblInsertInfo.Text = retval.ToString() + " row inserted";
             lblInsertInfo.DataBind();
 
@@ -139,7 +215,9 @@ namespace Inventory_WebApp
 
             Type searchColumnType = GetMyType(type.ToArray()[0]);
 
-            DataSet ds = (DataSet)gvitem.DataSource;
+            DBOps db = new DBOps();
+            DataSet ds = db.ReadInventoryTable();
+            //DataSet ds = (DataSet)gvitem.DataSource;
             DataTable dt = ds.Tables["Table"];
             DataTable result;
 
@@ -223,10 +301,28 @@ namespace Inventory_WebApp
 
         protected void gvitem_RowUpdating(object sender, GridViewUpdateEventArgs e)
         {
-            GridViewRow changedRow = gvitem.Rows[e.RowIndex];
-            string changedItem = changedRow.Cells[1].Text;
-            string changedLab = changedRow.Cells[6].Text;
-            Int32 changedQuantity = int.Parse(ViewState["changedQuantity"].ToString());//int.Parse((changedRow.FindControl("txtQuantity") as TextBox).Text);
+            //GridViewRow changedRow = gvitem.Rows[e.RowIndex];
+            //string changedItem = changedRow.Cells[1].Text;
+            //string changedLab = changedRow.Cells[6].Text;
+            //Int32 changedQuantity = int.Parse(ViewState["changedQuantity"].ToString());//int.Parse((changedRow.FindControl("txtQuantity") as TextBox).Text);
+
+            //try
+            //{
+            //    DBOps db = new DBOps();
+            //    int retval = db.UpdateInventoryTable(changedItem, changedQuantity, changedLab);
+            //    lblPageInfo.Text = "Row updated successfully.";
+            //}
+            //catch (Exception ex)
+            //{
+            //    lblPageInfo.Text = "An error occurred while attempting to update the row.";
+            //    throw ex;
+            //}
+            //gvitem.EditIndex = -1;
+            //RefreshTable();
+        }
+
+        protected void gvitem_RowUpdatingcustom(string changedItem, string changedLab, int changedQuantity)
+        {
 
             try
             {
@@ -242,7 +338,6 @@ namespace Inventory_WebApp
             gvitem.EditIndex = -1;
             RefreshTable();
         }
-
 
         //protected void gvitem_RowUpdated(object sender, GridViewUpdatedEventArgs e)
         //{
@@ -262,11 +357,12 @@ namespace Inventory_WebApp
         //}
 
 
+
         protected void gvitem_RowCommand(object sender, GridViewCommandEventArgs e)
         {
-            try 
+            try
             {
-                
+
 
                 if (e.CommandName.ToLower() == "increment")
                 {
@@ -328,15 +424,28 @@ namespace Inventory_WebApp
                     //gvitem.EditIndex = -1;
 
                 }
-                if(e.CommandName.ToLower() == "page")
+                if (e.CommandName.ToLower() == "page")
                 {
                     var pageno = e.CommandArgument;
                     gvitem.PageIndex = int.Parse(pageno.ToString());
                 }
-                //if(e.CommandName.ToLower() == "update")
-                //{
-                //    gvitem_rowupdatingcustom(item, lab, changedQuantity);
-                //}
+                if (e.CommandName.ToLower() == "update")
+                {
+                    int RowIndex = int.Parse(e.CommandArgument.ToString());
+                    GridViewRow changedRow = gvitem.Rows[RowIndex];
+                    string item = gvitem.Rows[RowIndex].Cells[1].Text;
+                    string lab = gvitem.Rows[RowIndex].Cells[6].Text;
+                    Int32 changedQuantity;
+                    if (changedRow.FindControl("lblQuantity") is null)
+                    {
+                        changedQuantity = int.Parse((changedRow.FindControl("txtQuantity") as TextBox).Text);
+                    }
+                    else
+                    {
+                        changedQuantity = int.Parse((changedRow.FindControl("lblQuantity") as Label).Text);
+                    }
+                    gvitem_RowUpdatingcustom(item, lab, changedQuantity);
+                }
             }
             catch (Exception ex)
             {
@@ -378,5 +487,7 @@ namespace Inventory_WebApp
             }
             RefreshTable();
         }
+
+       
     }
 }

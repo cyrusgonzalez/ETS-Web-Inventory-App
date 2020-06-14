@@ -28,10 +28,10 @@
         <div class="tabs">
             <ul>
                 <li class="is-active"><a href="LabPage.aspx">Labs</a></li>
-                <li><a href="ItemsPage.aspx">Items</a></li>
+                <%--<li><a href="ItemsPage.aspx">Items</a></li>--%>
                 <li><a href="InventoryPage.aspx">Inventory</a></li>
-                <li><a href="SuppliersPage.aspx">Suppliers</a></li>
-                <li><a href="DB_Select_Page.aspx">Choose your DB</a></li>
+                <%-- <li><a href="SuppliersPage.aspx">Suppliers</a></li>
+                <li><a href="DB_Select_Page.aspx">Choose your DB</a></li>--%>
             </ul>
             <a onclick="showHideInsertPane(this);"><i class="fa fa-bars"></i></a>
             <script type="text/javascript">
@@ -57,7 +57,7 @@
                     BorderWidth="2px"
                     Width="100%"
                     AllowPaging="true"
-                    AllowSorting="true"
+                    AllowSorting="false"
                     PageSize="10"
                     PagerSettings-Position="Bottom"
                     PagerSettings-Mode="Numeric"
@@ -140,17 +140,10 @@
                 <div class="box">
                     <div class="field">
                         <asp:Label runat="server" CssClass="label">Column: </asp:Label>
-                        <div class="control">
+                        <div class="control select">
                             <asp:DropDownList ID="ddlColumn" CssClass="select" runat="server"></asp:DropDownList>
                         </div>
                     </div>
-                    <div class="select">
-                        <select>
-                            <option>Select dropdown</option>
-                            <option>With options</option>
-                        </select>
-                    </div>
-
                     <div class="field">
                         <div class="control">
                             <asp:TextBox ID="txtSearchtext" CssClass="input" runat="server"></asp:TextBox>

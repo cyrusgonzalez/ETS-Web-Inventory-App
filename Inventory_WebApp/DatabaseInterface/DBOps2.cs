@@ -52,7 +52,7 @@ namespace Inventory_WebApp
         #endregion
 
         #region Inventory DB Interface
-        public int InsertInventoryTable(String key, Int64 value)
+        public int InsertInventoryTable(String item, Int64 quantity,string lab)
         {
             int retval = 0;
             try
@@ -61,10 +61,11 @@ namespace Inventory_WebApp
                 {
                     con.Open();
                     var cmd = new SQLiteCommand(con);
-                    cmd.CommandText = "INSERT INTO inventory(itemcode, quantity) VALUES(@itemcode, @quantity)";
+                    cmd.CommandText = "INSERT INTO inventory(itemcode, quantity,lab) VALUES(@itemcode, @quantity,@lab)";
 
-                    cmd.Parameters.AddWithValue("@itemcode", key);
-                    cmd.Parameters.AddWithValue("@quantity", value);
+                    cmd.Parameters.AddWithValue("@itemcode", item);
+                    cmd.Parameters.AddWithValue("@quantity", quantity);
+                    cmd.Parameters.AddWithValue("@lab", lab);
                     cmd.Prepare();
 
                     retval = cmd.ExecuteNonQuery();
@@ -516,6 +517,29 @@ namespace Inventory_WebApp
                 throw ex;
             }
             return dbs;
+        }
+
+        public DataSet getLabs()
+        {
+            DataSet ds = new DataSet();
+            try
+            {
+                using (SQLiteConnection con = new SQLiteConnection(this.DataBaseSource))
+                {
+                    //string sql = "Select ItemCode,ItemName,Supplier,LastUpdatedOn from Supplier;";
+                    string sql = "Select distinct name from Labs";
+                    using (SQLiteCommand command = new SQLiteCommand(sql, con))
+                    {
+                        SQLiteDataAdapter da = new SQLiteDataAdapter(command);
+                        da.Fill(ds);
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+            return ds;
         }
         #endregion
 
