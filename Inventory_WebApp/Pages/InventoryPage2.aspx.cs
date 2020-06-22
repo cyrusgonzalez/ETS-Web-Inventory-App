@@ -10,7 +10,7 @@ using System.Data;
 
 namespace Inventory_WebApp
 {
-    public partial class InventoryETS : System.Web.UI.Page
+    public partial class InventoryETS2 : System.Web.UI.Page
     {
         DataSet searchColumns = new DBOps().getInventoryColumns();
         protected void Page_Load(object sender, EventArgs e)
@@ -63,7 +63,7 @@ namespace Inventory_WebApp
                     DataSet ds = db.ReadInventoryTable();
                     gvitem.DataSource = ds;
                     gvitem.DataBind();
-                    ViewState["gvitems"] = ds.Tables["table"];
+                    ViewState["gvitems"] = ds;
                 }
                 else
                 {
@@ -254,16 +254,8 @@ namespace Inventory_WebApp
 
         protected void gvitem_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {
-            if (Session["SortedView"] != null)
-            {
-                gvitem.DataSource = Session["SortedView"];
-                gvitem.DataBind();
-            }
-            else
-            {
-                gvitem.PageIndex = e.NewPageIndex;
-                RefreshTable();
-            }            
+            gvitem.PageIndex = e.NewPageIndex;
+            RefreshTable();
         }
 
         protected void gvitem_RowDataBound(object sender, GridViewRowEventArgs e)
@@ -314,7 +306,24 @@ namespace Inventory_WebApp
 
         protected void gvitem_RowUpdating(object sender, GridViewUpdateEventArgs e)
         {
-            //Placeholder method to handle fired event. Actual code behaviour initiated in gvitem_RowCommand under the 'update' case and the rest is in the gvitem_RowUpdatingCustom function
+            //GridViewRow changedRow = gvitem.Rows[e.RowIndex];
+            //string changedItem = changedRow.Cells[1].Text;
+            //string changedLab = changedRow.Cells[6].Text;
+            //Int32 changedQuantity = int.Parse(ViewState["changedQuantity"].ToString());//int.Parse((changedRow.FindControl("txtQuantity") as TextBox).Text);
+
+            //try
+            //{
+            //    DBOps db = new DBOps();
+            //    int retval = db.UpdateInventoryTable(changedItem, changedQuantity, changedLab);
+            //    lblPageInfo.Text = "Row updated successfully.";
+            //}
+            //catch (Exception ex)
+            //{
+            //    lblPageInfo.Text = "An error occurred while attempting to update the row.";
+            //    throw ex;
+            //}
+            //gvitem.EditIndex = -1;
+            //RefreshTable();
         }
 
         protected void gvitem_RowUpdatingcustom(string changedItem, string changedLab, int changedQuantity)
@@ -365,9 +374,8 @@ namespace Inventory_WebApp
                     int RowIndex = int.Parse(e.CommandArgument.ToString());
                     GridViewRow changedRow = gvitem.Rows[RowIndex];
                     string item = gvitem.Rows[RowIndex].Cells[1].Text;
-                    string lab = gvitem.Rows[RowIndex].Cells[8].Text;
+                    string lab = gvitem.Rows[RowIndex].Cells[6].Text;
                     Int32 changedQuantity;
-
                     if (changedRow.FindControl("lblQuantity") is null)
                     {
                         changedQuantity = int.Parse((changedRow.FindControl("txtQuantity") as TextBox).Text);
@@ -396,7 +404,7 @@ namespace Inventory_WebApp
                     int RowIndex = int.Parse(e.CommandArgument.ToString());
                     GridViewRow changedRow = gvitem.Rows[RowIndex];
                     string item = gvitem.Rows[RowIndex].Cells[1].Text;
-                    string lab = gvitem.Rows[RowIndex].Cells[8].Text;
+                    string lab = gvitem.Rows[RowIndex].Cells[6].Text;
                     Int32 changedQuantity;
                     if (changedRow.FindControl("lblQuantity") is null)
                     {
@@ -431,7 +439,7 @@ namespace Inventory_WebApp
                     int RowIndex = int.Parse(e.CommandArgument.ToString());
                     GridViewRow changedRow = gvitem.Rows[RowIndex];
                     string item = gvitem.Rows[RowIndex].Cells[1].Text;
-                    string lab = gvitem.Rows[RowIndex].Cells[8].Text;
+                    string lab = gvitem.Rows[RowIndex].Cells[6].Text;
                     Int32 changedQuantity;
                     if (changedRow.FindControl("lblQuantity") is null)
                     {
@@ -461,7 +469,7 @@ namespace Inventory_WebApp
                 int RowIndex = e.RowIndex;
 
                 string item = gvitem.Rows[RowIndex].Cells[1].Text;
-                string lab = gvitem.Rows[RowIndex].Cells[8].Text;
+                string lab = gvitem.Rows[RowIndex].Cells[6].Text;
 
                 int retval = db.DeleteInventoryTable(item, lab);
                 if (retval > 0)
@@ -485,47 +493,6 @@ namespace Inventory_WebApp
             RefreshTable();
         }
 
-        //protected void btnconfimDelete_Click(object sender, EventArgs e)
-        //{
-
-        //}
-
-     
-        protected void gvitem_Sorting(object sender, GridViewSortEventArgs e)
-        {
-            string sortingDirection = string.Empty;
-            if (direction == SortDirection.Ascending)
-            {
-                direction = SortDirection.Descending;
-                sortingDirection = "Desc";
-
-            }
-            else
-            {
-                direction = SortDirection.Ascending;
-                sortingDirection = "Asc";
-
-            }
-            DataView sortedView = new DataView((DataTable)ViewState["gvitems"]);
-            sortedView.Sort = e.SortExpression + " " + sortingDirection;
-            Session["SortedView"] = sortedView;
-            gvitem.DataSource = sortedView;
-            gvitem.DataBind();
-        }
-        public SortDirection direction
-        {
-            get
-            {
-                if (ViewState["directionState"] == null)
-                {
-                    ViewState["directionState"] = SortDirection.Ascending;
-                }
-                return (SortDirection)ViewState["directionState"];
-            }
-            set
-            {
-                ViewState["directionState"] = value;
-            }
-        }
+       
     }
 }

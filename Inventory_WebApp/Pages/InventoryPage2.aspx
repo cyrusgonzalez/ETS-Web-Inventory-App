@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="InventoryPage.aspx.cs" Inherits="Inventory_WebApp.InventoryETS" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="InventoryPage2.aspx.cs" Inherits="Inventory_WebApp.InventoryETS2" %>
 
 <!DOCTYPE html>
 
@@ -32,7 +32,7 @@
     <div class="tabs">
         <ul>
             <li><a href="LabPage.aspx">Labs</a></li>
-            <%--<li><a href="ItemsPage.aspx">Items</a></li>--%>
+            <li><a href="ItemsPage.aspx">Items</a></li>
             <li class="is-active"><a href="InventoryPage.aspx">Inventory</a></li>
             <%--<li><a href="SuppliersPage.aspx">Suppliers</a></li>
             <li><a href="DB_Select_Page.aspx">Choose your DB</a></li>--%>
@@ -87,19 +87,17 @@
                     OnRowCreated="gvitem_RowCreated"
                     OnRowUpdating="gvitem_RowUpdating"
                     OnRowCommand="gvitem_RowCommand"
-                    OnRowDeleting="gvitem_RowDeleting"
-                    DataKeyNames="ItemCode,Model,lab"
-                    OnSorting="gvitem_Sorting">
+                    OnRowDeleting="gvitem_RowDeleting">
                     <Columns>
                         <asp:BoundField HeaderText="ID" DataField="ID" ReadOnly="true" Visible="false" />
                         <asp:BoundField HeaderText="Item" DataField="ItemCode" ReadOnly="true" />
-                        <asp:BoundField HeaderText="Model-ItemCode" DataField="model" ReadOnly="true" />
-                        <asp:BoundField HeaderText="Description" DataField="description" ReadOnly="true" />
-                        <asp:BoundField HeaderText="Categories/Tags" DataField="category" ReadOnly="true" />
+                        <asp:BoundField HeaderText="Model-ItemCode" ReadOnly="true" />
+                        <asp:BoundField HeaderText="Description" DataField="" ReadOnly="true" />
+                        <asp:BoundField HeaderText="Categories/Tags" DataField="" ReadOnly="true" />
                         <asp:ButtonField CommandName="increment" Text="<i class='fa fa-plus'></i>"
                             ButtonType="Link"
                             ControlStyle-CssClass="btn btn-primary" />
-                        <asp:TemplateField HeaderText="Quantity" ItemStyle-VerticalAlign="Middle" ItemStyle-Width="50px">
+                        <asp:TemplateField HeaderText="Quantity" ItemStyle-Width="50px">
                             <EditItemTemplate>
                                 <asp:TextBox ID="txtQuantity" Text='<%# Bind("Quantity") %>' runat="server"></asp:TextBox>
                             </EditItemTemplate>
@@ -122,25 +120,11 @@
                         <asp:ButtonField CommandName="editcancel" Text="<i class='fa fa-times'></i>"
                             ButtonType="Link"
                             ControlStyle-CssClass="btn btn-primary" />--%>
-                        <asp:TemplateField ShowHeader="False">
-                            <ItemTemplate>
-                                <asp:LinkButton ID="DeleteButton" runat="server" Text="<i class='fa fa-times'></i>" ButtonType="Link"
-                                    CommandName="delete" OnClientClick="return confirm('Are you sure you want to delete this item?');"
-                                    AlternateText="Delete" />
-                            </ItemTemplate>
-                        </asp:TemplateField>
+                        <asp:ButtonField CommandName="delete" Text="<i class='fa fa-times'></i>"
+                            ButtonType="Link"
+                            ControlStyle-CssClass="btn btn-primary" />
                     </Columns>
                 </asp:GridView>
-                <script type="text/javascript" language="javascript">
-
-                    function confirmDelete() {
-                        if (confirm("Are you sure you want to delete this?") == true)
-                            return true;
-                        else
-                            return false;
-                    }
-
-                </script>
                 <asp:Label ID="lblErr" runat="server" ForeColor="Red"></asp:Label>
                 <%--<asp:Button ID="btnLoad" runat="server" OnClick="btnLoad_Click" Text="Load Table" CssClass="button" />--%>
             </div>
@@ -228,24 +212,16 @@
                 </div>
             </div>
         </div>
-        <div id="deleteconfirmpopup" runat="server" class="modal">
-            <div class="modal-card-head">
-                <p>Confirmation</p>
-                <a>
-                    <span class="icon">
-                        <i class="fas fa-times" aria-hidden="true"></i>
-                    </span>
-                </a>
-            </div>
+        <div class="modal">
             <div class="modal-background"></div>
             <div class="modal-content">
-                <div style="align-content: center">
+                <div style="align-content:center">
                     <p>
                         <asp:Label Text="Are you sure you want to delete this row?" runat="server" CssClass="label"></asp:Label>
-                    </p>
-                    <asp:Button Text="Ok" runat="server" ID="btnconfimDelete" CssClass="button" OnClick="btnconfimDelete_Click" />
+                </p>
+                <asp:Button Text="Ok" runat="server" ID="btnconfimDelete" CssClass="button" />
                 </div>
-
+                
             </div>
             <button class="modal-close is-large" aria-label="close"></button>
         </div>

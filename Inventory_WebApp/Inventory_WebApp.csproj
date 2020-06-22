@@ -87,7 +87,9 @@
     <Content Include="App_Data\bulma-collapsible.min.js" />
     <Content Include="App_Data\bulma.min.css" />
     <Content Include="App_Data\clear-24px.svg" />
+    <Content Include="App_Data\times-solid.svg" />
     <Content Include="Global.asax" />
+    <Content Include="Pages\InventoryPage2.aspx" />
     <Content Include="Pages\LabPage.aspx" />
     <Content Include="Temp\leaflet.drawplugin.html" />
     <Content Include="Temp\OpenLayer_js_map.html" />
@@ -107,6 +109,13 @@
     <Compile Include="DatabaseInterface\DBOps1.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\InventoryPage2.aspx.cs">
+      <DependentUpon>InventoryPage2.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\InventoryPage2.aspx.designer.cs">
+      <DependentUpon>InventoryPage2.aspx</DependentUpon>
     </Compile>
     <Compile Include="Pages\ItemsPage.aspx.cs">
       <DependentUpon>ItemsPage.aspx</DependentUpon>
