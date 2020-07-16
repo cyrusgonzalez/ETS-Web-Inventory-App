@@ -695,47 +695,6 @@ namespace Inventory_WebApp
                 switch (e.SortExpression)
                 {
                     case "Quantity":
-                        //WORKing Sorting code for one column
-                        //e.SortDirection is always Ascending
-                        //gvitemsort is set after sorting for the first time, its possible values are SORTEDASC or SORTEDDESC - showing how the table is sorted at that instant
-                        //This first if checks if its sorted ascending, if it is then reverse the sorting using LINQ rules.
-                        //if (e.SortDirection == SortDirection.Ascending && 
-                        //    ViewState["gvitemsort"] != null && 
-                        //    ViewState["gvitemsort"].ToString() == "SORTEDASC")  //If already sorted ASC then sort DESC
-                        //{
-                        //    DBOps db = new DBOps();
-
-                        //    DataSet ds = db.ReadInventoryTable();
-                        //    //DataTable dt = ((DataSet)ViewState["gvitem"]).Tables["table"];
-                        //    var query = from row in ds.Tables["table"].AsEnumerable()
-                        //                orderby row.Field<Int64>("Quantity") descending
-                        //                select row; // Desc query for Melder field ;
-                        //    DataTable result = query.CopyToDataTable();
-                        //    Session["SortedView"] = result;
-
-                        //    gvitem.DataSource = result;
-                        //    gvitem.DataBind();
-                        //    ViewState["gvitemsort"] = "SORTEDDESC"; //quantity desc/asc for easier use in the refreshtable func
-                        //    break;
-                        //}
-                        //if (e.SortDirection == SortDirection.Ascending)
-                        //{
-                        //    DBOps db = new DBOps();
-
-                        //    DataSet ds = db.ReadInventoryTable();
-                        //    // For the future : - DataTable dt = ((DataSet)ViewState["gvitem"]).Tables["table"];
-                        //    var query = from row in ds.Tables["table"].AsEnumerable()
-                        //                orderby row.Field<Int64>("Quantity")
-                        //                select row; // Asc query for Melder field;
-                        //    DataTable result = query.CopyToDataTable();
-                        //    Session["SortedView"] = result;
-
-                        //    gvitem.DataSource = result;
-                        //    gvitem.DataBind();
-
-                        //    ViewState["gvitemsort"] = "SORTEDASC";
-                        //}
-                        //END WORKing sorting code for one column
                         DBOps db = new DBOps();
                         DataSet ds = db.ReadInventoryTable();
                         OrderedEnumerableRowCollection<DataRow> query;
