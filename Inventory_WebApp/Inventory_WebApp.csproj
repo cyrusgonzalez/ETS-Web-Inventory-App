@@ -83,11 +83,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Data\bulma-collapsible.min.css" />
-    <Content Include="App_Data\bulma-collapsible.min.js" />
-    <Content Include="App_Data\bulma.min.css" />
-    <Content Include="App_Data\clear-24px.svg" />
-    <Content Include="App_Data\times-solid.svg" />
+    <Content Include="dependencies\bulma-collapsible.min.css" />
+    <Content Include="dependencies\bulma-collapsible.min.js" />
+    <Content Include="dependencies\bulma-extensions.min.css" />
+    <Content Include="dependencies\bulma-tagsinput.css" />
+    <Content Include="dependencies\bulma-tagsinput.js" />
+    <Content Include="dependencies\bulma.min.css" />
+    <Content Include="dependencies\clear-24px.svg" />
+    <Content Include="dependencies\pure-drawer.css" />
+    <Content Include="dependencies\times-solid.svg" />
     <Content Include="Global.asax" />
     <Content Include="Pages\InventoryPage2.aspx" />
     <Content Include="Pages\LabPage.aspx" />

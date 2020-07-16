@@ -8,8 +8,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Inventory at ETS</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.2/css/bulma.min.css" />
-    <script src="../App_Data/bulma-collapsible.js">    </script>
-    <link rel="stylesheet" href="../App_Data/bulma-collapsible.css" />
+
+    <link rel="stylesheet" href="../dependencies/bulma-extensions.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/bulma-extensions@6.2.7/dist/js/bulma-extensions.min.js"></script>
+
+    <%--<link rel="stylesheet" href="../dependencies/bulma-extensions.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/bulma-extensions@6.2.7/dist/js/bulma-extensions.min.js"></script>
+    <link rel="stylesheet" href="../dependencies/bulma-collapsible.css" />
+    <script src="https://raw.githubusercontent.com/CreativeBulma/bulma-collapsible/master/dist/js/bulma-collapsible.min.js">    </script>
+    --%>
+
     <!-- Load Font Awesome 5 -->
     <script defer="" src="https://use.fontawesome.com/releases/v5.8.1/js/all.js"></script>
 </head>
@@ -34,6 +42,7 @@
             <li><a href="LabPage.aspx">Labs</a></li>
             <%--<li><a href="ItemsPage.aspx">Items</a></li>--%>
             <li class="is-active"><a href="InventoryPage.aspx">Inventory</a></li>
+            <li class=""><a href="InventoryPage2.aspx">Alt Inventory</a></li>
             <%--<li><a href="SuppliersPage.aspx">Suppliers</a></li>
             <li><a href="DB_Select_Page.aspx">Choose your DB</a></li>--%>
         </ul>
@@ -55,7 +64,7 @@
     <form id="form1" runat="server">
         <div class="columns" style="height: 50px">
             <div class="column">
-                <asp:Label runat="server"> Lab: </asp:Label>
+                <asp:Label runat="server" ID="Label8"> Lab: </asp:Label>
                 <asp:DropDownList ID="ddlLabselect" CssClass="select" runat="server" EnableTheming="true" OnSelectedIndexChanged="ddlLabselect_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
             </div>
             <div class="column">
@@ -72,7 +81,6 @@
                     Width="100%"
                     AutoGenerateColumns="false"
                     AllowPaging="true"
-                    AllowSorting="true"
                     PageSize="7"
                     PagerSettings-Position="Bottom"
                     PagerSettings-Mode="Numeric"
@@ -89,17 +97,19 @@
                     OnRowCommand="gvitem_RowCommand"
                     OnRowDeleting="gvitem_RowDeleting"
                     DataKeyNames="ItemCode,Model,lab"
-                    OnSorting="gvitem_Sorting">
+                    AllowSorting="true"
+                    OnSorting="gvitem_Sorting"
+                    >
                     <Columns>
                         <asp:BoundField HeaderText="ID" DataField="ID" ReadOnly="true" Visible="false" />
-                        <asp:BoundField HeaderText="Item" DataField="ItemCode" ReadOnly="true" />
+                        <asp:BoundField HeaderText="Item" DataField="ItemCode" ReadOnly="true" SortExpression="Item" />
                         <asp:BoundField HeaderText="Model-ItemCode" DataField="model" ReadOnly="true" />
                         <asp:BoundField HeaderText="Description" DataField="description" ReadOnly="true" />
-                        <asp:BoundField HeaderText="Categories/Tags" DataField="category" ReadOnly="true" />
+                        <asp:BoundField HeaderText="Categories/Tags" DataField="category" ReadOnly="true" SortExpression="Category" />
                         <asp:ButtonField CommandName="increment" Text="<i class='fa fa-plus'></i>"
                             ButtonType="Link"
                             ControlStyle-CssClass="btn btn-primary" />
-                        <asp:TemplateField HeaderText="Quantity" ItemStyle-VerticalAlign="Middle" ItemStyle-Width="50px">
+                        <asp:TemplateField HeaderText="Quantity" ItemStyle-VerticalAlign="Middle" ItemStyle-Width="50px" SortExpression="Quantity">
                             <EditItemTemplate>
                                 <asp:TextBox ID="txtQuantity" Text='<%# Bind("Quantity") %>' runat="server"></asp:TextBox>
                             </EditItemTemplate>
@@ -112,7 +122,7 @@
                             ButtonType="Link"
                             ControlStyle-CssClass="btn btn-primary" />
                         <asp:BoundField HeaderText="Quantity" DataField="quantity" ItemStyle-Width="50px" ReadOnly="true" Visible="false" />
-                        <asp:BoundField HeaderText="Lab" DataField="lab" ReadOnly="true" />
+                        <asp:BoundField HeaderText="Lab" DataField="lab" ReadOnly="true" SortExpression="Lab" />
                         <%--<asp:ButtonField CommandName="edit" Text="<i class='fa fa-edit'></i>"
                             ButtonType="Link"
                             ControlStyle-CssClass="btn btn-primary" />
@@ -142,9 +152,9 @@
 
                 </script>
                 <asp:Label ID="lblErr" runat="server" ForeColor="Red"></asp:Label>
-                <%--<asp:Button ID="btnLoad" runat="server" OnClick="btnLoad_Click" Text="Load Table" CssClass="button" />--%>
+                <asp:Button ID="btnLoad" runat="server" OnClick="btnLoad_Click" Text="Load Table" CssClass="button" />
             </div>
-            <div id="insert_inventory" style="display: none" class="column">
+            <div id="insert_inventory" style="display: none" class="column" runat="server">
                 <div class="box">
                     <div class="columns">
                         <div class="column">
@@ -177,7 +187,7 @@
 
                 </div>
 
-                <div class="box has-text-centered" style="display: none;">
+                <div id="UpdateDiv" class="box has-text-centered" style="display: none;">
                     <asp:Label ID="lblkey" runat="server">Key:   </asp:Label><asp:TextBox ID="txtKey" runat="server"></asp:TextBox>
                     <asp:Label ID="lblval" runat="server">Value:   </asp:Label><asp:TextBox ID="txtValue" runat="server"></asp:TextBox>
                     <asp:Button ID="btnUpdate" runat="server" Text="Update" OnClick="btnUpdate_Click" CssClass="button" />
@@ -228,28 +238,7 @@
                 </div>
             </div>
         </div>
-        <div id="deleteconfirmpopup" runat="server" class="modal">
-            <div class="modal-card-head">
-                <p>Confirmation</p>
-                <a>
-                    <span class="icon">
-                        <i class="fas fa-times" aria-hidden="true"></i>
-                    </span>
-                </a>
-            </div>
-            <div class="modal-background"></div>
-            <div class="modal-content">
-                <div style="align-content: center">
-                    <p>
-                        <asp:Label Text="Are you sure you want to delete this row?" runat="server" CssClass="label"></asp:Label>
-                    </p>
-                    <asp:Button Text="Ok" runat="server" ID="btnconfimDelete" CssClass="button" OnClick="btnconfimDelete_Click" />
-                </div>
-
-            </div>
-            <button class="modal-close is-large" aria-label="close"></button>
-        </div>
     </form>
-    <script></script>
+    
 </body>
 </html>

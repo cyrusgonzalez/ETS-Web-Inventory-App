@@ -6,7 +6,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Data.SQLite;
 using System.Data;
-
+using System.Diagnostics;
 
 namespace Inventory_WebApp
 {
@@ -49,7 +49,8 @@ namespace Inventory_WebApp
         protected void btnLoad_Click(object sender, EventArgs e)
         {
             DBOps db = new DBOps();
-            RefreshTable();
+            string callerfunc = new StackFrame(1).GetMethod().Name.Substring(4);
+            RefreshTable(callerfunc);
         }
 
         protected void RefreshTable()
@@ -85,12 +86,51 @@ namespace Inventory_WebApp
                 if (ex.Message.Contains("no rows"))
                 {
                     lblPageInfo.Text = "There are no items in this lab";
+                    lblPageInfo.DataBind();
                 }
 
             }
 
-
         }
+
+        protected void RefreshTable(string callerfunc)
+        {
+            try
+            {
+                if (ddlLabselect.SelectedValue == "All")
+                {
+                    DBOps db = new DBOps();
+
+                    DataSet ds = db.ReadInventoryTable();
+                    gvitem.DataSource = ds;
+                    gvitem.DataBind();
+                    ViewState["gvitems"] = ds;
+                }
+                else
+                {
+                    DBOps db = new DBOps();
+                    //DataSet ds = (DataSet)ViewState["gvitems"];    // Apparently grid view items are not stored persistently across postabacks so then either I have to hit the db again or use the viewstate i.e. gvitems.DataSource doesnt work here
+                    DataSet ds = db.ReadInventoryTable();
+                    DataTable dt = ds.Tables["Table"];
+                    var query = from row in dt.AsEnumerable()
+                                where row.Field<string>("lab") == (ddlLabselect.SelectedValue)
+                                select row;
+                    DataTable result = query.CopyToDataTable();
+
+                    gvitem.DataSource = result;
+                    gvitem.DataBind();
+                }
+            }
+            catch (Exception ex)
+            {
+                if (ex.Message.Contains("no rows"))
+                {
+                    lblPageInfo.Text = "There are no items in this lab";
+                }
+
+            }
+        }
+
 
         protected void PopulateSearchColumnsDropdown()
         {
@@ -162,7 +202,7 @@ namespace Inventory_WebApp
             long _value = long.Parse(txtInsertQuantity.Text);
             string lab = ddlInsertLab.SelectedValue;
 
-            int retval = db.InsertInventoryTable(_key, _value,lab);
+            int retval = db.InsertInventoryTable(_key, _value, lab);
             lblInsertInfo.Text = retval.ToString() + " row inserted";
             lblInsertInfo.DataBind();
 
@@ -492,7 +532,58 @@ namespace Inventory_WebApp
             }
             RefreshTable();
         }
+        protected void gvitem_Sorting(object sender, GridViewSortEventArgs e)
+        {
 
-       
+            switch (e.SortExpression)
+            {
+                case "Quantity":
+                    if (e.SortDirection == SortDirection.Ascending)
+                    {
+                        DBOps db = new DBOps();
+
+                        DataSet ds = db.ReadInventoryTable();
+                        // For the future : - DataTable dt = ((DataSet)ViewState["gvitem"]).Tables["table"];
+                        var query = from row in ds.Tables["table"].AsEnumerable()
+                                    orderby row.Field<Int64>("Quantity")
+                                    select row; // Asc query for Melder field;
+                        DataTable result = query.CopyToDataTable();
+                        Session["SortedView"] = result;
+
+                        gvitem.DataSource = result;
+                        gvitem.DataBind();
+
+                    }
+                    else
+                    {
+                        DBOps db = new DBOps();
+
+                        DataSet ds = db.ReadInventoryTable();
+                        //DataTable dt = ((DataSet)ViewState["gvitem"]).Tables["table"];
+                        var query = from row in ds.Tables["table"].AsEnumerable()
+                                    orderby row.Field<Int64>("Quantity") descending
+                                    select row; // Desc query for Melder field ;
+                        DataTable result = query.CopyToDataTable();
+                        Session["SortedView"] = result;
+
+                        gvitem.DataSource = result;
+                        gvitem.DataBind();
+                    }
+                    break;
+                // case statements for your other fields.
+                case "Category":
+                    if (e.SortDirection == SortDirection.Ascending)
+                    {
+
+                    }
+                    else
+                    {
+
+                    }
+                    break;
+
+            }
+        }
+
     }
 }
