@@ -62,12 +62,20 @@
     </div>
 
     <form id="form1" runat="server">
-        <div class="columns" style="height: 50px">
+        <div class="columns is-multiline" style="height: 50px">
             <div class="column">
                 <asp:Label runat="server" ID="Label8"> Lab: </asp:Label>
                 <asp:DropDownList ID="ddlLabselect" CssClass="select" runat="server" EnableTheming="true" OnSelectedIndexChanged="ddlLabselect_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
             </div>
-            <div class="column">
+            <div class="column is-one-fifth">
+                <asp:Label runat="server" ID="Label5"> Category: </asp:Label>
+                <asp:DropDownList ID="ddlCategorySelect" CssClass="select" runat="server" EnableTheming="true" OnSelectedIndexChanged="ddlCategorySelect_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
+            </div>
+            <div class="column is-one-fifth">
+                <asp:Label runat="server" ID="Label6"> Item: </asp:Label>
+                <asp:DropDownList ID="ddlItemSelect" CssClass="select" runat="server" EnableTheming="true" OnSelectedIndexChanged="ddlItemSelect_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
+            </div>
+            <div class="column is-one-fifth">
                 <asp:Label ID="lblPageInfo" CssClass="label" runat="server" ForeColor="#0099ff"></asp:Label>
             </div>
         </div>
@@ -154,7 +162,7 @@
                 <asp:Label ID="lblErr" runat="server" ForeColor="Red"></asp:Label>
                 <asp:Button ID="btnLoad" runat="server" OnClick="btnLoad_Click" Text="Load Table" CssClass="button" />
             </div>
-            <div id="insert_inventory" style="display: none" class="column" runat="server">
+            <div id="insert_inventory" style="display: none" class="column is-one-third" runat="server">
                 <div class="box">
                     <div class="columns">
                         <div class="column">

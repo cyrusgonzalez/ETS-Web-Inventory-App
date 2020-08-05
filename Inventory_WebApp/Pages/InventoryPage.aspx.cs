@@ -34,6 +34,8 @@ namespace Inventory_WebApp
                 {
                     PopulateSearchColumnsDropdown();
                     PopulateLabsDropdown();
+                    PopulateItemsDropDown();
+                    PopulateCategoriesDropDown();
                     RefreshTable();
                 }
                 catch (Exception ex)
@@ -86,6 +88,7 @@ namespace Inventory_WebApp
             }
         }
 
+        #region Getting data from DB and setting table and related functions
         protected void btnLoad_Click(object sender, EventArgs e)
         {
             DBOps db = new DBOps();
@@ -163,6 +166,39 @@ namespace Inventory_WebApp
             }
         }
 
+        //protected string CheckSort()
+        //{
+        //    string column_sort = "";
+        //    try
+        //    {
+        //        switch ((string)ViewState["gvitemsort"].ToString().ToLower())
+        //        {
+        //            case "":
+        //            case "none":
+        //                return column_sort;
+        //                break;
+        //            case "quantity sortedasc":
+        //                break;
+        //            case "quantity sorteddesc":
+        //                break;
+        //            case "category sortedasc":
+        //                break;
+        //            case "category sorteddesc":
+        //                break;
+        //            case "item sortedasc":
+        //                break;
+        //            case "item sorteddesc":
+        //                break;
+
+        //        }
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+        //    }
+        //}
+
         protected void RefreshTable(string callerfunc)
         {
             try
@@ -171,20 +207,18 @@ namespace Inventory_WebApp
                 {
                     DBOps db = new DBOps();
                     DataSet ds = db.ReadInventoryTable();
-                    ds.Tables["table"].DefaultView.Sort = "Quantity ASC";   //read from ViewState['gvitemsort'] as Quantity ASC/LAB DESC
+                    ds.Tables["table"].DefaultView.Sort = "Quantity ASC"//CheckSort() ?? "";//"Quantity ASC";   //read from ViewState['gvitemsort'] as Quantity ASC/LAB DESC
                     Session["SortedView"] = ds;     //notowkring FIX HERE 30/6/20
-                    //gvitem.DataSource = ds;
-                    //gvitem.DataBind();
+
                 }
                 else if (callerfunc == "OnRowCommand")  // write case for "OnRowCommand" - passed in case of increment/decrement operator 
                 {
                     DBOps db = new DBOps();
                     DataSet ds = db.ReadInventoryTable();
-                    ds.Tables["table"].DefaultView.Sort = "Quantity ASC";   //read from ViewState['gvitemsort'] as Quantity ASC/LAB DESC
+                    ds.Tables["table"].DefaultView.Sort = ((string)ViewState["gvitemsort"]) ?? "";  //read from ViewState['gvitemsort'] as Quantity ASC/LAB DESC
 
                     Session["SortedView"] = ds.Tables["table"].DefaultView.ToTable();     //notowkring FIX HERE 30/6/20
-                    //gvitem.DataSource = ds;
-                    //gvitem.DataBind();
+           
                 }
 
                 if (ddlLabselect.SelectedValue == "All")
@@ -202,7 +236,7 @@ namespace Inventory_WebApp
                         gvitem.DataSource = ds;
                         gvitem.DataBind();
                     }
-                    //Session["gvitems"] = ds;//.Tables["table"];
+
                 }
                 else
                 {
@@ -239,7 +273,9 @@ namespace Inventory_WebApp
 
             }
         }
+        #endregion
 
+        #region Dropdown population
         protected void PopulateSearchColumnsDropdown()
         {
             try
@@ -293,18 +329,232 @@ namespace Inventory_WebApp
 
         }
 
+        protected void PopulateItemsDropDown()
+        {
+            try
+            {
+                DBOps db = new DBOps();
+                DataSet ds = db.getItems();
+
+                //Adding new row to lab filter to show all labs. 
+                DataRow dr = ds.Tables["table"].NewRow();
+                dr["itemCode"] = "All";
+
+                ds.Tables["table"].Rows.InsertAt(dr, 0);
+
+                ddlItemSelect.DataSource = ds;
+                ddlItemSelect.DataTextField = "itemCode";
+                ddlItemSelect.DataValueField = "itemCode";
+                ddlItemSelect.DataBind();
+
+            }
+            catch(Exception ex)
+            {
+
+            }
+        }
+
+        protected void PopulateCategoriesDropDown()
+        {
+            try
+            {
+                DBOps db = new DBOps();
+                DataSet ds = db.getCategories();
+
+                //Adding new row to lab filter to show all labs. 
+                DataRow dr = ds.Tables["table"].NewRow();
+                dr["category"] = "All";
+
+                ds.Tables["table"].Rows.InsertAt(dr, 0);
+
+                ddlCategorySelect.DataSource = ds;
+                ddlCategorySelect.DataTextField = "category";
+                ddlCategorySelect.DataValueField = "category";
+                ddlCategorySelect.DataBind();
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
+        #endregion
+
+        #region Dropdown functions fired when index changed(new item selected)
         protected void ddlLabselect_SelectedIndexChanged(object sender, EventArgs e)
         {
             try
             {
-                RefreshTable();
+                if (ddlLabselect.SelectedValue == "All")
+                {
+                    DBOps db = new DBOps();
+
+                    if (Session["SortedView"] != null)          //Added a check to use the sorted rows in case the user sorts then filters.
+                    {
+                        gvitem.DataSource = Session["SortedView"];
+                        gvitem.DataBind();
+                    }
+                    else
+                    {
+                        DataSet ds = db.ReadInventoryTable();
+                        gvitem.DataSource = ds;
+                        gvitem.DataBind();
+                    }
+                    //Session["gvitems"] = ds;//.Tables["table"];
+                }
+                else
+                {
+                    DBOps db = new DBOps();
+                    //DataSet ds = (DataSet)ViewState["gvitems"];    // Apparently grid view items are not stored persistently across postabacks so then either I have to hit the db again or use the viewstate i.e. gvitems.DataSource doesnt work here
+
+                    DataTable dt;
+
+                    if (Session["SortedView"] != null)           //Added a check to use the sorted rows in case the user sorts then filters.
+                    {
+                        dt = (DataTable)Session["SortedView"];
+                    }
+                    else
+                    {
+                        DataSet ds = db.ReadInventoryTable();
+                        dt = ds.Tables["Table"];
+                    }
+
+                    var query = from row in dt.AsEnumerable()
+                                where row.Field<string>("lab") == (ddlLabselect.SelectedValue)
+                                select row;
+                    DataTable result = query.CopyToDataTable();
+                    if (result.Rows.Count == 0)
+                    {
+                        lblPageInfo.Text = "There are no items in this lab";
+                        lblPageInfo.ForeColor = System.Drawing.Color.Red;
+                        lblPageInfo.DataBind();
+                    }
+                    else
+                    {
+                        gvitem.DataSource = result;
+                        gvitem.DataBind();
+                    }
+
+                }
             }
             catch (Exception ex)
             {
-                throw ex;
+                //throw ex;
             }
         }
 
+        protected void ddlCategorySelect_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (ddlCategorySelect.SelectedValue == "All")
+            {
+                DBOps db = new DBOps();
+
+                if (Session["SortedView"] != null)          //Added a check to use the sorted rows in case the user sorts then filters.
+                {
+                    gvitem.DataSource = Session["SortedView"];
+                    gvitem.DataBind();
+                }
+                else
+                {
+                    DataSet ds = db.ReadInventoryTable();
+                    gvitem.DataSource = ds;
+                    gvitem.DataBind();
+                }
+                //Session["gvitems"] = ds;//.Tables["table"];
+            }
+            else
+            {
+                DBOps db = new DBOps();
+                //DataSet ds = (DataSet)ViewState["gvitems"];    // Apparently grid view items are not stored persistently across postabacks so then either I have to hit the db again or use the viewstate i.e. gvitems.DataSource doesnt work here
+
+                DataTable dt;
+
+                if (Session["SortedView"] != null)           //Added a check to use the sorted rows in case the user sorts then filters.
+                {
+                    dt = (DataTable)Session["SortedView"];
+                }
+                else
+                {
+                    DataSet ds = db.ReadInventoryTable();
+                    dt = ds.Tables["Table"];
+                }
+
+                var query = from row in dt.AsEnumerable()
+                            where row.Field<string>("category") == (ddlCategorySelect.SelectedValue)
+                            select row;
+                DataTable result = query.CopyToDataTable();
+                if (result.Rows.Count == 0)
+                {
+                    lblPageInfo.Text = "There are no items in this lab";
+                    lblPageInfo.ForeColor = System.Drawing.Color.Red;
+                    lblPageInfo.DataBind();
+                }
+                else
+                {
+                    gvitem.DataSource = result;
+                    gvitem.DataBind();
+                }
+
+            }
+        }
+
+        protected void ddlItemSelect_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (ddlItemSelect.SelectedValue == "All")
+            {
+                DBOps db = new DBOps();
+
+                if (Session["SortedView"] != null)          //Added a check to use the sorted rows in case the user sorts then filters.
+                {
+                    gvitem.DataSource = Session["SortedView"];
+                    gvitem.DataBind();
+                }
+                else
+                {
+                    DataSet ds = db.ReadInventoryTable();
+                    gvitem.DataSource = ds;
+                    gvitem.DataBind();
+                }
+                //Session["gvitems"] = ds;//.Tables["table"];
+            }
+            else
+            {
+                DBOps db = new DBOps();
+                //DataSet ds = (DataSet)ViewState["gvitems"];    // Apparently grid view items are not stored persistently across postabacks so then either I have to hit the db again or use the viewstate i.e. gvitems.DataSource doesnt work here
+
+                DataTable dt;
+
+                if (Session["SortedView"] != null)           //Added a check to use the sorted rows in case the user sorts then filters.
+                {
+                    dt = (DataTable)Session["SortedView"];
+                }
+                else
+                {
+                    DataSet ds = db.ReadInventoryTable();
+                    dt = ds.Tables["Table"];
+                }
+
+                var query = from row in dt.AsEnumerable()
+                            where row.Field<string>("itemCode") == (ddlItemSelect.SelectedValue)
+                            select row;
+                DataTable result = query.CopyToDataTable();
+                if (result.Rows.Count == 0)
+                {
+                    lblPageInfo.Text = "There are no items in this lab";
+                    lblPageInfo.ForeColor = System.Drawing.Color.Red;
+                    lblPageInfo.DataBind();
+                }
+                else
+                {
+                    gvitem.DataSource = result;
+                    gvitem.DataBind();
+                }
+
+            }
+        }
+
+        #endregion
+
+        #region button click event functions
         protected void btnInsert_Click(object sender, EventArgs e)
         {
             try
@@ -348,8 +598,6 @@ namespace Inventory_WebApp
 
             RefreshTable();
         }
-
-
 
         protected Type GetMyType(string SQLiteType)
         {
@@ -417,7 +665,9 @@ namespace Inventory_WebApp
             dgSearchResult.DataBind();
         }
 
+        #endregion
 
+        #region GridView gvitem functions
         protected void gvitem_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {
             if (Session["SortedView"] != null)
@@ -713,7 +963,7 @@ namespace Inventory_WebApp
                                 gvitem.DataSource = result;
                                 gvitem.DataBind();
 
-                                ViewState["gvitemsort"] = "SORTEDASC";
+                                ViewState["gvitemsort"] = "Quantity SORTEDASC";
                                 break;
                             case "SORTEDASC":
                                 //DataTable dt = ((DataSet)ViewState["gvitem"]).Tables["table"];
@@ -725,7 +975,7 @@ namespace Inventory_WebApp
 
                                 gvitem.DataSource = result;
                                 gvitem.DataBind();
-                                ViewState["gvitemsort"] = "SORTEDDESC"; //quantity desc/asc for easier use in the refreshtable func
+                                ViewState["gvitemsort"] = "Quantity SORTEDDESC"; //quantity desc/asc for easier use in the refreshtable func
                                 break;
 
                         }
@@ -750,7 +1000,7 @@ namespace Inventory_WebApp
                                 gvitem.DataSource = result1;
                                 gvitem.DataBind();
 
-                                ViewState["gvitemsort"] = "SORTEDASC";
+                                ViewState["gvitemsort"] = "Category SORTEDASC";
                                 break;
                             case "SORTEDASC":
                                 //DataTable dt = ((DataSet)ViewState["gvitem"]).Tables["table"];
@@ -762,7 +1012,7 @@ namespace Inventory_WebApp
 
                                 gvitem.DataSource = result1;
                                 gvitem.DataBind();
-                                ViewState["gvitemsort"] = "SORTEDDESC"; //quantity desc/asc for easier use in the refreshtable func
+                                ViewState["gvitemsort"] = " Category SORTEDDESC"; //quantity desc/asc for easier use in the refreshtable func
                                 break;
 
                         }
@@ -787,7 +1037,7 @@ namespace Inventory_WebApp
                                 gvitem.DataSource = result2;
                                 gvitem.DataBind();
 
-                                ViewState["gvitemsort"] = "SORTEDASC";
+                                ViewState["gvitemsort"] = "Item SORTEDASC";
                                 break;
                             case "SORTEDASC":
                                 //DataTable dt = ((DataSet)ViewState["gvitem"]).Tables["table"];
@@ -799,14 +1049,48 @@ namespace Inventory_WebApp
 
                                 gvitem.DataSource = result2;
                                 gvitem.DataBind();
-                                ViewState["gvitemsort"] = "SORTEDDESC"; //quantity desc/asc for easier use in the refreshtable func
+                                ViewState["gvitemsort"] = "Item SORTEDDESC"; //quantity desc/asc for easier use in the refreshtable func
                                 break;
 
                         }
 
                         break;
                     case "Lab":
+                        DBOps db3 = new DBOps();
+                        DataSet ds3 = db3.ReadInventoryTable();
+                        OrderedEnumerableRowCollection<DataRow> query3;
+                        DataTable result3;
 
+                        switch (((string)ViewState["gvitemsort"]) ?? "NONE")    //Check if it exists, if it doesn't substitute NONE
+                        {
+                            case "NONE":
+                            case "SORTEDDESC":
+                                // For the future : - DataTable dt = ((DataSet)ViewState["gvitem"]).Tables["table"]; if storing and reading table rows from view/session state
+                                query3 = from row in ds3.Tables["table"].AsEnumerable()
+                                         orderby row.Field<string>("lab")
+                                         select row; // Asc query for Melder field;
+                                result3 = query3.CopyToDataTable();
+                                Session["SortedView"] = result3;
+
+                                gvitem.DataSource = result3;
+                                gvitem.DataBind();
+
+                                ViewState["gvitemsort"] = "Lab SORTEDASC";
+                                break;
+                            case "SORTEDASC":
+                                //DataTable dt = ((DataSet)ViewState["gvitem"]).Tables["table"];
+                                query3 = from row in ds3.Tables["table"].AsEnumerable()
+                                         orderby row.Field<string>("lab") descending
+                                         select row; // Desc query for Melder field ;
+                                result3 = query3.CopyToDataTable();
+                                Session["SortedView"] = result3;
+
+                                gvitem.DataSource = result3;
+                                gvitem.DataBind();
+                                ViewState["gvitemsort"] = "Lab SORTEDDESC"; //quantity desc/asc for easier use in the refreshtable func
+                                break;
+
+                        }
                         break;
                 }
             }
@@ -815,6 +1099,8 @@ namespace Inventory_WebApp
 
             }
         }
+
+        #endregion
 
         protected void CheckRowQuantityColor(Int32 rowIndex)
         {

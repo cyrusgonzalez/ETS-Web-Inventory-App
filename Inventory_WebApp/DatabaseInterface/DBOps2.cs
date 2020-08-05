@@ -300,6 +300,28 @@ namespace Inventory_WebApp
             }
             return ds;
         }
+
+        public DataSet getItems()
+        {
+            DataSet ds = new DataSet();
+            try
+            {
+                using (SQLiteConnection con = new SQLiteConnection(this.DataBaseSource))
+                {
+                    string sql = "Select distinct itemcode from inventory";
+                    using (SQLiteCommand command = new SQLiteCommand(sql, con))
+                    {
+                        SQLiteDataAdapter da = new SQLiteDataAdapter(command);
+                        da.Fill(ds);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return ds;
+        }
         #endregion
 
         #region Supplier DB Interface
@@ -536,6 +558,31 @@ namespace Inventory_WebApp
                 }
             }
             catch(Exception ex)
+            {
+                throw ex;
+            }
+            return ds;
+        }
+        #endregion
+
+        #region Category DB Interface
+        public DataSet getCategories()
+        {
+            DataSet ds = new DataSet();
+            try
+            {
+                using (SQLiteConnection con = new SQLiteConnection(this.DataBaseSource))
+                {
+                    //string sql = "Select ItemCode,ItemName,Supplier,LastUpdatedOn from Supplier;";
+                    string sql = "Select distinct category from inventory";
+                    using (SQLiteCommand command = new SQLiteCommand(sql, con))
+                    {
+                        SQLiteDataAdapter da = new SQLiteDataAdapter(command);
+                        da.Fill(ds);
+                    }
+                }
+            }
+            catch (Exception ex)
             {
                 throw ex;
             }

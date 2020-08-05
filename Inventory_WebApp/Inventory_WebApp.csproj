@@ -95,11 +95,8 @@
     <Content Include="Global.asax" />
     <Content Include="Pages\InventoryPage2.aspx" />
     <Content Include="Pages\LabPage.aspx" />
-    <Content Include="Temp\leaflet.drawplugin.html" />
-    <Content Include="Temp\OpenLayer_js_map.html" />
     <Content Include="Pages\ItemsPage.aspx" />
     <Content Include="Pages\SuppliersPage.aspx" />
-    <Content Include="Temp\Quick Start - Leaflet.html" />
     <Content Include="Web.config" />
     <Content Include="Pages\InventoryPage.aspx" />
     <Content Include="properties.xml">
