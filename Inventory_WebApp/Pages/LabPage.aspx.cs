@@ -7,7 +7,7 @@ namespace Inventory_WebApp.Pages
 {
     public partial class LabPage : System.Web.UI.Page
     {
-        DataSet searchColumns = new DBOps().getLabColumns();
+        DataSet searchColumns = new DBOps().GetLabColumns();
         protected void Page_Load(object sender, EventArgs e)
         {
             //First time page load commands to go inside this if block
@@ -47,7 +47,7 @@ namespace Inventory_WebApp.Pages
         protected void PopulateSearchColumnsDropdown()
         {
             DBOps db = new DBOps();
-            DataSet ds = db.getLabColumns();
+            DataSet ds = db.GetLabColumns();
             ddlColumn.DataSource = ds;
             ddlColumn.DataTextField = "name";
             ddlColumn.DataValueField = "name";

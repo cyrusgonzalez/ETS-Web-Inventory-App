@@ -14,7 +14,7 @@ namespace Inventory_WebApp
         {
             var db = new DBOps();
             DataSet dbs = new DataSet("Databases");
-            dbs = db.getDBs();
+            dbs = db.GetDBs();
             ddlDB.DataSource = dbs;
             ddlDB.DataValueField = "name";
             ddlDB.DataTextField = "name";

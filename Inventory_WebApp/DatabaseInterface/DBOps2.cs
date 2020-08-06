@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Data;
 using System.Data.SQLite;
 using System.Xml;
-using System.IO;
-using System.Security;
 
 namespace Inventory_WebApp
 {
@@ -148,7 +143,7 @@ namespace Inventory_WebApp
             return ds;
         }
 
-        public DataSet getInventoryColumns()
+        public DataSet GetInventoryColumns()
         {
             DataSet dbs = new DataSet();
             try
@@ -301,7 +296,7 @@ namespace Inventory_WebApp
             return ds;
         }
 
-        public DataSet getItems()
+        public DataSet GetItems()
         {
             DataSet ds = new DataSet();
             try
@@ -519,7 +514,7 @@ namespace Inventory_WebApp
             return retval;
         }
 
-        public DataSet getLabColumns()
+        public DataSet GetLabColumns()
         {
             DataSet dbs = new DataSet();
             try
@@ -541,7 +536,7 @@ namespace Inventory_WebApp
             return dbs;
         }
 
-        public DataSet getLabs()
+        public DataSet GetLabs()
         {
             DataSet ds = new DataSet();
             try
@@ -566,7 +561,7 @@ namespace Inventory_WebApp
         #endregion
 
         #region Category DB Interface
-        public DataSet getCategories()
+        public DataSet GetCategories()
         {
             DataSet ds = new DataSet();
             try
@@ -590,7 +585,7 @@ namespace Inventory_WebApp
         }
         #endregion
 
-        public DataSet getDBs()
+        public DataSet GetDBs()
         {
             DataSet dbs = new DataSet();
             try

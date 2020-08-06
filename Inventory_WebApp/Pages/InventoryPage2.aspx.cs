@@ -12,7 +12,7 @@ namespace Inventory_WebApp
 {
     public partial class InventoryETS2 : System.Web.UI.Page
     {
-        DataSet searchColumns = new DBOps().getInventoryColumns();
+        DataSet searchColumns = new DBOps().GetInventoryColumns();
         protected void Page_Load(object sender, EventArgs e)
         {
             //First time page load commands to go inside this if block
@@ -137,7 +137,7 @@ namespace Inventory_WebApp
             try
             {
                 DBOps db = new DBOps();
-                DataSet ds = db.getInventoryColumns();
+                DataSet ds = db.GetInventoryColumns();
                 ddlColumn.DataSource = ds;
                 ddlColumn.DataTextField = "name";
                 ddlColumn.DataValueField = "name";
@@ -155,7 +155,7 @@ namespace Inventory_WebApp
             try
             {
                 DBOps db = new DBOps();
-                DataSet ds = db.getLabs();
+                DataSet ds = db.GetLabs();
                 DataRow dr = ds.Tables["table"].NewRow();
                 dr["name"] = "All";
                 ds.Tables["table"].Rows.InsertAt(dr, 0);

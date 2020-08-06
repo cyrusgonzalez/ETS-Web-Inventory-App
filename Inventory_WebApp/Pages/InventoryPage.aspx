@@ -51,7 +51,7 @@
             function showHideInsertPane(e) {
                 //e is the whole a tage and all its attributes
                 var element = document.getElementById("insert_inventory");
-                if (element.style.display == "none") {
+                if (element.style.display === "none") {
                     element.style.removeProperty("display");
                 }
                 else {
@@ -117,12 +117,12 @@
                         <asp:ButtonField CommandName="increment" Text="<i class='fa fa-plus'></i>"
                             ButtonType="Link"
                             ControlStyle-CssClass="btn btn-primary" />
-                        <asp:TemplateField HeaderText="Quantity" ItemStyle-VerticalAlign="Middle" ItemStyle-Width="50px" SortExpression="Quantity">
+                        <asp:TemplateField HeaderText="Quantity" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Center" ItemStyle-Width="50px" SortExpression="Quantity">
                             <EditItemTemplate>
-                                <asp:TextBox ID="txtQuantity" Text='<%# Bind("Quantity") %>' runat="server"></asp:TextBox>
+                                <asp:TextBox ID="txtQuantity" Text='<%# Bind("Quantity") %>' runat="server" style="text-align: center"></asp:TextBox>
                             </EditItemTemplate>
                             <ItemTemplate>
-                                <asp:Label ID="lblQuantity" Text='<%# Bind("Quantity") %>' runat="server"></asp:Label>
+                                <asp:Label ID="lblQuantity" Text='<%# Bind("Quantity") %>' runat="server" style="text-align: center"></asp:Label>
                                 <%--<asp:Label ID="lblCity" runat="server" Text='<%# Eval("City")%>'></asp:Label>--%>
                             </ItemTemplate>
                         </asp:TemplateField>
@@ -149,7 +149,7 @@
                         </asp:TemplateField>
                     </Columns>
                 </asp:GridView>
-                <script type="text/javascript" language="javascript">
+                <script type="text/javascript">
 
                     function confirmDelete() {
                         if (confirm("Are you sure you want to delete this?") == true)

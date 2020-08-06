@@ -13,7 +13,7 @@ namespace Inventory_WebApp
         protected void Page_Load(object sender, EventArgs e)
         {
             var db = new DBOps();
-            DataSet dbs = db.getDBs();
+            DataSet dbs = db.GetDBs();
             ddlDB.DataSource = dbs;
             ddlDB.DataBind();
         }
