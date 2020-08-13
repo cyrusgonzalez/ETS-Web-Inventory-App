@@ -42,7 +42,7 @@
             <li><a href="LabPage.aspx">Labs</a></li>
             <%--<li><a href="ItemsPage.aspx">Items</a></li>--%>
             <li class="is-active"><a href="InventoryPage.aspx">Inventory</a></li>
-            <li class=""><a href="InventoryPage2.aspx">Alt Inventory</a></li>
+            <%--<li class=""><a href="InventoryPage2.aspx">Alt Inventory</a></li>--%>
             <%--<li><a href="SuppliersPage.aspx">Suppliers</a></li>
             <li><a href="DB_Select_Page.aspx">Choose your DB</a></li>--%>
         </ul>
@@ -62,76 +62,114 @@
     </div>
 
     <form id="form1" runat="server">
-        <div class="columns is-multiline" style="height: 50px">
-            <div class="column">
-                <asp:Label runat="server" ID="Label8"> Lab: </asp:Label>
-                <asp:DropDownList ID="ddlLabselect" CssClass="select" runat="server" EnableTheming="true" OnSelectedIndexChanged="ddlLabselect_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
-            </div>
-            <div class="column is-one-fifth">
-                <asp:Label runat="server" ID="Label5"> Category: </asp:Label>
-                <asp:DropDownList ID="ddlCategorySelect" CssClass="select" runat="server" EnableTheming="true" OnSelectedIndexChanged="ddlCategorySelect_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
-            </div>
-            <div class="column is-one-fifth">
-                <asp:Label runat="server" ID="Label6"> Item: </asp:Label>
-                <asp:DropDownList ID="ddlItemSelect" CssClass="select" runat="server" EnableTheming="true" OnSelectedIndexChanged="ddlItemSelect_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
-            </div>
-            <div class="column is-one-fifth">
-                <asp:Label ID="lblPageInfo" CssClass="label" runat="server" ForeColor="#0099ff"></asp:Label>
+        <div class="columns" style="height: 50px">
+            <div class="field is-horizontal">
+                <div class="field-body">
+                    <div class="field is-horizontal">
+                        <div class="field-label is-normal">
+                            <asp:Label runat="server" CssClass="label" ID="Label10"> Lab: </asp:Label>
+                        </div>
+                        <div class="field-body">
+                            <div class="field is-narrow">
+                                <div class="control">
+                                    <div class="select is-fullwidth">
+                                        <asp:DropDownList ID="ddlLabselect" CssClass="select" runat="server" EnableTheming="true" OnSelectedIndexChanged="ddlLabselect_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field is-horizontal">
+                        <div class="field-label is-normal">
+                            <asp:Label runat="server" CssClass="label" ID="Label5"> Category: </asp:Label>
+                        </div>
+                        <div class="field-body">
+                            <div class="field is-narrow">
+                                <div class="control">
+                                    <div class="select is-fullwidth">
+                                        <asp:DropDownList ID="ddlCategorySelect" CssClass="select" runat="server" EnableTheming="true" OnSelectedIndexChanged="ddlCategorySelect_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field is-horizontal">
+                        <div class="field-label is-normal">
+                            <asp:Label runat="server" CssClass="label" ID="Label6"> Item: </asp:Label>
+                        </div>
+                        <div class="field-body">
+                            <div class="field is-narrow">
+                                <div class="control">
+                                    <div class="select is-fullwidth">
+                                        <asp:DropDownList ID="ddlItemSelect" CssClass="select" runat="server" EnableTheming="true" OnSelectedIndexChanged="ddlItemSelect_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field is-horizontal">
+                        <div class="field-body">
+                            <div class="field is-narrow">
+                                <asp:Label runat="server" ID="lblPageInfo" CssClass="label"  ForeColor="#0099ff"></asp:Label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
         <div class="columns ">
             <div class="column box has-text-centered">
-                <asp:GridView runat="server" ID="gvitem" CssClass="table"
-                    HorizontalAlign="Center"
-                    BorderColor="000080"
-                    BorderWidth="2px"
-                    Width="100%"
-                    AutoGenerateColumns="false"
-                    AllowPaging="true"
-                    PageSize="7"
-                    PagerSettings-Position="Bottom"
-                    PagerSettings-Mode="Numeric"
-                    PagerStyle-HorizontalAlign="Center"
-                    PagerSettings-NextPageText="Next"
-                    PagerSettings-PreviousPageText="Prev"
-                    OnPageIndexChanging="gvitem_PageIndexChanging"
-                    OnRowDataBound="gvitem_RowDataBound"
-                    AutoGenerateEditButton="true"
-                    OnRowEditing="gvitem_RowEditing"
-                    OnRowCancelingEdit="gvitem_RowCancelingEdit"
-                    OnRowCreated="gvitem_RowCreated"
-                    OnRowUpdating="gvitem_RowUpdating"
-                    OnRowCommand="gvitem_RowCommand"
-                    OnRowDeleting="gvitem_RowDeleting"
-                    DataKeyNames="ItemCode,Model,lab"
-                    AllowSorting="true"
-                    OnSorting="gvitem_Sorting"
-                    >
-                    <Columns>
-                        <asp:BoundField HeaderText="ID" DataField="ID" ReadOnly="true" Visible="false" />
-                        <asp:BoundField HeaderText="Item" DataField="ItemCode" ReadOnly="true" SortExpression="Item" />
-                        <asp:BoundField HeaderText="Model-ItemCode" DataField="model" ReadOnly="true" />
-                        <asp:BoundField HeaderText="Description" DataField="description" ReadOnly="true" />
-                        <asp:BoundField HeaderText="Categories/Tags" DataField="category" ReadOnly="true" SortExpression="Category" />
-                        <asp:ButtonField CommandName="increment" Text="<i class='fa fa-plus'></i>"
-                            ButtonType="Link"
-                            ControlStyle-CssClass="btn btn-primary" />
-                        <asp:TemplateField HeaderText="Quantity" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Center" ItemStyle-Width="50px" SortExpression="Quantity">
-                            <EditItemTemplate>
-                                <asp:TextBox ID="txtQuantity" Text='<%# Bind("Quantity") %>' runat="server" style="text-align: center"></asp:TextBox>
-                            </EditItemTemplate>
-                            <ItemTemplate>
-                                <asp:Label ID="lblQuantity" Text='<%# Bind("Quantity") %>' runat="server" style="text-align: center"></asp:Label>
-                                <%--<asp:Label ID="lblCity" runat="server" Text='<%# Eval("City")%>'></asp:Label>--%>
-                            </ItemTemplate>
-                        </asp:TemplateField>
-                        <asp:ButtonField CommandName="decrement" Text="<i class='fa fa-minus'></i>"
-                            ButtonType="Link"
-                            ControlStyle-CssClass="btn btn-primary" />
-                        <asp:BoundField HeaderText="Quantity" DataField="quantity" ItemStyle-Width="50px" ReadOnly="true" Visible="false" />
-                        <asp:BoundField HeaderText="Lab" DataField="lab" ReadOnly="true" SortExpression="Lab" />
-                        <%--<asp:ButtonField CommandName="edit" Text="<i class='fa fa-edit'></i>"
+                <div class="table-container">
+                    <asp:GridView runat="server" ID="gvitem" CssClass="table"
+                        HorizontalAlign="Center"
+                        BorderColor="000080"
+                        BorderWidth="2px"
+                        Width="100%"
+                        AutoGenerateColumns="false"
+                        AllowPaging="true"
+                        PageSize="7"
+                        PagerSettings-Position="Bottom"
+                        PagerSettings-Mode="Numeric"
+                        PagerStyle-HorizontalAlign="Center"
+                        PagerSettings-NextPageText="Next"
+                        PagerSettings-PreviousPageText="Prev"
+                        OnPageIndexChanging="gvitem_PageIndexChanging"
+                        OnRowDataBound="gvitem_RowDataBound"
+                        AutoGenerateEditButton="true"
+                        OnRowEditing="gvitem_RowEditing"
+                        OnRowCancelingEdit="gvitem_RowCancelingEdit"
+                        OnRowCreated="gvitem_RowCreated"
+                        OnRowUpdating="gvitem_RowUpdating"
+                        OnRowCommand="gvitem_RowCommand"
+                        OnRowDeleting="gvitem_RowDeleting"
+                        DataKeyNames="ItemCode,Model,lab"
+                        AllowSorting="true"
+                        OnSorting="gvitem_Sorting">
+                        <Columns>
+                            <asp:BoundField HeaderText="ID" DataField="ID" ReadOnly="true" Visible="false" />
+                            <asp:BoundField HeaderText="Item" DataField="ItemCode" ReadOnly="true" SortExpression="Item" />
+                            <asp:BoundField HeaderText="Model-ItemCode" DataField="model" ReadOnly="true" />
+                            <asp:BoundField HeaderText="Description" DataField="description" ReadOnly="true" />
+                            <asp:BoundField HeaderText="Categories/Tags" DataField="category" ReadOnly="true" SortExpression="Category" />
+                            <asp:ButtonField CommandName="increment" Text="<i class='fa fa-plus'></i>"
+                                ButtonType="Link"
+                                ControlStyle-CssClass="btn btn-primary" />
+                            <asp:TemplateField HeaderText="Quantity" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Center" ItemStyle-Width="50px" SortExpression="Quantity">
+                                <EditItemTemplate>
+                                    <asp:TextBox ID="txtQuantity" Text='<%# Bind("Quantity") %>' runat="server" Style="text-align: center"></asp:TextBox>
+                                </EditItemTemplate>
+                                <ItemTemplate>
+                                    <asp:Label ID="lblQuantity" Text='<%# Bind("Quantity") %>' runat="server" Style="text-align: center"></asp:Label>
+                                    <%--<asp:Label ID="lblCity" runat="server" Text='<%# Eval("City")%>'></asp:Label>--%>
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                            <asp:ButtonField CommandName="decrement" Text="<i class='fa fa-minus'></i>"
+                                ButtonType="Link"
+                                ControlStyle-CssClass="btn btn-primary" />
+                            <asp:BoundField HeaderText="Quantity" DataField="quantity" ItemStyle-Width="50px" ReadOnly="true" Visible="false" />
+                            <asp:BoundField HeaderText="Lab" DataField="lab" ReadOnly="true" SortExpression="Lab" />
+                            <%--<asp:ButtonField CommandName="edit" Text="<i class='fa fa-edit'></i>"
                             ButtonType="Link"
                             ControlStyle-CssClass="btn btn-primary" />
                         <asp:ButtonField CommandName="update" Text="<i class='fa fa-check'></i>"
@@ -140,19 +178,20 @@
                         <asp:ButtonField CommandName="editcancel" Text="<i class='fa fa-times'></i>"
                             ButtonType="Link"
                             ControlStyle-CssClass="btn btn-primary" />--%>
-                        <asp:TemplateField ShowHeader="False">
-                            <ItemTemplate>
-                                <asp:LinkButton ID="DeleteButton" runat="server" Text="<i class='fa fa-times'></i>" ButtonType="Link"
-                                    CommandName="delete" OnClientClick="return confirm('Are you sure you want to delete this item?');"
-                                    AlternateText="Delete" />
-                            </ItemTemplate>
-                        </asp:TemplateField>
-                    </Columns>
-                </asp:GridView>
+                            <asp:TemplateField ShowHeader="False">
+                                <ItemTemplate>
+                                    <asp:LinkButton ID="DeleteButton" runat="server" Text="<i class='fa fa-times'></i>" ButtonType="Link"
+                                        CommandName="delete" OnClientClick="return confirm('Are you sure you want to delete this item?');"
+                                        AlternateText="Delete" />
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                        </Columns>
+                    </asp:GridView>
+                </div>
                 <script type="text/javascript">
 
                     function confirmDelete() {
-                        if (confirm("Are you sure you want to delete this?") == true)
+                        if (confirm("Are you sure you want to delete this?") === true)
                             return true;
                         else
                             return false;
@@ -162,20 +201,20 @@
                 <asp:Label ID="lblErr" runat="server" ForeColor="Red"></asp:Label>
                 <asp:Button ID="btnLoad" runat="server" OnClick="btnLoad_Click" Text="Load Table" CssClass="button" />
             </div>
-            <div id="insert_inventory" style="display: none" class="column is-one-third" runat="server">
+            <div id="insert_inventory" style="display: none" class="column" runat="server">
                 <div class="box">
                     <div class="columns">
-                        <div class="column">
+                        <div class="column is-half">
                             <div class="field">
-                                <asp:Label ID="Label1" CssClass="label" runat="server">Item Name/Code:   </asp:Label>
+                                <asp:Label ID="Label1" CssClass="label" runat="server">Item Name:   </asp:Label>
                                 <div class="control">
-                                    <asp:TextBox ID="txtInsertItem" CssClass="input" placeholder="Text input" runat="server"></asp:TextBox>
+                                    <asp:TextBox ID="txtInsertItem" CssClass="input" placeholder="HDMI Cable" runat="server"></asp:TextBox>
                                 </div>
                             </div>
                             <div class="field">
                                 <asp:Label ID="Label3" CssClass="label" runat="server">Quantity:   </asp:Label>
                                 <div class="control">
-                                    <asp:TextBox ID="txtInsertQuantity" class="input" runat="server"></asp:TextBox>
+                                    <asp:TextBox ID="txtInsertQuantity" class="input" runat="server" placeholder="40"></asp:TextBox>
                                 </div>
                             </div>
                             <div class="field">
@@ -189,6 +228,26 @@
                                     <asp:Button ID="btnInsert" runat="server" Text="Insert" OnClick="btnInsert_Click" CssClass="button" />
                                 </div>
                                 <asp:Label ID="lblInsertInfo" CssClass="label" runat="server" ForeColor="Red"></asp:Label>
+                            </div>
+                        </div>
+                        <div class="column">
+                            <div class="field">
+                                <asp:Label ID="Label9" CssClass="label" runat="server">Item Code:   </asp:Label>
+                                <div class="control">
+                                    <asp:TextBox ID="txtInsertItemCode" CssClass="input" placeholder="TN4956" runat="server"></asp:TextBox>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <asp:Label ID="Label8" CssClass="label" runat="server">Description:   </asp:Label>
+                                <div class="control">
+                                    <asp:TextBox ID="TextBox1" CssClass="input" placeholder="6 ft HDMI Cable" runat="server"></asp:TextBox>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <asp:Label ID="Label11" CssClass="label" runat="server">Category:   </asp:Label>
+                                <div class="control">
+                                    <asp:TextBox ID="TextBox2" CssClass="input" placeholder="Cables" runat="server"></asp:TextBox>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -247,6 +306,6 @@
             </div>
         </div>
     </form>
-    
+
 </body>
 </html>

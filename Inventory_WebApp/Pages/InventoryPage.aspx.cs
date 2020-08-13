@@ -73,7 +73,8 @@ namespace Inventory_WebApp
                 }
                 catch (Exception ex)
                 {
-
+                    lblPageInfo.Text = "An error occurred in Page Load.";
+                    //throw ex;
                 }
                 //lblPageInfo.ForeColor = System.Drawing.ColorTranslator.FromHtml("#0099ff"); //original blue color
 
@@ -93,6 +94,8 @@ namespace Inventory_WebApp
             gvitem.DataSource = ds;
             gvitem.DataBind();
             ddlLabselect.SelectedIndex = -1;
+            ViewState["gvitemsort"] = null;
+            Session["SortedView"] = null;
         }
 
         protected void RefreshTable()
@@ -190,6 +193,7 @@ namespace Inventory_WebApp
             }
             catch (Exception ex)
             {
+                lblPageInfo.Text = "An error occurred in CheckSort().";
                 return "";
             }
             return "";
@@ -435,6 +439,12 @@ namespace Inventory_WebApp
             catch (Exception ex)
             {
                 //throw ex;
+                if (ex.Message.ToLower().Contains("no datarows"))
+                {
+                    lblPageInfo.Text = "There are no items in this lab";
+                    lblPageInfo.ForeColor = System.Drawing.Color.Red;
+                    lblPageInfo.DataBind();
+                }
             }
         }
 
@@ -564,6 +574,9 @@ namespace Inventory_WebApp
                 int retval = db.InsertInventoryTable(_key, _value, lab);
                 lblInsertInfo.Text = retval.ToString() + " row inserted";
                 lblInsertInfo.DataBind();
+
+                lblPageInfo.Text = retval.ToString() + " row inserted";
+                lblPageInfo.DataBind();
 
                 RefreshTable();
             }
@@ -932,6 +945,18 @@ namespace Inventory_WebApp
             RefreshTable();
         }
 
+        //protected DataTable SortColumnBy(string columnName, Type columnType)
+        //{
+        //    try
+        //    {
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+        //    }
+        //}
+
         protected void gvitem_Sorting(object sender, GridViewSortEventArgs e)
         {
             try
@@ -945,7 +970,13 @@ namespace Inventory_WebApp
                         DataSet ds = db.ReadInventoryTable();
                         OrderedEnumerableRowCollection<DataRow> query;
                         DataTable result;
-                        switch (((string)ViewState["gvitemsort"]) ?? "NONE")
+                        if (((string) ViewState["gvitemsort"]).StartsWith("Lab") ||
+                            ((string) ViewState["gvitemsort"]).StartsWith("Category") ||
+                            ((string) ViewState["gvitemsort"]).StartsWith("Item"))
+                        {
+                            ViewState["gvitemsort"] = "NONE";
+                        }
+                        switch ((string)ViewState["gvitemsort"] ?? "NONE")
                         {
                             case "NONE":
                             case "Quantity SORTEDDESC":
@@ -982,6 +1013,14 @@ namespace Inventory_WebApp
                         DataSet ds1 = db1.ReadInventoryTable();
                         OrderedEnumerableRowCollection<DataRow> query1;
                         DataTable result1;
+
+                        //if (((string)ViewState["gvitemsort"]).StartsWith("Lab") ||
+                        //    ((string)ViewState["gvitemsort"]).StartsWith("Quantity") ||
+                        //    ((string)ViewState["gvitemsort"]).StartsWith("Item"))
+                        //{
+                        //    ViewState["gvitemsort"] = "NONE";
+                        //}
+
                         switch (((string)ViewState["gvitemsort"]) ?? "NONE")    //Check if it exists, if it doesn't substitute NONE
                         {
                             case "NONE":
@@ -1011,6 +1050,7 @@ namespace Inventory_WebApp
                                 ViewState["gvitemsort"] = " Category SORTEDDESC"; //quantity desc/asc for easier use in the refreshtable func
                                 break;
                             default:
+                                /*If the Sort Expression is quantity, lab or item, sort by category ascending*/
                                 query1 = from row in ds1.Tables["table"].AsEnumerable()
                                     orderby row.Field<string>("category")
                                     select row; // Asc query for Melder field;
@@ -1072,7 +1112,7 @@ namespace Inventory_WebApp
                         switch (((string)ViewState["gvitemsort"]) ?? "NONE")    //Check if it exists, if it doesn't substitute NONE
                         {
                             case "NONE":
-                            case "SORTEDDESC":
+                            case "Lab SORTEDDESC":
                                 // For the future : - DataTable dt = ((DataSet)ViewState["gvitem"]).Tables["table"]; if storing and reading table rows from view/session state
                                 query3 = from row in ds3.Tables["table"].AsEnumerable()
                                          orderby row.Field<string>("lab")
@@ -1085,7 +1125,7 @@ namespace Inventory_WebApp
 
                                 ViewState["gvitemsort"] = "Lab SORTEDASC";
                                 break;
-                            case "SORTEDASC":
+                            case "Lab SORTEDASC":
                                 //DataTable dt = ((DataSet)ViewState["gvitem"]).Tables["table"];
                                 query3 = from row in ds3.Tables["table"].AsEnumerable()
                                          orderby row.Field<string>("lab") descending
@@ -1108,7 +1148,7 @@ namespace Inventory_WebApp
             }
         }
 
-        #endregion
+#endregion
 
         protected void CheckRowQuantityColor(Int32 rowIndex)
         {
