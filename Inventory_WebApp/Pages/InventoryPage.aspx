@@ -240,13 +240,13 @@
                             <div class="field">
                                 <asp:Label ID="Label8" CssClass="label" runat="server">Description:   </asp:Label>
                                 <div class="control">
-                                    <asp:TextBox ID="TextBox1" CssClass="input" placeholder="6 ft HDMI Cable" runat="server"></asp:TextBox>
+                                    <asp:TextBox ID="txtInsertDescription" CssClass="input" placeholder="6 ft HDMI Cable" runat="server"></asp:TextBox>
                                 </div>
                             </div>
                             <div class="field">
                                 <asp:Label ID="Label11" CssClass="label" runat="server">Category:   </asp:Label>
                                 <div class="control">
-                                    <asp:TextBox ID="TextBox2" CssClass="input" placeholder="Cables" runat="server"></asp:TextBox>
+                                    <asp:TextBox ID="txtInsertCategory" CssClass="input" placeholder="Cables" runat="server"></asp:TextBox>
                                 </div>
                             </div>
                         </div>

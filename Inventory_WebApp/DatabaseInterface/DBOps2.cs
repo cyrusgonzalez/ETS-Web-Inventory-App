@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Data.SQLite;
+using System.IO;
 using System.Xml;
 
 namespace Inventory_WebApp
@@ -16,7 +17,7 @@ namespace Inventory_WebApp
 
         private string DataBaseSource = "Data Source=C:\\Users\\sanketm\\Documents\\ETS_Inventory\\sample_inventory.db";
         //private XmlTextReader config;
-        //private StreamWriter logger = new StreamWriter("C:\\Users\\sanketm\\Documents\\ETS_Inventory\\Log\\log.log");
+        private StreamWriter logger = new StreamWriter("C:\\Users\\sanketm\\Documents\\ETS_Inventory\\Log\\log.log");
 
         #region Constructor and Destructor
         public DBOps()
@@ -47,7 +48,7 @@ namespace Inventory_WebApp
         #endregion
 
         #region Inventory DB Interface
-        public int InsertInventoryTable(String item, Int64 quantity,string lab)
+        public int InsertInventoryTable(string item,string itemCode, Int64 quantity,string lab, string category, string description)
         {
             int retval = 0;
             try
@@ -56,11 +57,14 @@ namespace Inventory_WebApp
                 {
                     con.Open();
                     var cmd = new SQLiteCommand(con);
-                    cmd.CommandText = "INSERT INTO inventory(itemcode, quantity,lab) VALUES(@itemcode, @quantity,@lab)";
+                    cmd.CommandText = "INSERT INTO inventory(itemcode, model, quantity,lab, category, description) VALUES(@itemcode, @model, @quantity, @lab, @category, @description)";
 
                     cmd.Parameters.AddWithValue("@itemcode", item);
+                    cmd.Parameters.AddWithValue("@model", itemCode);
                     cmd.Parameters.AddWithValue("@quantity", quantity);
                     cmd.Parameters.AddWithValue("@lab", lab);
+                    cmd.Parameters.AddWithValue("@category", category);
+                    cmd.Parameters.AddWithValue("@description", description);
                     cmd.Prepare();
 
                     retval = cmd.ExecuteNonQuery();
@@ -76,8 +80,8 @@ namespace Inventory_WebApp
             }
             catch (Exception ex)
             {
-                throw ex;
-                //this.logger.WriteAsync("InsertInventoryTable: " + ex.Message);
+                this.logger.WriteAsync("InsertInventoryTable: " + ex.Message);
+                throw;
             }
             return retval;
         }

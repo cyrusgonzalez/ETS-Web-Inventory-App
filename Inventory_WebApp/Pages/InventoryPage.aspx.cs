@@ -567,11 +567,26 @@ namespace Inventory_WebApp
             {
                 DBOps db = new DBOps();
 
-                string _key = txtInsertItem.Text;
-                long _value = long.Parse(txtInsertQuantity.Text);
+                string itemName = txtInsertItem.Text;
+                string itemCode = txtInsertItemCode.Text;
                 string lab = ddlInsertLab.SelectedValue;
+                string description = txtInsertDescription.Text;
+                string category = txtInsertCategory.Text;
+                long itemQuantity;
+                if (long.TryParse(txtInsertQuantity.Text, out itemQuantity))
+                {
+                    // it's a valid integer => you could use the distance variable here
+                    itemQuantity = long.Parse(txtInsertQuantity.Text);
+                }
+                else
+                {
+                    ClientScript.RegisterStartupScript(GetType(), "NumericCheck", "alert('Please enter a Numeric Quantity.');", true);
+                    lblPageInfo.Text = "Please enter a Numeric Quantity.";
+                    lblPageInfo.DataBind();
+                }
 
-                int retval = db.InsertInventoryTable(_key, _value, lab);
+
+                int retval = db.InsertInventoryTable(itemName, itemCode, itemQuantity, lab, category, description);
                 lblInsertInfo.Text = retval.ToString() + " row inserted";
                 lblInsertInfo.DataBind();
 

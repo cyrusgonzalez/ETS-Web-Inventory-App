@@ -202,7 +202,7 @@ namespace Inventory_WebApp
             long _value = long.Parse(txtInsertQuantity.Text);
             string lab = ddlInsertLab.SelectedValue;
 
-            int retval = db.InsertInventoryTable(_key, _value, lab);
+            int retval = db.InsertInventoryTable(_key,"", _value, lab,"","");
             lblInsertInfo.Text = retval.ToString() + " row inserted";
             lblInsertInfo.DataBind();
 
