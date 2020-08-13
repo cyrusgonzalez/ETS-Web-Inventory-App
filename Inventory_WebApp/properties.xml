@@ -3,4 +3,5 @@
   <datasource>C:\\Users\\sanketm\\Documents\\ETS_Inventory\\sample_inventory.db</datasource>
   <emailto>nick.stratton@colostate.edu</emailto>
   <emailfrom>ETSInventory_Warning@gmail.com</emailfrom>
+  <logfile>C:\\Users\\sanketm\\Documents\\ETS_Inventory\\Log\\log.log</logfile>
 </properties>
