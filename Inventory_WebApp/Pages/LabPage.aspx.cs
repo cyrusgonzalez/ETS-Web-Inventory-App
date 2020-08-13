@@ -29,7 +29,6 @@ namespace Inventory_WebApp.Pages
 
         protected void btnLoad_Click(object sender, EventArgs e)
         {
-            DBOps db = new DBOps();
             RefreshTable();
         }
 

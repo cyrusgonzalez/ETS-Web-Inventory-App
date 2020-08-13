@@ -12,8 +12,6 @@ namespace Inventory_WebApp
     /// </summary>
     public partial class InventoryETS : System.Web.UI.Page
     {
-
-
         /// <summary>
         /// Function Page_Load 
         /// Functionality: 
@@ -171,7 +169,7 @@ namespace Inventory_WebApp
             string column_sort = "";
             try
             {
-                switch ((string)ViewState["gvitemsort"].ToString().ToLower())
+                switch (ViewState["gvitemsort"].ToString().ToLower())
                 {
                     case "":
                     case "none":
@@ -208,7 +206,7 @@ namespace Inventory_WebApp
                     DBOps db = new DBOps();
                     DataSet ds = db.ReadInventoryTable();
                     ds.Tables["table"].DefaultView.Sort = CheckSort() ?? "";//"Quantity ASC";   //read from ViewState['gvitemsort'] as Quantity ASC/LAB DESC
-                    Session["SortedView"] = ds;     //notowkring FIX HERE 30/6/20
+                    Session["SortedView"] = ds;     
 
                 }
                 else if (callerfunc == "OnRowCommand")  // write case for "OnRowCommand" - passed in case of increment/decrement operator 
@@ -217,7 +215,7 @@ namespace Inventory_WebApp
                     DataSet ds = db.ReadInventoryTable();
                     ds.Tables["table"].DefaultView.Sort = ((string)ViewState["gvitemsort"]) ?? "";  //read from ViewState['gvitemsort'] as Quantity ASC/LAB DESC
 
-                    Session["SortedView"] = ds.Tables["table"].DefaultView.ToTable();     //notowkring FIX HERE 30/6/20
+                    Session["SortedView"] = ds.Tables["table"].DefaultView.ToTable();    
            
                 }
 
@@ -593,7 +591,8 @@ namespace Inventory_WebApp
                 lblPageInfo.Text = retval.ToString() + " row inserted";
                 lblPageInfo.DataBind();
 
-                RefreshTable();
+                string callerfunc = new StackFrame(1).GetMethod().Name;
+                RefreshTable(callerfunc);
             }
             catch (Exception ex)
             {
@@ -713,7 +712,7 @@ namespace Inventory_WebApp
             try
             {
                 GridViewRow row = e.Row;
-                int Quantity = int.Parse((row.FindControl("lblQuantity") as Label).Text);
+                int Quantity = int.Parse((row.FindControl("lblQuantity") as Label)?.Text ?? string.Empty);
                 //CheckRowQuantityColor(e.Row.RowIndex);
                 if (Quantity < 15)       //Change this hardcode to a properties file config. one for medium , one for low
                 {
@@ -765,7 +764,7 @@ namespace Inventory_WebApp
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw;
             }
 
 
@@ -836,13 +835,13 @@ namespace Inventory_WebApp
 
                     if (changedRow.FindControl("lblQuantity") is null)
                     {
-                        changedQuantity = int.Parse((changedRow.FindControl("txtQuantity") as TextBox).Text);
+                        changedQuantity = int.Parse((changedRow.FindControl("txtQuantity") as TextBox)?.Text ?? string.Empty);
                     }
                     else
                     {
-                        changedQuantity = int.Parse((changedRow.FindControl("lblQuantity") as Label).Text);
+                        changedQuantity = int.Parse((changedRow.FindControl("lblQuantity") as Label)?.Text ?? string.Empty);
                     }
-                    ViewState["changedQuantity"] = changedQuantity;
+
                     try
                     {
                         DBOps db = new DBOps();
@@ -869,13 +868,13 @@ namespace Inventory_WebApp
                     Int32 changedQuantity;
                     if (changedRow.FindControl("lblQuantity") is null)
                     {
-                        changedQuantity = int.Parse((changedRow.FindControl("txtQuantity") as TextBox).Text);
+                        changedQuantity = int.Parse((changedRow.FindControl("txtQuantity") as TextBox)?.Text ?? string.Empty);
                     }
                     else
                     {
-                        changedQuantity = int.Parse((changedRow.FindControl("lblQuantity") as Label).Text);
+                        changedQuantity = int.Parse((changedRow.FindControl("lblQuantity") as Label)?.Text ?? string.Empty);
                     }
-                    ViewState["changedQuantity"] = changedQuantity;
+
                     try
                     {
                         DBOps db = new DBOps();
@@ -885,18 +884,13 @@ namespace Inventory_WebApp
                     catch (Exception ex)
                     {
                         lblPageInfo.Text = "An error occurred while attempting to update the row.";
-                        throw ex;
+                        throw;
                     }
                     string callerfunc = new StackFrame(1).GetMethod().Name;
                     RefreshTable(callerfunc);
                     //Change the respective color of the row after incrementing, decrementing or updating
                     CheckRowQuantityColor(int.Parse(e.CommandArgument.ToString()));
                 }
-                //if (e.CommandName.ToLower() == "page")
-                //{
-                //    var pageno = e.CommandArgument;
-                //    gvitem.PageIndex = int.Parse(pageno.ToString());
-                //}
                 if (e.CommandName.ToLower() == "update")
                 {
                     int RowIndex = int.Parse(e.CommandArgument.ToString());
@@ -906,11 +900,11 @@ namespace Inventory_WebApp
                     Int32 changedQuantity;
                     if (changedRow.FindControl("lblQuantity") is null)
                     {
-                        changedQuantity = int.Parse((changedRow.FindControl("txtQuantity") as TextBox).Text);
+                        changedQuantity = int.Parse((changedRow.FindControl("txtQuantity") as TextBox)?.Text ?? string.Empty);
                     }
                     else
                     {
-                        changedQuantity = int.Parse((changedRow.FindControl("lblQuantity") as Label).Text);
+                        changedQuantity = int.Parse((changedRow.FindControl("lblQuantity") as Label)?.Text ?? string.Empty);
                     }
                     gvitem_RowUpdatingcustom(item, lab, changedQuantity);
                     //Change the respective color of the row after incrementing, decrementing or updating
@@ -921,7 +915,9 @@ namespace Inventory_WebApp
             }
             catch (Exception ex)
             {
-                throw ex;
+                lblPageInfo.Text = "Error Occured when taking Update Action.";
+                lblPageInfo.DataBind();
+                throw;
             }
 
         }
@@ -955,7 +951,9 @@ namespace Inventory_WebApp
             }
             catch (Exception ex)
             {
-                throw ex;
+                lblPageInfo.Text = "Error Occured when Deleting Row.";
+                lblPageInfo.DataBind();
+                throw;
             }
             RefreshTable();
         }
@@ -985,12 +983,17 @@ namespace Inventory_WebApp
                         DataSet ds = db.ReadInventoryTable();
                         OrderedEnumerableRowCollection<DataRow> query;
                         DataTable result;
-                        if (((string) ViewState["gvitemsort"]).StartsWith("Lab") ||
-                            ((string) ViewState["gvitemsort"]).StartsWith("Category") ||
-                            ((string) ViewState["gvitemsort"]).StartsWith("Item"))
+                        if (ViewState["gvitemsort"]!= null)
                         {
-                            ViewState["gvitemsort"] = "NONE";
+                            string sortExpression = (string) ViewState["gvitemsort"];
+                            if (sortExpression.StartsWith("Lab") ||
+                                sortExpression.StartsWith("Category") ||
+                                 sortExpression.StartsWith("Item"))
+                            {
+                                ViewState["gvitemsort"] = "NONE";
+                            }
                         }
+                        
                         switch ((string)ViewState["gvitemsort"] ?? "NONE")
                         {
                             case "NONE":
@@ -1022,19 +1025,11 @@ namespace Inventory_WebApp
 
                         }
                         break;
-                    // case statements for your other fields.
                     case "Category":
                         DBOps db1 = new DBOps();
                         DataSet ds1 = db1.ReadInventoryTable();
                         OrderedEnumerableRowCollection<DataRow> query1;
                         DataTable result1;
-
-                        //if (((string)ViewState["gvitemsort"]).StartsWith("Lab") ||
-                        //    ((string)ViewState["gvitemsort"]).StartsWith("Quantity") ||
-                        //    ((string)ViewState["gvitemsort"]).StartsWith("Item"))
-                        //{
-                        //    ViewState["gvitemsort"] = "NONE";
-                        //}
 
                         switch (((string)ViewState["gvitemsort"]) ?? "NONE")    //Check if it exists, if it doesn't substitute NONE
                         {
@@ -1114,6 +1109,19 @@ namespace Inventory_WebApp
                                 gvitem.DataBind();
                                 ViewState["gvitemsort"] = "Item SORTEDDESC"; //quantity desc/asc for easier use in the refreshtable func
                                 break;
+                            default:
+                                /*If the Sort Expression is quantity, lab or item, sort by category ascending*/
+                                query2 = from row in ds2.Tables["table"].AsEnumerable()
+                                    orderby row.Field<string>("ItemCode")
+                                    select row; // Asc query for Melder field;
+                                result2 = query2.CopyToDataTable();
+                                Session["SortedView"] = result2;
+
+                                gvitem.DataSource = result2;
+                                gvitem.DataBind();
+
+                                ViewState["gvitemsort"] = "Category SORTEDASC";
+                                break;
 
                         }
 
@@ -1131,7 +1139,7 @@ namespace Inventory_WebApp
                                 // For the future : - DataTable dt = ((DataSet)ViewState["gvitem"]).Tables["table"]; if storing and reading table rows from view/session state
                                 query3 = from row in ds3.Tables["table"].AsEnumerable()
                                          orderby row.Field<string>("lab")
-                                         select row; // Asc query for Melder field;
+                                         select row;
                                 result3 = query3.CopyToDataTable();
                                 Session["SortedView"] = result3;
 
@@ -1144,13 +1152,26 @@ namespace Inventory_WebApp
                                 //DataTable dt = ((DataSet)ViewState["gvitem"]).Tables["table"];
                                 query3 = from row in ds3.Tables["table"].AsEnumerable()
                                          orderby row.Field<string>("lab") descending
-                                         select row; // Desc query for Melder field ;
+                                         select row;
                                 result3 = query3.CopyToDataTable();
                                 Session["SortedView"] = result3;
 
                                 gvitem.DataSource = result3;
                                 gvitem.DataBind();
                                 ViewState["gvitemsort"] = "Lab SORTEDDESC"; //quantity desc/asc for easier use in the refreshtable func
+                                break;
+                            default:
+                                /*If the Sort Expression is quantity, lab or item, sort by category ascending*/
+                                query3 = from row in ds3.Tables["table"].AsEnumerable()
+                                    orderby row.Field<string>("lab")
+                                    select row; 
+                                result3 = query3.CopyToDataTable();
+                                Session["SortedView"] = result3;
+
+                                gvitem.DataSource = result3;
+                                gvitem.DataBind();
+
+                                ViewState["gvitemsort"] = "Category SORTEDASC";
                                 break;
 
                         }
@@ -1159,7 +1180,7 @@ namespace Inventory_WebApp
             }
             catch (Exception ex)
             {
-
+                throw;
             }
         }
 
@@ -1168,7 +1189,7 @@ namespace Inventory_WebApp
         protected void CheckRowQuantityColor(Int32 rowIndex)
         {
             GridViewRow row = gvitem.Rows[rowIndex];
-            int Quantity = int.Parse((row.FindControl("lblQuantity") as Label).Text);
+            int Quantity = int.Parse((row.FindControl("lblQuantity") as Label)?.Text ?? "0");
             if (Quantity < 15)       //Change this hardcode to a properties file config. one for medium , one for low
             {
                 row.BackColor = System.Drawing.Color.Orange;

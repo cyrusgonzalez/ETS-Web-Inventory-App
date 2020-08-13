@@ -32,7 +32,7 @@ namespace Inventory_WebApp
             foreach (XmlNode elem in nodeList)
             {
                 path = elem.ChildNodes[0].InnerText;
-                if (path != null)
+                if (path != null || path != "")
                 {
                     this.DataBaseSource = "data source=" + conf.GetElementsByTagName("datasource")[0].ChildNodes[0].Value;
                     this.loggerpath = conf.GetElementsByTagName("logfile")[0].ChildNodes[0].Value;
