@@ -24,7 +24,7 @@ namespace Inventory_WebApp
         /// <param name="e"></param>
         protected void Page_Load(object sender, EventArgs e)
         {
-           
+
             //First time page load commands to go inside this if block
             if (!IsPostBack)
             {
@@ -105,64 +105,26 @@ namespace Inventory_WebApp
         {
             try
             {
-                if (Session["Filter"] == null)
-                {
-                    if (ddlLabselect.SelectedValue == "All")
-                    {
-                        DBOps db = new DBOps();
 
-                        if (Session["SortedView"] != null)          //Added a check to use the sorted rows in case the user sorts then filters.
-                        {
-                            gvitem.DataSource = Session["SortedView"];
-                            gvitem.DataBind();
-                        }
-                        else
-                        {
-                            DataSet ds = db.ReadInventoryTable();
-                            gvitem.DataSource = ds;
-                            gvitem.DataBind();
-                        }
-                        //Session["gvitems"] = ds;//.Tables["table"];
+                if (ddlLabselect.SelectedValue == "All")
+                {
+                    DBOps db = new DBOps();
+
+                    if (Session["SortedView"] != null)          //Added a check to use the sorted rows in case the user sorts then filters.
+                    {
+                        gvitem.DataSource = Session["SortedView"];
+                        gvitem.DataBind();
                     }
                     else
                     {
-                        DBOps db = new DBOps();
-                        //DataSet ds = (DataSet)ViewState["gvitems"];    // Apparently grid view items are not stored persistently across postabacks so then either I have to hit the db again or use the viewstate i.e. gvitems.DataSource doesnt work here
-
-                        DataTable dt;
-
-                        if (Session["SortedView"] != null)           //Added a check to use the sorted rows in case the user sorts then filters.
-                        {
-                            dt = (DataTable)Session["SortedView"];
-                        }
-                        else
-                        {
-                            DataSet ds = db.ReadInventoryTable();
-                            dt = ds.Tables["Table"];
-                        }
-
-                        var query = from row in dt.AsEnumerable()
-                                    where row.Field<string>("lab") == (ddlLabselect.SelectedValue)
-                                    select row;
-                        DataTable result = query.CopyToDataTable();
-                        if (result.Rows.Count == 0)
-                        {
-                            lblPageInfo.Text = "There are no items in this lab";
-                            lblPageInfo.ForeColor = System.Drawing.Color.Red;
-                            lblPageInfo.DataBind();
-                        }
-                        else
-                        {
-                            gvitem.DataSource = result;
-                            gvitem.DataBind();
-                        }
+                        DataSet ds = db.ReadInventoryTable();
+                        gvitem.DataSource = ds;
+                        gvitem.DataBind();
                     }
                 }
                 else
                 {
-                  
                     DBOps db = new DBOps();
-                    var FilterExpression = Session["Filters"] as Dictionary<string, string>;
 
                     DataTable dt;
 
@@ -176,50 +138,13 @@ namespace Inventory_WebApp
                         dt = ds.Tables["Table"];
                     }
 
-                    EnumerableRowCollection<DataRow> query = dt.AsEnumerable();
-
-                    switch (FilterExpression?["lab"] ?? "None")
-                    {
-                        case "None":
-
-                            break;
-                        default:
-                            query = from row in dt.AsEnumerable()
-                                where row.Field<string>("lab") == (FilterExpression["lab"])
-                                    select row;
-                            dt = query.CopyToDataTable();
-                            break;
-                    }
-                    switch (FilterExpression?["category"] ?? "None")
-                    {
-                        case "None":
-
-                            break;
-                        default:
-                            query = from row in dt.AsEnumerable()
-                                where row.Field<string>("category") == (FilterExpression["category"])
+                    var query = from row in dt.AsEnumerable()
+                                where row.Field<string>("lab") == (ddlLabselect.SelectedValue)
                                 select row;
-                            dt = query.CopyToDataTable();
-                            break;
-                    }
-                    switch (FilterExpression?["item"] ?? "None")
-                    {
-                        case "None":
-
-                            break;
-                        default:
-                            query = from row in dt.AsEnumerable()
-                                where row.Field<string>("item") == (ddlLabselect.SelectedValue)
-                                select row;
-                            dt = query.CopyToDataTable();
-                            break;
-                    }
-
-
-                    DataTable result = query.CopyToDataTable(); //or dt
+                    DataTable result = query.CopyToDataTable();
                     if (result.Rows.Count == 0)
                     {
-                        lblPageInfo.Text = "There are no items that match your filters";
+                        lblPageInfo.Text = "There are no items in this lab";
                         lblPageInfo.ForeColor = System.Drawing.Color.Red;
                         lblPageInfo.DataBind();
                     }
@@ -229,7 +154,8 @@ namespace Inventory_WebApp
                         gvitem.DataBind();
                     }
                 }
-                
+
+
             }
             catch (Exception ex)
             {
@@ -245,28 +171,23 @@ namespace Inventory_WebApp
 
         protected string CheckSort()
         {
-            string column_sort = "";
+            string column_sort = ViewState["gvitemsort"] != null ? ViewState["gvitemsort"].ToString().ToLower() : null;
             try
             {
-                switch (ViewState["gvitemsort"].ToString().ToLower())
-                {
-                    case "":
-                    case "none":
-                        return column_sort;
-                    case "quantity sortedasc":
-                        return "Quantity ASC";
-                    case "quantity sorteddesc":
-                        return "Quantity DESC";
-                    case "category sortedasc":
-                        return "Category ASC";
-                    case "category sorteddesc":
-                        return "Category DESC";
-                    case "item sortedasc":
-                        return "ItemCode ASC";
-                    case "item sorteddesc":
-                        return "ItemCode DESC";
-                }
-
+                if (column_sort == "" ||
+                    column_sort == "none" || column_sort == null)
+                    return "";
+                else if (column_sort == "quantity sortedasc")
+                    return "Quantity ASC";
+                else if (column_sort == "quantity sorteddesc")
+                    return "Quantity DESC";
+                else if (column_sort == "category sortedasc")
+                    return "Category ASC";
+                else if (column_sort == "category sorteddesc")
+                    return "Category DESC";
+                else if (column_sort == "item sortedasc")
+                    return "ItemCode ASC";
+                else if (column_sort == "item sorteddesc") return "ItemCode DESC";
             }
             catch (Exception ex)
             {
@@ -280,23 +201,16 @@ namespace Inventory_WebApp
         {
             try
             {
-                if (callerfunc == "gvitem_RowCommand" || callerfunc == "OnRowCommand" || callerfunc == "OnClick")  //this is what is passed: OnClick event for btnInsert, OnRowCommand for Inc/Dec/Update, idk may have to force non-inline the updating custom command gvitem_RowUpdatingcustom
+                if (callerfunc == "gvitem_RowCommand" || callerfunc == "OnRowCommand" || callerfunc == "OnClick")  //OnClick - btnInsert , OnRowCommand - Inc/Dec/Update
                 {
                     DBOps db = new DBOps();
                     DataSet ds = db.ReadInventoryTable();
-                    ds.Tables["table"].DefaultView.Sort = CheckSort() ?? "";//"Quantity ASC";   //read from ViewState['gvitemsort'] as Quantity ASC/LAB DESC
-                    Session["SortedView"] = ds.Tables["table"].DefaultView.ToTable();     
+                    ds.Tables["table"].DefaultView.Sort = CheckSort() ?? "";           //read from ViewState['gvitemsort'] as Quantity ASC/LAB DESC
+                    Session["SortedView"] = ds.Tables["table"].DefaultView.ToTable();
 
                 }
-                //if ()  // write case for "OnRowCommand" - passed in case of increment/decrement operator 
-                //{
-                //    DBOps db = new DBOps();
-                //    DataSet ds = db.ReadInventoryTable();
-                //    ds.Tables["table"].DefaultView.Sort = CheckSort() ?? "";  //read from ViewState['gvitemsort'] as Quantity ASC/LAB DESC
-                //    Session["SortedView"] = ds.Tables["table"].DefaultView.ToTable();    
-                //}
 
-                if (ddlLabselect.SelectedValue == "All")
+                if (Session["Filters"] == null)
                 {
                     DBOps db = new DBOps();
 
@@ -316,8 +230,7 @@ namespace Inventory_WebApp
                 else
                 {
                     DBOps db = new DBOps();
-                    //DataSet ds = (DataSet)ViewState["gvitems"];    // Apparently grid view items are not stored persistently across postabacks so then either I have to hit the db again or use the viewstate i.e. gvitems.DataSource doesnt work here
-
+                    var FilterExpression = Session["Filters"] as Dictionary<string, string>;
                     DataTable dt;
 
                     if (Session["SortedView"] != null)           //Added a check to use the sorted rows in case the user sorts then filters.
@@ -330,22 +243,55 @@ namespace Inventory_WebApp
                         dt = ds.Tables["Table"];
                     }
 
-                    var query = from row in dt.AsEnumerable()
-                                where row.Field<string>("lab") == (ddlLabselect.SelectedValue)
-                                select row;
-                    DataTable result = query.CopyToDataTable();
+                    EnumerableRowCollection<DataRow> query = dt.AsEnumerable();
 
-                    gvitem.DataSource = result;
-                    gvitem.DataBind();
+                    if (FilterExpression.ContainsKey("lab") && FilterExpression["lab"] != "All")
+                    {
+                        query = from row in dt.AsEnumerable()
+                            where row.Field<string>("lab") == (FilterExpression["lab"])
+                            select row;
+                        dt = query.CopyToDataTable();
+                    }
+                    if (FilterExpression.ContainsKey("category") && FilterExpression["category"] != "All")
+                    {
+                        query = from row in dt.AsEnumerable()
+                            where row.Field<string>("category") == (FilterExpression["category"])
+                            select row;
+                        dt = query.CopyToDataTable();
+                    }
+                    if (FilterExpression.ContainsKey("item") && FilterExpression["item"] != "All")
+                    {
+                        query = from row in dt.AsEnumerable()
+                            where row.Field<string>("itemCode") == (FilterExpression["item"])
+                            select row;
+                        dt = query.CopyToDataTable();
+                    }
+                    
+                    //var query = from row in dt.AsEnumerable()
+                    //            where row.Field<string>("lab") == (ddlLabselect.SelectedValue)
+                    //            select row;
+                    DataTable result = query.CopyToDataTable();
+                    if (result.Rows.Count == 0)
+                    {
+                        lblPageInfo.Text = "There are no items in this lab";
+                        lblPageInfo.ForeColor = System.Drawing.Color.Red;
+                        lblPageInfo.DataBind();
+                    }
+                    else
+                    {
+                        gvitem.DataSource = result;
+                        gvitem.DataBind();
+                    }
                 }
             }
             catch (Exception ex)
             {
-                if (ex.Message.Contains("no rows"))
+                if (ex.Message.ToLower().Contains("no datarows"))
                 {
-                    lblPageInfo.Text = "There are no items in this lab";
+                    lblPageInfo.Text = "There are no items that match your filters";
+                    lblPageInfo.ForeColor = System.Drawing.Color.Red;
+                    lblPageInfo.DataBind();
                 }
-
             }
         }
         #endregion
@@ -423,7 +369,7 @@ namespace Inventory_WebApp
                 ddlItemSelect.DataBind();
 
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
 
             }
@@ -512,6 +458,7 @@ namespace Inventory_WebApp
                 }
                 string callerfunc = new StackFrame(0).GetMethod().Name;
                 CreateUpdateFilterExpression(callerfunc, ddlLabselect.SelectedValue);
+                RefreshTable(callerfunc);
             }
             catch (Exception ex)
             {
@@ -579,6 +526,7 @@ namespace Inventory_WebApp
             }
             string callerfunc = new StackFrame(0).GetMethod().Name;
             CreateUpdateFilterExpression(callerfunc, ddlCategorySelect.SelectedValue);
+            RefreshTable(callerfunc);
         }
 
         protected void ddlItemSelect_SelectedIndexChanged(object sender, EventArgs e)
@@ -636,6 +584,7 @@ namespace Inventory_WebApp
             }
             string callerfunc = new StackFrame(0).GetMethod().Name;
             CreateUpdateFilterExpression(callerfunc, ddlItemSelect.SelectedValue);
+            RefreshTable(callerfunc);
         }
 
         /// <summary>
@@ -1089,9 +1038,9 @@ namespace Inventory_WebApp
                         DataSet ds = db.ReadInventoryTable();
                         OrderedEnumerableRowCollection<DataRow> query;
                         DataTable result;
-                        if (ViewState["gvitemsort"]!= null)
+                        if (ViewState["gvitemsort"] != null)
                         {
-                            string sortExpression = (string) ViewState["gvitemsort"];
+                            string sortExpression = (string)ViewState["gvitemsort"];
                             if (sortExpression.StartsWith("Lab") ||
                                 sortExpression.StartsWith("Category") ||
                                  sortExpression.StartsWith("Item"))
@@ -1099,7 +1048,7 @@ namespace Inventory_WebApp
                                 ViewState["gvitemsort"] = "NONE";
                             }
                         }
-                        
+
                         switch ((string)ViewState["gvitemsort"] ?? "NONE")
                         {
                             case "NONE":
@@ -1168,8 +1117,8 @@ namespace Inventory_WebApp
                             default:
                                 /*If the Sort Expression is quantity, lab or item, sort by category ascending*/
                                 query1 = from row in ds1.Tables["table"].AsEnumerable()
-                                    orderby row.Field<string>("category")
-                                    select row; // Asc query for Melder field;
+                                         orderby row.Field<string>("category")
+                                         select row; // Asc query for Melder field;
                                 result1 = query1.CopyToDataTable();
                                 Session["SortedView"] = result1;
 
@@ -1218,8 +1167,8 @@ namespace Inventory_WebApp
                             default:
                                 /*If the Sort Expression is quantity, lab or item, sort by category ascending*/
                                 query2 = from row in ds2.Tables["table"].AsEnumerable()
-                                    orderby row.Field<string>("ItemCode")
-                                    select row; // Asc query for Melder field;
+                                         orderby row.Field<string>("ItemCode")
+                                         select row; // Asc query for Melder field;
                                 result2 = query2.CopyToDataTable();
                                 Session["SortedView"] = result2;
 
@@ -1269,8 +1218,8 @@ namespace Inventory_WebApp
                             default:
                                 /*If the Sort Expression is quantity, lab or item, sort by category ascending*/
                                 query3 = from row in ds3.Tables["table"].AsEnumerable()
-                                    orderby row.Field<string>("lab")
-                                    select row; 
+                                         orderby row.Field<string>("lab")
+                                         select row;
                                 result3 = query3.CopyToDataTable();
                                 Session["SortedView"] = result3;
 
@@ -1290,7 +1239,7 @@ namespace Inventory_WebApp
             }
         }
 
-#endregion  
+        #endregion
 
         protected void CheckRowQuantityColor(Int32 rowIndex)
         {
