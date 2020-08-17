@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI.WebControls;
 using System.Data;
 using System.Diagnostics;
+using System.Web.UI.WebControls.Expressions;
 
 namespace Inventory_WebApp
 {
@@ -22,6 +24,7 @@ namespace Inventory_WebApp
         /// <param name="e"></param>
         protected void Page_Load(object sender, EventArgs e)
         {
+           
             //First time page load commands to go inside this if block
             if (!IsPostBack)
             {
@@ -201,23 +204,21 @@ namespace Inventory_WebApp
         {
             try
             {
-                if (callerfunc == "gvitem_RowCommand")  //this is what is passed, idk may have to force non-inline the updating custom command gvitem_RowUpdatingcustom
+                if (callerfunc == "gvitem_RowCommand" || callerfunc == "OnRowCommand" || callerfunc == "OnClick")  //this is what is passed: OnClick event for btnInsert, OnRowCommand for Inc/Dec/Update, idk may have to force non-inline the updating custom command gvitem_RowUpdatingcustom
                 {
                     DBOps db = new DBOps();
                     DataSet ds = db.ReadInventoryTable();
                     ds.Tables["table"].DefaultView.Sort = CheckSort() ?? "";//"Quantity ASC";   //read from ViewState['gvitemsort'] as Quantity ASC/LAB DESC
-                    Session["SortedView"] = ds;     
+                    Session["SortedView"] = ds.Tables["table"].DefaultView.ToTable();     
 
                 }
-                else if (callerfunc == "OnRowCommand")  // write case for "OnRowCommand" - passed in case of increment/decrement operator 
-                {
-                    DBOps db = new DBOps();
-                    DataSet ds = db.ReadInventoryTable();
-                    ds.Tables["table"].DefaultView.Sort = ((string)ViewState["gvitemsort"]) ?? "";  //read from ViewState['gvitemsort'] as Quantity ASC/LAB DESC
-
-                    Session["SortedView"] = ds.Tables["table"].DefaultView.ToTable();    
-           
-                }
+                //if ()  // write case for "OnRowCommand" - passed in case of increment/decrement operator 
+                //{
+                //    DBOps db = new DBOps();
+                //    DataSet ds = db.ReadInventoryTable();
+                //    ds.Tables["table"].DefaultView.Sort = CheckSort() ?? "";  //read from ViewState['gvitemsort'] as Quantity ASC/LAB DESC
+                //    Session["SortedView"] = ds.Tables["table"].DefaultView.ToTable();    
+                //}
 
                 if (ddlLabselect.SelectedValue == "All")
                 {
@@ -433,6 +434,8 @@ namespace Inventory_WebApp
                     }
 
                 }
+                string callerfunc = new StackFrame(0).GetMethod().Name;
+                CreateUpdateFilterExpression(callerfunc, ddlLabselect.SelectedValue);
             }
             catch (Exception ex)
             {
@@ -497,8 +500,9 @@ namespace Inventory_WebApp
                     gvitem.DataSource = result;
                     gvitem.DataBind();
                 }
-
             }
+            string callerfunc = new StackFrame(0).GetMethod().Name;
+            CreateUpdateFilterExpression(callerfunc, ddlCategorySelect.SelectedValue);
         }
 
         protected void ddlItemSelect_SelectedIndexChanged(object sender, EventArgs e)
@@ -554,6 +558,29 @@ namespace Inventory_WebApp
                 }
 
             }
+            string callerfunc = new StackFrame(0).GetMethod().Name;
+            CreateUpdateFilterExpression(callerfunc, ddlItemSelect.SelectedValue);
+        }
+
+        /// <summary>
+        /// A function to be developed in the future to chain filters.
+        /// </summary>
+        protected void CreateUpdateFilterExpression(string callerFilter, string filterValue)
+        {
+            Dictionary<string, string> FilterExpression;
+            if (Session["Filters"] != null)
+            {
+                FilterExpression = Session["Filters"] as Dictionary<string, string>;
+            }
+            else
+            {
+                FilterExpression = new Dictionary<string, string>();
+            }
+
+            var filtername = callerFilter.Split('_')[0];
+            FilterExpression[filtername] = filterValue;
+            // FilterExpression.Add(filtername, filterValue);
+            Session["Filters"] = FilterExpression;
         }
 
         #endregion
@@ -1184,7 +1211,7 @@ namespace Inventory_WebApp
             }
         }
 
-#endregion
+#endregion  
 
         protected void CheckRowQuantityColor(Int32 rowIndex)
         {
