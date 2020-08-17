@@ -629,6 +629,9 @@ namespace Inventory_WebApp
             {
                 txtInsertItem.Text = "";
                 txtInsertQuantity.Text = "";
+                txtInsertItemCode.Text = "";
+                txtInsertCategory.Text = "";
+                txtInsertDescription.Text = "";
                 ddlInsertLab.SelectedIndex = 0;
             }
 
