@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Inventory_WebApp {
+namespace Inventory_WebApp.Pages {
     
     
     public partial class InventoryETS {
@@ -22,13 +22,13 @@ namespace Inventory_WebApp {
         protected global::System.Web.UI.HtmlControls.HtmlForm form1;
         
         /// <summary>
-        /// Label10 control.
+        /// Label12 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label10;
+        protected global::System.Web.UI.WebControls.Label Label12;
         
         /// <summary>
         /// ddlLabselect control.
@@ -40,13 +40,13 @@ namespace Inventory_WebApp {
         protected global::System.Web.UI.WebControls.DropDownList ddlLabselect;
         
         /// <summary>
-        /// Label5 control.
+        /// Label10 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label5;
+        protected global::System.Web.UI.WebControls.Label Label10;
         
         /// <summary>
         /// ddlCategorySelect control.
@@ -58,13 +58,13 @@ namespace Inventory_WebApp {
         protected global::System.Web.UI.WebControls.DropDownList ddlCategorySelect;
         
         /// <summary>
-        /// Label6 control.
+        /// Label5 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label6;
+        protected global::System.Web.UI.WebControls.Label Label5;
         
         /// <summary>
         /// ddlItemSelect control.
@@ -337,6 +337,15 @@ namespace Inventory_WebApp {
         protected global::System.Web.UI.WebControls.DataGrid dgSearchResult;
         
         /// <summary>
+        /// gvSearchResult control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.GridView gvSearchResult;
+        
+        /// <summary>
         /// Label7 control.
         /// </summary>
         /// <remarks>
@@ -362,5 +371,14 @@ namespace Inventory_WebApp {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnSearch;
+        
+        /// <summary>
+        /// HiddenFieldShowHideSearchPanel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField HiddenFieldShowHideSearchPanel;
     }
 }

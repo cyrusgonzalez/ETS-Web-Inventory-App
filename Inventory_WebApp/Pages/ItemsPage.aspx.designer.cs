@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Inventory_WebApp {
+namespace Inventory_WebApp.Pages {
     
     
     public partial class ItemsPage {

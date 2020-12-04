@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="DB_Select_Page.aspx.cs" Inherits="Inventory_WebApp.WebForm2" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="DB_Select_Page.aspx.cs" Inherits="Inventory_WebApp.Pages.WebForm2" %>
 
 <!DOCTYPE html>
 

@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="SuppliersPage.aspx.cs" Inherits="Inventory_WebApp.SuppliersPage" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="SuppliersPage.aspx.cs" Inherits="Inventory_WebApp.Pages.SuppliersPage" %>
 
 <!DOCTYPE html>
 

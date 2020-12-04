@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web.UI.WebControls;
 using System.Data;
 using System.Diagnostics;
-using System.Web.UI.WebControls.Expressions;
+using System.Linq;
+using System.Web.UI.WebControls;
+using Inventory_WebApp.DatabaseInterface;
 
-namespace Inventory_WebApp
+namespace Inventory_WebApp.Pages
 {
     /// <summary>
     /// Class InventoryETS:
@@ -40,7 +40,7 @@ namespace Inventory_WebApp
                 {
                     lblErr.Text = ex.ToString();
                     lblErr.DataBind();
-                    throw ex;
+                    //throw ex;
                 }
             }
             else
@@ -48,14 +48,15 @@ namespace Inventory_WebApp
                 //Check if search results returned any rows
                 try
                 {
-                    if (txtSearchtext.Text != null || txtSearchtext.Text != "")         //If user has searched for something then do not hide the search pane
+                    if (HiddenFieldShowHideSearchPanel.Value == "Show")
                     {
-                        insert_inventory.Attributes.Remove("display");
+                        insert_inventory.Style.Remove("display");
                     }
-                    else
+                    if (HiddenFieldShowHideSearchPanel.Value == "Hidden")
                     {
-                        insert_inventory.Attributes.Add("display", "none");
+                        insert_inventory.Style.Add("display","none");
                     }
+
                     if ((DataTable)dgSearchResult.DataSource != null)
                     {
                         DataTable dt = (DataTable)dgSearchResult.DataSource;
@@ -74,7 +75,7 @@ namespace Inventory_WebApp
                 }
                 catch (Exception ex)
                 {
-                    lblPageInfo.Text = "An error occurred in Page Load.";
+                    lblPageInfo.Text = "An error occurred in Page Load." + ex.Message; 
                     //throw ex;
                 }
                 //lblPageInfo.ForeColor = System.Drawing.ColorTranslator.FromHtml("#0099ff"); //original blue color
@@ -191,7 +192,7 @@ namespace Inventory_WebApp
             }
             catch (Exception ex)
             {
-                lblPageInfo.Text = "An error occurred in CheckSort().";
+                lblPageInfo.Text = "An error occurred in CheckSort()." + ex.Message; 
                 return "";
             }
             return "";
@@ -310,7 +311,7 @@ namespace Inventory_WebApp
             }
             catch (Exception ex)
             {
-                throw ex;
+                //throw ex;
             }
 
         }
@@ -345,7 +346,7 @@ namespace Inventory_WebApp
             }
             catch (Exception ex)
             {
-                throw ex;
+                //throw ex;
             }
 
         }
@@ -679,7 +680,7 @@ namespace Inventory_WebApp
 
         protected Type GetMyType(string SQLiteType)
         {
-            Type returnType;
+            Type returnType = null;
             try
             {
                 switch (SQLiteType)
@@ -697,9 +698,13 @@ namespace Inventory_WebApp
             }
             catch (Exception ex)
             {
-                throw ex;
+                lblErr.Text = "Error in GetMyType()";
             }
             return returnType;
+            //catch (Exception ex)
+            //{
+            //    //throw ex;
+            //}
         }
 
         protected void btnSearch_Click(object sender, EventArgs e)
@@ -775,6 +780,7 @@ namespace Inventory_WebApp
                 }
                 if (Quantity < 10)
                 {
+                    row.ForeColor = System.Drawing.Color.White;
                     row.BackColor = System.Drawing.Color.Red;
                 }
             }
@@ -802,19 +808,27 @@ namespace Inventory_WebApp
             try
             {
                 GridViewRow row = e.Row;
+                TableCell cell;
 
-                //Code to move the Edit button to the right end of the table
-                TableCell cell = row.Cells[0];
-                row.Cells.Remove(cell);
-                row.Cells.Add(cell);
-
-                //code to move the delete button to the right end of the table after the edit button
                 if (row.Cells.Count > 7)
                 {
-                    cell = row.Cells[8];
+                    //Code to move the Edit button to the right end of the table
+                    cell = row.Cells[0];
                     row.Cells.Remove(cell);
-                    row.Cells.AddAt(row.Cells.Count, cell);
+                    row.Cells.AddAt(8, cell);
+                    //row.Cells.Add(cell);
                 }
+
+
+                ////code to move the delete button to the right end of the table after the edit button
+                //if (row.Cells.Count > 7)
+                //{
+                //    cell = row.Cells[8];
+                //    row.Cells.Remove(cell);
+                //    row.Cells.AddAt(row.Cells.Count, cell);
+                //}
+
+
 
             }
             catch (Exception ex)
@@ -851,8 +865,8 @@ namespace Inventory_WebApp
             }
             catch (Exception ex)
             {
-                lblPageInfo.Text = "An error occurred while attempting to update the row.";
-                throw ex;
+                lblPageInfo.Text = "An error occurred while attempting to update the row. " + ex.Message;
+                //throw ex;
             }
             gvitem.EditIndex = -1;
             string callerfunc = new StackFrame(1).GetMethod().Name;
@@ -905,8 +919,8 @@ namespace Inventory_WebApp
                     }
                     catch (Exception ex)
                     {
-                        lblPageInfo.Text = "An error occurred while attempting to update the row.";
-                        throw ex;
+                        lblPageInfo.Text = "An error occurred while attempting to update the row." + ex.Message; 
+                        //throw ex;
                     }
 
                     string callerfunc = new StackFrame(1).GetMethod().Name;
@@ -938,8 +952,8 @@ namespace Inventory_WebApp
                     }
                     catch (Exception ex)
                     {
-                        lblPageInfo.Text = "An error occurred while attempting to update the row.";
-                        throw;
+                        lblPageInfo.Text = "An error occurred while attempting to update the row. " + ex.Message;
+                        //throw;
                     }
                     string callerfunc = new StackFrame(1).GetMethod().Name;
                     RefreshTable(callerfunc);
@@ -972,7 +986,7 @@ namespace Inventory_WebApp
             {
                 lblPageInfo.Text = "Error Occured when taking Update Action.";
                 lblPageInfo.DataBind();
-                throw;
+                //throw;
             }
 
         }
@@ -1006,9 +1020,9 @@ namespace Inventory_WebApp
             }
             catch (Exception ex)
             {
-                lblPageInfo.Text = "Error Occured when Deleting Row.";
+                lblPageInfo.Text = "Error Occured when Deleting Row. " + ex.Message;
                 lblPageInfo.DataBind();
-                throw;
+                //throw;
             }
             RefreshTable();
         }

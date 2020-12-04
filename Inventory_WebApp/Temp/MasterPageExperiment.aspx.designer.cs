@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Inventory_WebApp {
+namespace Inventory_WebApp.Temp {
     
     
     public partial class WebForm3 {

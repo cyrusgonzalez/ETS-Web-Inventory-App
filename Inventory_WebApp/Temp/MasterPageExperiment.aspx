@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site1.Master" AutoEventWireup="true" CodeBehind="MasterPageExperiment.aspx.cs" Inherits="Inventory_WebApp.WebForm3" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site1.Master" AutoEventWireup="true" CodeBehind="MasterPageExperiment.aspx.cs" Inherits="Inventory_WebApp.Temp.WebForm3" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <link rel="stylesheet" href="App_Data/bulma.min.css"/>
 </asp:Content>

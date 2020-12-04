@@ -4,7 +4,7 @@ using System.Data.SQLite;
 using System.IO;
 using System.Xml;
 
-namespace Inventory_WebApp
+namespace Inventory_WebApp.DatabaseInterface
 {
     /// <summary>
     /// Class of SQLite DB manipulation functions written with reference from:
@@ -15,9 +15,9 @@ namespace Inventory_WebApp
     public class DBOps
     {
 
-        private string DataBaseSource = "Data Source=C:\\Users\\sanketm\\Documents\\ETS_Inventory\\sample_inventory.db";
+        private string DataBaseSource = "Data Source=" + AppDomain.CurrentDomain.BaseDirectory + "sample_inventory.db";  //C:\\Users\\sanketm\\Documents\\ETS_Inventory\\sample_inventory.db";
         private XmlTextReader config;
-        private string loggerpath; // READ from Config File new StreamWriter("C:\\Users\\sanketm\\Documents\\ETS_Inventory\\Log\\log.log");
+        private string loggerpath = AppDomain.CurrentDomain.BaseDirectory +"./inventory_db_exceptions.log"; // READ from Config File new StreamWriter("C:\\Users\\sanketm\\Documents\\ETS_Inventory\\Log\\log.log");
 
         #region Constructor and Destructor
         public DBOps()
@@ -26,7 +26,7 @@ namespace Inventory_WebApp
             //InitConfig();
             string path;
             XmlDocument conf = new XmlDocument();
-            conf.Load("C:\\Users\\sanketm\\source\\repos\\Inventory_WebApp\\Inventory_WebApp\\properties.xml");
+            //conf.Load("./properties.xml");
             XmlNodeList nodeList = (conf.SelectNodes("properties"));
 
             foreach (XmlNode elem in nodeList)
@@ -88,7 +88,7 @@ namespace Inventory_WebApp
                 {
                     logger.WriteAsync("DBOps.InsertInventoryTable: " + ex.Message);
                 }
-                throw;
+                //throw;
             }
             return retval;
         }
@@ -128,7 +128,7 @@ namespace Inventory_WebApp
                     logger.WriteAsync("DBOps.UpdateInventoryTable: " + ex.Message);
                 }
                 //this.logger.WriteAsync("Update Inventory Table: " + ex.Message);
-                throw;
+                /*throw*/;
             }
             return retval;
         }
@@ -157,7 +157,7 @@ namespace Inventory_WebApp
                     logger.WriteAsync("DBOps.ReadInventoryTable: " + ex.Message);
                 }
 
-                throw;
+                /*throw*/;
                 //this.logger.WriteAsync(ex.Message);
             }
             return ds;
@@ -185,7 +185,7 @@ namespace Inventory_WebApp
                     logger.WriteAsync("DBOps.GetInventoryColumns: " + ex.Message);
                 }
 
-                throw;
+                /*throw*/;
             }
             return dbs;
         }
@@ -224,7 +224,7 @@ namespace Inventory_WebApp
                     logger.WriteAsync("DBOps.DeleteInventoryTable: " + ex.Message);
                 }
 
-                throw;
+                /*throw*/;
             }
             return retval;
         }
@@ -264,7 +264,7 @@ namespace Inventory_WebApp
                     logger.WriteAsync("DBOps.InsertItemsTable: " + ex.Message);
                 }
 
-                throw;
+                /*throw*/;
             }
             return retval;
         }
@@ -303,7 +303,7 @@ namespace Inventory_WebApp
                     logger.WriteAsync("DBOps.UpdateItemsTable: " + ex.Message);
                 }
 
-                throw;
+                /*throw*/;
             }
             return retval;
         }
@@ -327,12 +327,12 @@ namespace Inventory_WebApp
             }
             catch (Exception ex)
             {
-                using (StreamWriter logger = new StreamWriter(this.loggerpath))
-                {
-                    logger.WriteAsync("DBOps.ReadItemsTable: " + ex.Message);
-                }
+                //using (StreamWriter logger = new StreamWriter(this.loggerpath))
+                //{
+                //    logger.WriteAsync("DBOps.ReadItemsTable: " + ex.Message);
+                //}
 
-                throw;
+                /*throw*/;
             }
             return ds;
         }
@@ -359,7 +359,7 @@ namespace Inventory_WebApp
                     logger.WriteAsync("DBOps.GetItems: " + ex.Message);
                 }
 
-                throw;
+                /*throw*/;
             }
             return ds;
         }
@@ -400,7 +400,7 @@ namespace Inventory_WebApp
                     logger.WriteAsync("DBOps.InsertSupplierTable: " + ex.Message);
                 }
 
-                throw;
+                /*throw*/;
             }
             return retval;
         }
@@ -439,7 +439,7 @@ namespace Inventory_WebApp
                     logger.WriteAsync("DBOps.UpdateSupplierTable: " + ex.Message);
                 }
 
-                throw;
+                /*throw*/;
             }
             return retval;
         }
@@ -468,7 +468,7 @@ namespace Inventory_WebApp
                     logger.WriteAsync("DBOps.ReadSupplierTable: " + ex.Message);
                 }
 
-                throw;
+                /*throw*/;
             }
             return ds;
         }
@@ -499,7 +499,7 @@ namespace Inventory_WebApp
                     logger.WriteAsync("DBOps.ReadLabsTable: " + ex.Message);
                 }
 
-                throw;
+                /*throw*/;
             }
             return ds;
         }
@@ -540,7 +540,7 @@ namespace Inventory_WebApp
                     logger.WriteAsync("DBOps.InsertLabsTable: " + ex.Message);
                 }
 
-                throw;
+                /*throw*/;
             }
             return retval;
         }
@@ -581,7 +581,7 @@ namespace Inventory_WebApp
                     logger.WriteAsync("DBOps.UpdateLabsTable: " + ex.Message);
                 }
 
-                throw;
+                /*throw*/;
             }
             return retval;
         }
@@ -603,12 +603,12 @@ namespace Inventory_WebApp
             }
             catch (Exception ex)
             {
-                using (StreamWriter logger = new StreamWriter(this.loggerpath))
-                {
-                    logger.WriteAsync("DBOps.GetLabColumns: " + ex.Message);
-                }
+                //using (StreamWriter logger = new StreamWriter(this.loggerpath))
+                //{
+                //    logger.WriteAsync("DBOps.GetLabColumns: " + ex.Message);
+                //}
 
-                throw;
+                /*throw*/;
             }
             return dbs;
         }
@@ -636,7 +636,7 @@ namespace Inventory_WebApp
                     logger.WriteAsync("DBOps.GetLabs: " + ex.Message);
                 }
 
-                throw;
+                /*throw*/;
             }
             return ds;
         }
@@ -666,7 +666,7 @@ namespace Inventory_WebApp
                     logger.WriteAsync("DBOps.GetCategories: " + ex.Message);
                 }
 
-                throw;
+                /*throw*/;
             }
             return ds;
         }
@@ -694,7 +694,7 @@ namespace Inventory_WebApp
                     logger.WriteAsync("DBOps.GetDBs: " + ex.Message);
                 }
 
-                throw;
+                /*throw*/;
             }
             return dbs;
         }

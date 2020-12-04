@@ -1,4 +1,4 @@
-﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site1.master.cs" Inherits="Inventory_WebApp.Site1" %>
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site1.master.cs" Inherits="Inventory_WebApp.Temp.Site1" %>
 
 <!DOCTYPE html>
 

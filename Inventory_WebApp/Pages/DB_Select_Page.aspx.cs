@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
+using Inventory_WebApp.DatabaseInterface;
 
-namespace Inventory_WebApp
+namespace Inventory_WebApp.Pages
 {
     public partial class WebForm2 : System.Web.UI.Page
     {

@@ -2,6 +2,7 @@
 using System.Data;
 using System.Linq;
 using System.Web.UI.WebControls;
+using Inventory_WebApp.DatabaseInterface;
 
 namespace Inventory_WebApp.Pages
 {
@@ -16,6 +17,7 @@ namespace Inventory_WebApp.Pages
                 try
                 {
                     PopulateSearchColumnsDropdown();
+                    RefreshTable();
                 }
                 catch (Exception ex)
                 {
@@ -24,7 +26,6 @@ namespace Inventory_WebApp.Pages
                     throw ex;
                 }
             }
-            RefreshTable();
         }
 
         protected void btnLoad_Click(object sender, EventArgs e)
@@ -57,13 +58,30 @@ namespace Inventory_WebApp.Pages
         {
             DBOps db = new DBOps();
 
-            string _key = txtInsertLab.Text;
-            string bldg = txtInsertBuilding.Text;
-            string _value = txtInsertRoom.Text;
+            string _key = txtInsertLab.Text.Trim();
+            string bldg = txtInsertBuilding.Text.Trim();
+            string _value = txtInsertRoom.Text.Trim();
 
-            int retval = db.InsertLabsTable(_key,bldg, _value);
-            lblInsertInfo.Text = retval.ToString() + " row inserted";
-            lblInsertInfo.DataBind();
+            if ((_key != String.Empty && _key != "") || (bldg != String.Empty && bldg != "") || (_value != String.Empty && _value != "") )
+            {
+                int retval = db.InsertLabsTable(_key, bldg, _value);
+                if (retval > 0)
+                {
+                    txtInsertLab.Text = "";
+                    txtInsertBuilding.Text = "";
+                    txtInsertRoom.Text = "";
+                    lblInsertInfo.ForeColor = System.Drawing.Color.LightSeaGreen;
+                    lblInsertInfo.Text = retval.ToString() + " row inserted";
+                    lblInsertInfo.DataBind();
+                }
+            }
+            else
+            {
+                lblErr.Text = "Please Enter all necessary fields before clicking on \"Insert\" ";
+                lblErr.DataBind();
+            }
+
+            
 
             RefreshTable();
         }
@@ -86,6 +104,34 @@ namespace Inventory_WebApp.Pages
         protected void gvitem_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {
             gvitem.PageIndex = e.NewPageIndex;
+            RefreshTable();
+        }
+        protected void gvitem_RowCreated(object sender, GridViewRowEventArgs e)
+        {
+            try
+            {
+                GridViewRow row = e.Row;
+
+                //Code to move the Edit button to the right end of the table
+                TableCell cell = row.Cells[0];
+                row.Cells.Remove(cell);
+                row.Cells.Add(cell);
+
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+        protected void gvitem_RowEditing(object sender, GridViewEditEventArgs e)
+        {
+            gvitem.EditIndex = e.NewEditIndex;
+            RefreshTable();
+        }
+
+        protected void gvitem_RowCancelingEdit(object sender, GridViewCancelEditEventArgs e)
+        {
+            gvitem.EditIndex = -1;
             RefreshTable();
         }
 
@@ -151,6 +197,72 @@ namespace Inventory_WebApp.Pages
             dgSearchResult.DataSource = result;
             dgSearchResult.DataBind();
         }
-        
+
+
+        protected void gvitem_OnRowCommand(object sender, GridViewCommandEventArgs e)
+        {
+            if (e.CommandName.ToLower() == "update")
+            {
+                int RowIndex = int.Parse(e.CommandArgument.ToString());
+                GridViewRow changedRow = gvitem.Rows[RowIndex];
+                string lab, building, roomnumber;
+
+                if (changedRow.FindControl("lblName") is null)
+                {
+                    lab = ((changedRow.FindControl("txtName") as TextBox)?.Text ?? string.Empty); //Not possible since Name is PK. Can't edit this field anymore.
+                }
+                else
+                {
+                    lab = ((changedRow.FindControl("lblName") as Label)?.Text ?? string.Empty);
+                }
+                if (changedRow.FindControl("lblBuilding") is null)
+                {
+                    building = ((changedRow.FindControl("txtBuilding") as TextBox)?.Text ?? string.Empty);
+                }
+                else
+                {
+                    building = ((changedRow.FindControl("lblBuilding") as Label)?.Text ?? string.Empty);
+                }
+                if (changedRow.FindControl("lblRoomNo") is null)
+                {
+                    roomnumber = ((changedRow.FindControl("txtRoomNo") as TextBox)?.Text ?? string.Empty);
+                }
+                else
+                {
+                    roomnumber = ((changedRow.FindControl("lblRoomNo") as Label)?.Text ?? string.Empty);
+                }
+                int retval = gvitem_RowUpdatingcustom(lab ,building , roomnumber);
+                if (retval > 0)
+                {
+                    
+                }
+                else
+                {
+                    lblErr.Text = "There may have been an issue when updating the row.";
+                    lblErr.DataBind();
+                }
+            }
+            gvitem.EditIndex = -1;
+            RefreshTable();
+        }
+        protected int gvitem_RowUpdatingcustom(string lab, string building, string roomnumber)
+        {
+            DBOps db = new DBOps();
+
+            string _key = lab;
+            string _value = building;
+            string room = roomnumber;
+
+            int retval = db.UpdateLabsTable(_key, _value, room);
+            lblErr.Text = retval.ToString() + " row updated";
+            lblErr.DataBind();
+
+            return retval;
+        }
+
+        protected void gvitem_OnRowUpdating(object sender, GridViewUpdateEventArgs e)
+        {
+            //placeholder method to catch and handle event. Actual updating done in gvitem_RowUpdatingcustom
+        }
     }
 }

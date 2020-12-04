@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
-using System.Data.SQLite;
 using System.Data;
 using System.Diagnostics;
+using System.Linq;
+using System.Web.UI.WebControls;
+using Inventory_WebApp.DatabaseInterface;
 
-namespace Inventory_WebApp
+namespace Inventory_WebApp.Pages
 {
     public partial class InventoryETS2 : System.Web.UI.Page
     {

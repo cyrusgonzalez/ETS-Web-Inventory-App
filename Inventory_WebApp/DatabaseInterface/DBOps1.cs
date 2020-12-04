@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Data.SQLite;
 using System.Data;
+using System.Data.SQLite;
 
-namespace Inventory_WebApp
+namespace Inventory_WebApp.DatabaseInterface
 {
     /// <summary>
     /// TODO: Shift DB ops to this class when they work, for modularity and Single Responsibility and all that

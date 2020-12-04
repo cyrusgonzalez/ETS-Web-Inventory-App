@@ -4,6 +4,9 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>Add a New Lab</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.2/css/bulma.min.css" />
     <link rel="stylesheet" href="../App_Data/bulma-collapsible.min.css" />
@@ -47,29 +50,63 @@
                 }
             </script>
         </div>
-        <div class="column" style="direction: rtl;">
-        </div>
-        <div class="columns ">
-            <div class="column box has-text-centered">
+        <%--        <div class="column" style="direction: rtl;">
+        </div>--%>
+        <div class="columns has-addons-centered has-text-centered">
+            <div class="column">
                 <asp:GridView runat="server" ID="gvitem" CssClass="table"
                     HorizontalAlign="Center"
                     BorderColor="000080"
                     BorderWidth="2px"
                     Width="100%"
+                    AutoGenerateColumns="False"
                     AllowPaging="true"
                     AllowSorting="false"
-                    PageSize="10"
+                    PageSize="15"
                     PagerSettings-Position="Bottom"
                     PagerSettings-Mode="Numeric"
-                    PagerStyle-HorizontalAlign="Center" PagerSettings-NextPageText="Next" PagerSettings-PreviousPageText="Prev" OnPageIndexChanging="gvitem_PageIndexChanging">
+                    PagerStyle-HorizontalAlign="Center"
+                    PagerSettings-NextPageText="Next"
+                    PagerSettings-PreviousPageText="Prev"
+                    OnPageIndexChanging="gvitem_PageIndexChanging"
+                    AutoGenerateEditButton="true"
+                    OnRowCreated="gvitem_RowCreated"
+                    OnRowEditing="gvitem_RowEditing"
+                    OnRowCancelingEdit="gvitem_RowCancelingEdit"
+                              OnRowCommand="gvitem_OnRowCommand"
+                              OnRowUpdating="gvitem_OnRowUpdating">
                     <Columns>
                         <asp:ButtonField CommandName="info dialog" Text="<i class='fa fa-info'></i>"
                             ButtonType="Link"
                             ControlStyle-CssClass="btn btn-primary" />
+                        <asp:TemplateField HeaderText="Name" HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Center">
+                            <%--<EditItemTemplate>
+                                <asp:TextBox ID="txtName" Text='<%# Bind("Name") %>' runat="server" Style="text-align: center"></asp:TextBox>
+                            </EditItemTemplate>--%>
+                            <ItemTemplate>
+                                <asp:Label ID="lblName" Text='<%# Bind("Name") %>' runat="server" Style="text-align: center"></asp:Label>
+                            </ItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="Building" HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Center">
+                            <EditItemTemplate>
+                                <asp:TextBox ID="txtBuilding" Text='<%# Bind("Building") %>' runat="server" Style="text-align: center"></asp:TextBox>
+                            </EditItemTemplate>
+                            <ItemTemplate>
+                                <asp:Label ID="lblBuilding" Text='<%# Bind("Building") %>' runat="server" Style="text-align: center"></asp:Label>
+                            </ItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="Room No." HeaderStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Center">
+                            <EditItemTemplate>
+                                <asp:TextBox ID="txtRoomNo" Text='<%# Eval("RoomNo") %>' runat="server" Style="text-align: center"></asp:TextBox>
+                            </EditItemTemplate>
+                            <ItemTemplate>
+                                <asp:Label ID="lblRoomNo" Text='<%# Bind("RoomNo") %>' runat="server" Style="text-align: center"></asp:Label>
+                            </ItemTemplate>
+                        </asp:TemplateField>
                     </Columns>
                 </asp:GridView>
                 <asp:Label ID="lblErr" runat="server" ForeColor="Red"></asp:Label>
-                <asp:Button ID="btnLoad" runat="server" OnClick="btnLoad_Click" Text="Load Table" CssClass="button" />
+                <asp:Button ID="btnLoad" runat="server" OnClick="btnLoad_Click" Text="Load Table" CssClass="button " />
             </div>
             <div class="column" id="insert_lab" style="display: none">
                 <div class="box">
