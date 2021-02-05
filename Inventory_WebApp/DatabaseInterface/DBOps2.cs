@@ -52,16 +52,29 @@ namespace Inventory_WebApp.DatabaseInterface
         #endregion
 
         #region Inventory DB Interface
-        public int InsertInventoryTable(string item,string itemCode, Int64 quantity,string lab, string category, string description)
+        public int InsertUpdateInventoryTable(string item,string itemCode, Int64 quantity,string lab, string category, string description)
         {
             int retval = 0;
+            int insertQueryretval = 0;
             try
             {
                 using (var con = new SQLiteConnection(this.DataBaseSource))
                 {
                     con.Open();
                     var cmd = new SQLiteCommand(con);
-                    cmd.CommandText = "INSERT INTO inventory(itemcode, model, quantity,lab, category, description) VALUES(@itemcode, @model, @quantity, @lab, @category, @description)";
+                    cmd.CommandText = @"update inventory set 
+
+                    itemCode = @itemcode,
+                    quantity = @quantity,
+                    lab = @lab,
+                    description = @description,
+                    model = @model,
+                    category = @category
+                    where
+                        inventory.itemCode = @itemcode
+                        and inventory.lab = @lab
+                        and inventory.model = @model
+                     ";
 
                     cmd.Parameters.AddWithValue("@itemcode", item);
                     cmd.Parameters.AddWithValue("@model", itemCode);
@@ -72,13 +85,25 @@ namespace Inventory_WebApp.DatabaseInterface
                     cmd.Prepare();
 
                     retval = cmd.ExecuteNonQuery();
-                    if (retval != 0)
+                    if (retval > 0)
                     {
-                        //this.logger.WriteAsync("row inserted");
+                        //this.logger.WriteAsync("row updated");
                     }
                     else
                     {
-                        //this.logger.WriteAsync("No row inserted");
+                        //this.logger.WriteAsync("No row updated");
+                        //Need to insert instead
+                        cmd.CommandText = "INSERT INTO inventory(itemcode, model, quantity,lab, category, description) VALUES(@itemcode, @model, @quantity, @lab, @category, @description)";
+                        cmd.Parameters.AddWithValue("@itemcode", item);
+                        cmd.Parameters.AddWithValue("@model", itemCode);
+                        cmd.Parameters.AddWithValue("@quantity", quantity);
+                        cmd.Parameters.AddWithValue("@lab", lab);
+                        cmd.Parameters.AddWithValue("@category", category);
+                        cmd.Parameters.AddWithValue("@description", description);
+                        cmd.Prepare();
+
+                        insertQueryretval = cmd.ExecuteNonQuery();
+
                     }
                 }
             }
@@ -90,7 +115,73 @@ namespace Inventory_WebApp.DatabaseInterface
                 }
                 //throw;
             }
-            return retval;
+            return (retval == 0)?insertQueryretval:retval;
+        }
+
+        public int InsertInventoryTable(string item, string itemCode, Int64 quantity, string lab, string category, string description)
+        {
+            int retval = 0;
+            int insertQueryretval = 0;
+            try
+            {
+                using (var con = new SQLiteConnection(this.DataBaseSource))
+                {
+                    con.Open();
+                    var cmd = new SQLiteCommand(con);
+                    cmd.CommandText = @"update inventory set 
+
+                    itemCode = @itemcode,
+                    quantity = @quantity,
+                    lab = @lab,
+                    description = @description,
+                    model = @model,
+                    category = @category
+                    where
+                        inventory.itemCode = @itemcode
+                        and inventory.lab = @lab
+                        and inventory.model = @model
+                     ";
+
+                    cmd.Parameters.AddWithValue("@itemcode", item);
+                    cmd.Parameters.AddWithValue("@model", itemCode);
+                    cmd.Parameters.AddWithValue("@quantity", quantity);
+                    cmd.Parameters.AddWithValue("@lab", lab);
+                    cmd.Parameters.AddWithValue("@category", category);
+                    cmd.Parameters.AddWithValue("@description", description);
+                    cmd.Prepare();
+
+                    retval = cmd.ExecuteNonQuery();
+                    if (retval > 0)
+                    {
+                        //this.logger.WriteAsync("row updated");
+                    }
+                    else
+                    {
+                        //this.logger.WriteAsync("No row updated");
+                        //Need to insert instead
+                        cmd.CommandText = "INSERT INTO inventory(itemcode, model, quantity,lab, category, description) VALUES(@itemcode, @model, @quantity, @lab, @category, @description)";
+                        cmd.Parameters.AddWithValue("@itemcode", item);
+                        cmd.Parameters.AddWithValue("@model", itemCode);
+                        cmd.Parameters.AddWithValue("@quantity", quantity);
+                        cmd.Parameters.AddWithValue("@lab", lab);
+                        cmd.Parameters.AddWithValue("@category", category);
+                        cmd.Parameters.AddWithValue("@description", description);
+                        cmd.Prepare();
+
+                        insertQueryretval = cmd.ExecuteNonQuery();
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                using (StreamWriter logger = new StreamWriter(this.loggerpath))
+                {
+                    logger.WriteAsync("DBOps.InsertInventoryTable: " + ex.Message);
+                }
+                //throw;
+            }
+            return (retval == 0) ? insertQueryretval : retval;
         }
 
         public int UpdateInventoryTable(string itemcode, Int64 quantity,string lab)
@@ -651,7 +742,7 @@ namespace Inventory_WebApp.DatabaseInterface
                 using (SQLiteConnection con = new SQLiteConnection(this.DataBaseSource))
                 {
                     //string sql = "Select ItemCode,ItemName,Supplier,LastUpdatedOn from Supplier;";
-                    string sql = "Select distinct category from inventory";
+                    string sql = "Select distinct category from Inventory";
                     using (SQLiteCommand command = new SQLiteCommand(sql, con))
                     {
                         SQLiteDataAdapter da = new SQLiteDataAdapter(command);
