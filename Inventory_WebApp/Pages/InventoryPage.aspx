@@ -33,8 +33,8 @@
     </section>
     <div class="tabs">
         <ul>
-            <li><a href="LabPage.aspx">Labs</a></li>
-            <li class="is-active"><a href="InventoryPage.aspx">Inventory</a></li>
+            <li><a runat="server" href="~/Pages/LabPage.aspx">Labs</a></li>
+            <li class="is-active"><a runat="server" href="~/Pages/InventoryPage.aspx">Inventory</a></li>
         </ul>
         <a onclick="showHideInsertPane(this);" style="direction: rtl;"><i class="fa fa-bars"></i></a>
         <script type="text/javascript">
