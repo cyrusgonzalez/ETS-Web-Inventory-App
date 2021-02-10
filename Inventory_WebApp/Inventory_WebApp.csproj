@@ -99,6 +99,7 @@
     <Content Include="Pages\InventoryPage2.aspx" />
     <Content Include="Pages\LabPage.aspx" />
     <Content Include="Pages\ItemsPage.aspx" />
+    <Content Include="Pages\StyleSheet1.css" />
     <Content Include="Pages\SuppliersPage.aspx" />
     <Content Include="Web.config" />
     <Content Include="Pages\InventoryPage.aspx" />

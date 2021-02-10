@@ -16,8 +16,8 @@ namespace Inventory_WebApp.DatabaseInterface
     {
 
         private string DataBaseSource = "Data Source=" + AppDomain.CurrentDomain.BaseDirectory + "sample_inventory.db";  //C:\\Users\\sanketm\\Documents\\ETS_Inventory\\sample_inventory.db";
-        private XmlTextReader config;
-        private string loggerpath = AppDomain.CurrentDomain.BaseDirectory +"./inventory_db_exceptions.log"; // READ from Config File new StreamWriter("C:\\Users\\sanketm\\Documents\\ETS_Inventory\\Log\\log.log");
+        private XmlTextReader _config;
+        private string _loggerpath = AppDomain.CurrentDomain.BaseDirectory +"./inventory_db_exceptions.log"; // READ from Config File new StreamWriter("C:\\Users\\sanketm\\Documents\\ETS_Inventory\\Log\\log.log");
 
         #region Constructor and Destructor
         public DBOps()
@@ -35,7 +35,7 @@ namespace Inventory_WebApp.DatabaseInterface
                 if (path != null || path != "")
                 {
                     this.DataBaseSource = "data source=" + conf.GetElementsByTagName("datasource")[0].ChildNodes[0].Value;
-                    this.loggerpath = conf.GetElementsByTagName("logfile")[0].ChildNodes[0].Value;
+                    this._loggerpath = conf.GetElementsByTagName("logfile")[0].ChildNodes[0].Value;
                 }
             }
 
@@ -45,14 +45,14 @@ namespace Inventory_WebApp.DatabaseInterface
         ~DBOps()
         {
             //this.logger.Close();
-            //this.config.Close();
+            //this._config.Close();
             this.DataBaseSource = null;
-            this.loggerpath = null;
+            this._loggerpath = null;
         }
         #endregion
 
         #region Inventory DB Interface
-        public int InsertUpdateInventoryTable(string item,string itemCode, Int64 quantity,string lab, string category, string description)
+        public int InsertUpdateInventoryTable(string item,string itemCode, Int64 quantity,string lab, string category, string description,Int64 warnQuantity, Int64 alertQuantity)
         {
             int retval = 0;
             int insertQueryretval = 0;
@@ -69,7 +69,9 @@ namespace Inventory_WebApp.DatabaseInterface
                     lab = @lab,
                     description = @description,
                     model = @model,
-                    category = @category
+                    category = @category,
+                    alert_quantity = @alertquantity,
+                    warning_quantity = @warnquantity
                     where
                         inventory.itemCode = @itemcode
                         and inventory.lab = @lab
@@ -82,6 +84,8 @@ namespace Inventory_WebApp.DatabaseInterface
                     cmd.Parameters.AddWithValue("@lab", lab);
                     cmd.Parameters.AddWithValue("@category", category);
                     cmd.Parameters.AddWithValue("@description", description);
+                    cmd.Parameters.AddWithValue("@alertquantity", alertQuantity);
+                    cmd.Parameters.AddWithValue("@warnquantity", warnQuantity);
                     cmd.Prepare();
 
                     retval = cmd.ExecuteNonQuery();
@@ -93,13 +97,15 @@ namespace Inventory_WebApp.DatabaseInterface
                     {
                         //this.logger.WriteAsync("No row updated");
                         //Need to insert instead
-                        cmd.CommandText = "INSERT INTO inventory(itemcode, model, quantity,lab, category, description) VALUES(@itemcode, @model, @quantity, @lab, @category, @description)";
+                        cmd.CommandText = "INSERT INTO inventory(itemcode, model, quantity,lab, category, description,alert_quantity,warning_quantity) VALUES(@itemcode, @model, @quantity, @lab, @category, @description, @alertquantity, @warningquantity)";
                         cmd.Parameters.AddWithValue("@itemcode", item);
                         cmd.Parameters.AddWithValue("@model", itemCode);
                         cmd.Parameters.AddWithValue("@quantity", quantity);
                         cmd.Parameters.AddWithValue("@lab", lab);
                         cmd.Parameters.AddWithValue("@category", category);
                         cmd.Parameters.AddWithValue("@description", description);
+                        cmd.Parameters.AddWithValue("@alertquantity", alertQuantity);
+                        cmd.Parameters.AddWithValue("@warnquantity", warnQuantity);
                         cmd.Prepare();
 
                         insertQueryretval = cmd.ExecuteNonQuery();
@@ -109,7 +115,7 @@ namespace Inventory_WebApp.DatabaseInterface
             }
             catch (Exception ex)
             {
-                using (StreamWriter logger = new StreamWriter(this.loggerpath))
+                using (StreamWriter logger = new StreamWriter(this._loggerpath))
                 {
                     logger.WriteAsync("DBOps.InsertInventoryTable: " + ex.Message);
                 }
@@ -175,7 +181,7 @@ namespace Inventory_WebApp.DatabaseInterface
             }
             catch (Exception ex)
             {
-                using (StreamWriter logger = new StreamWriter(this.loggerpath))
+                using (StreamWriter logger = new StreamWriter(this._loggerpath))
                 {
                     logger.WriteAsync("DBOps.InsertInventoryTable: " + ex.Message);
                 }
@@ -214,7 +220,7 @@ namespace Inventory_WebApp.DatabaseInterface
             }
             catch (Exception ex)
             {
-                using (StreamWriter logger = new StreamWriter(this.loggerpath))
+                using (StreamWriter logger = new StreamWriter(this._loggerpath))
                 {
                     logger.WriteAsync("DBOps.UpdateInventoryTable: " + ex.Message);
                 }
@@ -243,7 +249,7 @@ namespace Inventory_WebApp.DatabaseInterface
             }
             catch (Exception ex)
             {
-                using (StreamWriter logger = new StreamWriter(this.loggerpath))
+                using (StreamWriter logger = new StreamWriter(this._loggerpath))
                 {
                     logger.WriteAsync("DBOps.ReadInventoryTable: " + ex.Message);
                 }
@@ -271,7 +277,7 @@ namespace Inventory_WebApp.DatabaseInterface
             }
             catch (Exception ex)
             {
-                using (StreamWriter logger = new StreamWriter(this.loggerpath))
+                using (StreamWriter logger = new StreamWriter(this._loggerpath))
                 {
                     logger.WriteAsync("DBOps.GetInventoryColumns: " + ex.Message);
                 }
@@ -310,7 +316,7 @@ namespace Inventory_WebApp.DatabaseInterface
             }
             catch (Exception ex)
             {
-                using (StreamWriter logger = new StreamWriter(this.loggerpath))
+                using (StreamWriter logger = new StreamWriter(this._loggerpath))
                 {
                     logger.WriteAsync("DBOps.DeleteInventoryTable: " + ex.Message);
                 }
@@ -350,7 +356,7 @@ namespace Inventory_WebApp.DatabaseInterface
             }
             catch (Exception ex)
             {
-                using (StreamWriter logger = new StreamWriter(this.loggerpath))
+                using (StreamWriter logger = new StreamWriter(this._loggerpath))
                 {
                     logger.WriteAsync("DBOps.InsertItemsTable: " + ex.Message);
                 }
@@ -389,7 +395,7 @@ namespace Inventory_WebApp.DatabaseInterface
             }
             catch (Exception ex)
             {
-                using (StreamWriter logger = new StreamWriter(this.loggerpath))
+                using (StreamWriter logger = new StreamWriter(this._loggerpath))
                 {
                     logger.WriteAsync("DBOps.UpdateItemsTable: " + ex.Message);
                 }
@@ -418,7 +424,7 @@ namespace Inventory_WebApp.DatabaseInterface
             }
             catch (Exception ex)
             {
-                //using (StreamWriter logger = new StreamWriter(this.loggerpath))
+                //using (StreamWriter logger = new StreamWriter(this._loggerpath))
                 //{
                 //    logger.WriteAsync("DBOps.ReadItemsTable: " + ex.Message);
                 //}
@@ -445,7 +451,7 @@ namespace Inventory_WebApp.DatabaseInterface
             }
             catch (Exception ex)
             {
-                using (StreamWriter logger = new StreamWriter(this.loggerpath))
+                using (StreamWriter logger = new StreamWriter(this._loggerpath))
                 {
                     logger.WriteAsync("DBOps.GetItems: " + ex.Message);
                 }
@@ -486,7 +492,7 @@ namespace Inventory_WebApp.DatabaseInterface
             }
             catch (Exception ex)
             {
-                using (StreamWriter logger = new StreamWriter(this.loggerpath))
+                using (StreamWriter logger = new StreamWriter(this._loggerpath))
                 {
                     logger.WriteAsync("DBOps.InsertSupplierTable: " + ex.Message);
                 }
@@ -525,7 +531,7 @@ namespace Inventory_WebApp.DatabaseInterface
             }
             catch (Exception ex)
             {
-                using (StreamWriter logger = new StreamWriter(this.loggerpath))
+                using (StreamWriter logger = new StreamWriter(this._loggerpath))
                 {
                     logger.WriteAsync("DBOps.UpdateSupplierTable: " + ex.Message);
                 }
@@ -554,7 +560,7 @@ namespace Inventory_WebApp.DatabaseInterface
             }
             catch (Exception ex)
             {
-                using (StreamWriter logger = new StreamWriter(this.loggerpath))
+                using (StreamWriter logger = new StreamWriter(this._loggerpath))
                 {
                     logger.WriteAsync("DBOps.ReadSupplierTable: " + ex.Message);
                 }
@@ -585,7 +591,7 @@ namespace Inventory_WebApp.DatabaseInterface
             }
             catch (Exception ex)
             {
-                using (StreamWriter logger = new StreamWriter(this.loggerpath))
+                using (StreamWriter logger = new StreamWriter(this._loggerpath))
                 {
                     logger.WriteAsync("DBOps.ReadLabsTable: " + ex.Message);
                 }
@@ -626,7 +632,7 @@ namespace Inventory_WebApp.DatabaseInterface
             }
             catch (Exception ex)
             {
-                using (StreamWriter logger = new StreamWriter(this.loggerpath))
+                using (StreamWriter logger = new StreamWriter(this._loggerpath))
                 {
                     logger.WriteAsync("DBOps.InsertLabsTable: " + ex.Message);
                 }
@@ -667,7 +673,7 @@ namespace Inventory_WebApp.DatabaseInterface
             }
             catch (Exception ex)
             {
-                using (StreamWriter logger = new StreamWriter(this.loggerpath))
+                using (StreamWriter logger = new StreamWriter(this._loggerpath))
                 {
                     logger.WriteAsync("DBOps.UpdateLabsTable: " + ex.Message);
                 }
@@ -694,7 +700,7 @@ namespace Inventory_WebApp.DatabaseInterface
             }
             catch (Exception ex)
             {
-                //using (StreamWriter logger = new StreamWriter(this.loggerpath))
+                //using (StreamWriter logger = new StreamWriter(this._loggerpath))
                 //{
                 //    logger.WriteAsync("DBOps.GetLabColumns: " + ex.Message);
                 //}
@@ -722,7 +728,7 @@ namespace Inventory_WebApp.DatabaseInterface
             }
             catch(Exception ex)
             {
-                using (StreamWriter logger = new StreamWriter(this.loggerpath))
+                using (StreamWriter logger = new StreamWriter(this._loggerpath))
                 {
                     logger.WriteAsync("DBOps.GetLabs: " + ex.Message);
                 }
@@ -752,7 +758,7 @@ namespace Inventory_WebApp.DatabaseInterface
             }
             catch (Exception ex)
             {
-                using (StreamWriter logger = new StreamWriter(this.loggerpath))
+                using (StreamWriter logger = new StreamWriter(this._loggerpath))
                 {
                     logger.WriteAsync("DBOps.GetCategories: " + ex.Message);
                 }
@@ -780,7 +786,7 @@ namespace Inventory_WebApp.DatabaseInterface
             }
             catch (Exception ex)
             {
-                using (StreamWriter logger = new StreamWriter(this.loggerpath))
+                using (StreamWriter logger = new StreamWriter(this._loggerpath))
                 {
                     logger.WriteAsync("DBOps.GetDBs: " + ex.Message);
                 }
@@ -828,20 +834,20 @@ namespace Inventory_WebApp.DatabaseInterface
 
         //public void InitConfig()
         //{
-        //    this.config = new XmlTextReader("C:\\Users\\sanketm\\source\\repos\\Inventory_WebApp\\Inventory_WebApp\\properties.xml");
-        //    while (config.Read())
+        //    this._config = new XmlTextReader("C:\\Users\\sanketm\\source\\repos\\Inventory_WebApp\\Inventory_WebApp\\properties.xml");
+        //    while (_config.Read())
         //    {
-        //        switch (config.NodeType)
+        //        switch (_config.NodeType)
         //        {
         //            case XmlNodeType.Element: // The node is an element.
-        //                this.logger.Write("<" + config.Name);
+        //                this.logger.Write("<" + _config.Name);
         //                this.logger.WriteAsync(">");
         //                break;
         //            case XmlNodeType.Text: //Display the text in each element.
-        //                this.logger.WriteAsync(config.Value);
+        //                this.logger.WriteAsync(_config.Value);
         //                break;
         //            case XmlNodeType.EndElement: //Display the end of the element.
-        //                this.logger.Write("</" + config.Name);
+        //                this.logger.Write("</" + _config.Name);
         //                this.logger.WriteAsync(">");
         //                break;
         //        }

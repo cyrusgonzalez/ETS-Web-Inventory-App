@@ -14,6 +14,7 @@
     <%--Bulma and Bulma extensions--%>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.2/css/bulma.min.css" />
     <link rel="stylesheet" href="../dependencies/bulma-extensions.min.css" />
+    <link rel="stylesheet" href="StyleSheet1.css"/>
     <script src="https://cdn.jsdelivr.net/npm/bulma-extensions@6.2.7/dist/js/bulma-extensions.min.js"></script>
 
     <!-- Load Font Awesome 5 -->
@@ -205,7 +206,7 @@
                 <asp:Label ID="lblErr" runat="server" ForeColor="Red"></asp:Label>
                 <asp:Button ID="btnLoad" runat="server" OnClick="btnLoad_Click" Text="Load Table" CssClass="button" />
             </div>
-            <div id="insert_inventory" style="display: none" class="column" runat="server">
+            <div id="insert_inventory" style="display: none; overflow: auto" class="column" runat="server">
                 <div class="box">
                     <div class="columns">
                         <div class="column is-half">
@@ -275,7 +276,7 @@
                     <asp:Button ID="btnUpdate" runat="server" Text="Update" OnClick="btnUpdate_Click" CssClass="button" />
                     <asp:Label ID="lblUpdateInfo" runat="server" ForeColor="Red"></asp:Label>
                 </div>
-                <div class="box message" id="search_inventory">
+                <div class="box message" style="overflow: auto" id="search_inventory">
                     <div class="message-header">
                         <h4>Search</h4>
                     </div>
@@ -306,7 +307,7 @@
                         </div>
                         <div class="field is-grouped">
                             <div class="control">
-                                <asp:GridView runat="server" ID="gvSearchResult" AllowPaging="True" PageSize="5" CssClass="table is-mobile" AutoGenerateColumns="False" OnRowCommand="gvSearchResult_OnRowCommand">
+                                <asp:GridView runat="server" ID="gvSearchResult" AllowPaging="True" PageSize="5" CssClass="table is-mobile is-half-desktop" AutoGenerateColumns="False" OnRowCommand="gvSearchResult_OnRowCommand">
                                     <Columns>
                                         <asp:BoundField HeaderText="ID" DataField="ID" ReadOnly="true" Visible="false" >
                                             <HeaderStyle CssClass="is-hidden-mobile"></HeaderStyle>

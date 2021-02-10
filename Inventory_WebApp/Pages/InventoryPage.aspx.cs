@@ -637,6 +637,8 @@ namespace Inventory_WebApp.Pages
                 string lab = ddlInsertLab.SelectedValue;
                 string description = txtInsertDescription.Text;
                 string category = txtInsertCategory.Text;
+                int alertQuantity = int.Parse(txtInsertAlertQuant.Text?? string.Empty);
+                int warnQuantity = int.Parse(txtInsertWarningQuant.Text?? string.Empty);
                 long itemQuantity;
                 if (long.TryParse(txtInsertQuantity.Text, out itemQuantity))
                 {
@@ -652,7 +654,7 @@ namespace Inventory_WebApp.Pages
 
                 //int retval = db.InsertInventoryTable(itemName, itemCode, itemQuantity, lab, category, description);
 
-                int retval = db.InsertUpdateInventoryTable(itemName, itemCode, itemQuantity, lab, category, description);   
+                int retval = db.InsertUpdateInventoryTable(itemName, itemCode, itemQuantity, lab, category, description, warnQuantity, alertQuantity);   
                 //lblInsertInfo.Text = retval.ToString() + " row inserted";
                 //lblInsertInfo.DataBind();
 
