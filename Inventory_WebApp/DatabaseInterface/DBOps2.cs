@@ -3,6 +3,7 @@ using System.Data;
 using System.Data.SQLite;
 using System.IO;
 using System.Xml;
+using log4net;
 
 namespace Inventory_WebApp.DatabaseInterface
 {
@@ -15,9 +16,68 @@ namespace Inventory_WebApp.DatabaseInterface
     public class DBOps
     {
 
+        /// <summary>
+        /// Private variables Section
+        /// 1. DatabaseSource: a path to the sqlite .db file used in the application.
+        /// 2. _config: a handle to a config file (Not used at the moment)
+        /// 3. _loggerpath: a path to a log file that we can write database exceptions and errors to. File must exist and have the right permissions or else this line will fail and crash the whole app.
+        /// </summary>
         private string DataBaseSource = "Data Source=" + AppDomain.CurrentDomain.BaseDirectory + "sample_inventory.db";  //C:\\Users\\sanketm\\Documents\\ETS_Inventory\\sample_inventory.db";
         private XmlTextReader _config;
         private string _loggerpath = AppDomain.CurrentDomain.BaseDirectory +"./inventory_db_exceptions.log"; // READ from Config File new StreamWriter("C:\\Users\\sanketm\\Documents\\ETS_Inventory\\Log\\log.log");
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+        /// <summary>
+        /// GetDBs(): A function to get all existing tables from the sqlite database.
+        /// It ignores sqlite system tables.
+        /// Returns: DataSet
+        /// </summary>
+        /// <returns></returns>
+        public DataSet GetDBs()
+        {
+            DataSet dbs = new DataSet();
+            try
+            {
+                using (var con = new SQLiteConnection(this.DataBaseSource))
+                {
+                    string sql = "SELECT name FROM sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%'; ";
+                    using (var command = new SQLiteCommand(sql, con))
+                    {
+                        SQLiteDataAdapter da = new SQLiteDataAdapter(command);
+                        da.Fill(dbs);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                using (StreamWriter logger = new StreamWriter(this._loggerpath))
+                {
+                    logger.WriteAsync("DBOps.GetDBs: " + ex.Message);
+                }
+
+                /*throw*/;
+            }
+            return dbs;
+        }
+
+        /// <summary>
+        /// CustomValidation: A helper function designed to clean/sanitize the sql command issued from the web-application.
+        /// Removes SQL special characters which may change the query or be used to unintentionally harm the database.
+        /// may break math like addition or modulo, so perform that stuff in the web-app logic, not in the SQL.
+        /// </summary>
+        /// <param name="command"></param>
+        /// <returns></returns>
+        string CustomValidation(string command)
+        {
+            string temp = command.ToLower();
+            temp = temp.Replace("--", "");     //avoids commenting the rest of the query out
+            temp = temp.Replace("+", "");
+            temp = temp.Replace("||", "");
+            temp = temp.Replace("concat", "");
+            temp = temp.Replace("%", "");
+            temp = temp.Replace("", "");
+            return temp;
+        }
 
         #region Constructor and Destructor
         public DBOps()
@@ -768,35 +828,8 @@ namespace Inventory_WebApp.DatabaseInterface
             return ds;
         }
         #endregion
-
-        public DataSet GetDBs()
-        {
-            DataSet dbs = new DataSet();
-            try
-            {
-                using (var con = new SQLiteConnection(this.DataBaseSource))
-                {
-                    string sql = "SELECT name FROM sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%'; ";
-                    using (var command = new SQLiteCommand(sql, con))
-                    {
-                        SQLiteDataAdapter da = new SQLiteDataAdapter(command);
-                        da.Fill(dbs);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                using (StreamWriter logger = new StreamWriter(this._loggerpath))
-                {
-                    logger.WriteAsync("DBOps.GetDBs: " + ex.Message);
-                }
-
-                /*throw*/;
-            }
-            return dbs;
-        }
-
         
+
         //TODO: DEVELOP THE BELOW FUNCTIONS - RIGHT NOW  WE'RE DOING THIS MANUALLY
         //public void InitLogger()
         //{
@@ -855,7 +888,7 @@ namespace Inventory_WebApp.DatabaseInterface
         //    //Console.ReadLine();   
         //}
 
-        //DEPRECATED AND UNUSED CODE FUNCTIONS
+        //TODO: REMOVE DEPRECATED AND UNUSED CODE FUNCTIONS
         //public void CheckVersion()
         //{
         //    string version;

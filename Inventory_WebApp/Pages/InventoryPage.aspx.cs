@@ -654,7 +654,7 @@ namespace Inventory_WebApp.Pages
 
                 //int retval = db.InsertInventoryTable(itemName, itemCode, itemQuantity, lab, category, description);
 
-                int retval = db.InsertUpdateInventoryTable(itemName, itemCode, itemQuantity, lab, category, description, warnQuantity, alertQuantity);   
+                int retval = db.InsertUpdateInventoryTable(itemName, itemCode, itemQuantity, lab, category, description,warnQuantity, alertQuantity);   
                 //lblInsertInfo.Text = retval.ToString() + " row inserted";
                 //lblInsertInfo.DataBind();
 
