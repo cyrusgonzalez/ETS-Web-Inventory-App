@@ -21,7 +21,7 @@
     <script defer="" src="https://use.fontawesome.com/releases/v5.8.1/js/all.js"></script>
 </head>
 <body>
-    <section class="hero is-primary is-bold" style="height: 120px">
+    <section class="hero is-primary is-bold">
         <div class="hero-body">
             <h2 class="title">Inventory @ ETS
             </h2>

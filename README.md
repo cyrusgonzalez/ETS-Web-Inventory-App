@@ -1,3 +1,23 @@
-This repository is a host for the code I write as part of an Inventory tool built for the Engineering Technical Services at CSU. It consists of a thin client-server tool accessible via hosting it on localhost. Currently the tool can perform CRUD operations and allow a user to insert, update records to build a catalog of items. I am working on a the inventory handling for stock of each item as well.
 
-19-May-2020: Wanted to make a note to move the editing and inserting into modal popups and a dynamic responsive table/grid to choose to edit.
+# ETS-Inventory (v1.0.1)
+
+This repository is a host for the code I write as part of an Inventory tool built for the Engineering Technical Services at CSU. 
+It consists of a thin client-server tool accessible via hosting it on an IIS server.
+I've set up the IIS , .NET Framework and libraries required to host and run applications on a machine in the Engineering Department(win-compute-12).
+ 
+This version of the tool (v1.0.1) has 2 different pages: One for Labs, and One for Inventory. (and unused Item and Supplier Pages)
+
+
+## Labs Page
+
+This page allows a user to view, insert and update details of labs. 
+
+**TODO**: 
+1. Delete Labs.
+2. Merge the Insert/Update into a combined panel.
+3. Reimplement Search and Populate for Labs. (like the Inventory Page.)
+
+ 
+
+
+
