@@ -30,7 +30,7 @@ namespace Inventory_WebApp.DatabaseInterface
         /// <summary>
         /// GetDBs(): A function to get all existing tables from the sqlite database.
         /// It ignores sqlite system tables.
-        /// Returns: DataSet
+        /// Returns: DataSet containing one column of table names
         /// </summary>
         /// <returns></returns>
         public DataSet GetDBs()
