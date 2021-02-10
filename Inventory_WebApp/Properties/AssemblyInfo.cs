@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Inventory_WebApp")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("A lightweight web application designed for inventory management for the ETS, Dept of Engineering, Colorado State University by Sanket Mehrotra")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Engineering Technical Services, Department of Engineering, Colorado State University")]
 [assembly: AssemblyProduct("Inventory_WebApp")]
-[assembly: AssemblyCopyright("Copyright ©  2020")]
+[assembly: AssemblyCopyright("Copyright © Colorado State University Engineering Technical Services 2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -33,3 +33,7 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
+
+
+//This line tells log4net where it's config file is.
+[assembly: log4net.Config.XmlConfigurator(ConfigFile = "log4net.config")]

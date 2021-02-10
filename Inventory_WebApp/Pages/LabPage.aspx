@@ -30,9 +30,9 @@
         </section>
         <div class="tabs">
             <ul>
-                <li class="is-active"><a href="LabPage.aspx">Labs</a></li>
+                <li class="is-active"><a runat="server" href="~/Pages/LabPage.aspx">Labs</a></li>
                 <%--<li><a href="ItemsPage.aspx">Items</a></li>--%>
-                <li><a href="InventoryPage.aspx">Inventory</a></li>
+                <li><a runat="server" href="~/Pages/InventoryPage.aspx">Inventory</a></li>
                 <%-- <li><a href="SuppliersPage.aspx">Suppliers</a></li>
                 <li><a href="DB_Select_Page.aspx">Choose your DB</a></li>--%>
             </ul>

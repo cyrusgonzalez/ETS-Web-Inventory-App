@@ -14,10 +14,8 @@
     <%--Bulma and Bulma extensions--%>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.2/css/bulma.min.css" />
     <link rel="stylesheet" href="../dependencies/bulma-extensions.min.css" />
+    <link rel="stylesheet" href="StyleSheet1.css"/>
     <script src="https://cdn.jsdelivr.net/npm/bulma-extensions@6.2.7/dist/js/bulma-extensions.min.js"></script>
-    
-    <%--<!-- Bootstrap -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />--%>
 
     <!-- Load Font Awesome 5 -->
     <script defer="" src="https://use.fontawesome.com/releases/v5.8.1/js/all.js"></script>
@@ -35,17 +33,13 @@
     </section>
     <div class="tabs">
         <ul>
-            <li><a href="LabPage.aspx">Labs</a></li>
-            <%--<li><a href="ItemsPage.aspx">Items</a></li>--%>
-            <li class="is-active"><a href="InventoryPage.aspx">Inventory</a></li>
-            <%--<li class=""><a href="InventoryPage2.aspx">Alt Inventory</a></li>--%>
-            <%--<li><a href="SuppliersPage.aspx">Suppliers</a></li>
-            <li><a href="DB_Select_Page.aspx">Choose your DB</a></li>--%>
+            <li><a runat="server" href="~/Pages/LabPage.aspx">Labs</a></li>
+            <li class="is-active"><a runat="server" href="~/Pages/InventoryPage.aspx">Inventory</a></li>
         </ul>
         <a onclick="showHideInsertPane(this);" style="direction: rtl;"><i class="fa fa-bars"></i></a>
         <script type="text/javascript">
             function showHideInsertPane(e) {
-                //e is the whole a tage and all its attributes
+                //e is the whole a tag and all its attributes
                 var element = document.getElementById("insert_inventory");
                 var searchbar = document.getElementById('<%=HiddenFieldShowHideSearchPanel.ClientID%>');
 
@@ -125,7 +119,7 @@
         <div class="columns">
             <div class="column box has-text-centered">
                 <div class="table-responsive">
-                    <asp:GridView runat="server" ID="gvitem" CssClass="table"
+                    <asp:GridView runat="server" ID="gvitem" CssClass="table  is-mobile"
                         HorizontalAlign="Center"
                         BorderColor="000080"
                         BorderWidth="2px"
@@ -147,17 +141,16 @@
                         OnRowUpdating="gvitem_RowUpdating"
                         OnRowCommand="gvitem_RowCommand"
                         OnRowDeleting="gvitem_RowDeleting"
-                        DataKeyNames="ItemCode,Model,lab"
+                        DataKeyNames="ItemCode,Model,lab,warning_quantity,alert_quantity"
                         AllowSorting="true"
                         OnSorting="gvitem_Sorting">
                         <Columns>
                             <asp:BoundField HeaderText="ID" DataField="ID" ReadOnly="true" Visible="false" />
                             <asp:BoundField HeaderText="Item" DataField="ItemCode" ReadOnly="true" SortExpression="Item" />
-                            <asp:BoundField HeaderText="Model-ItemCode" DataField="model" ReadOnly="true">
+                            <asp:BoundField HeaderText="Model" DataField="model" ReadOnly="true">
                                 <HeaderStyle CssClass="is-hidden-mobile"></HeaderStyle>
                                 <ItemStyle CssClass="is-hidden-mobile"></ItemStyle>
-                            
-                                </asp:BoundField>
+                            </asp:BoundField>
                             <asp:BoundField HeaderText="Description" DataField="description" ReadOnly="true" >
                             <HeaderStyle CssClass="is-hidden-mobile"></HeaderStyle>
                                 <ItemStyle CssClass="is-hidden-mobile"></ItemStyle>
@@ -181,17 +174,7 @@
                             <asp:ButtonField CommandName="decrement" Text="<i class='fa fa-minus'></i>"
                                 ButtonType="Link"
                                 ControlStyle-CssClass="btn btn-primary" />
-                            <%--<asp:BoundField HeaderText="Quantity" DataField="quantity" ItemStyle-Width="50px" ReadOnly="true" Visible="false" />--%>
                             <asp:BoundField HeaderText="Lab" DataField="lab" ReadOnly="true" SortExpression="Lab" />
-                            <%--<asp:ButtonField CommandName="edit" Text="<i class='fa fa-edit'></i>"
-                            ButtonType="Link"
-                            ControlStyle-CssClass="btn btn-primary" />
-                        <asp:ButtonField CommandName="update" Text="<i class='fa fa-check'></i>"
-                            ButtonType="Link"
-                            ControlStyle-CssClass="btn btn-primary" />
-                        <asp:ButtonField CommandName="editcancel" Text="<i class='fa fa-times'></i>"
-                            ButtonType="Link"
-                            ControlStyle-CssClass="btn btn-primary" />--%>
                             <asp:TemplateField ShowHeader="False">
                                 <ItemTemplate>
                                     <asp:LinkButton ID="DeleteButton" runat="server" Text="<i class='fa fa-times'></i>" ButtonType="Link"
@@ -199,6 +182,14 @@
                                         AlternateText="Delete" />
                                 </ItemTemplate>
                             </asp:TemplateField>
+                            <asp:BoundField HeaderText="Warning Quantity" DataField="warning_quantity" ReadOnly="true">
+                                <HeaderStyle CssClass="is-hidden-mobile"></HeaderStyle>
+                                <ItemStyle CssClass="is-hidden-mobile"></ItemStyle>
+                            </asp:BoundField>
+                            <asp:BoundField HeaderText="Alert Quantity" DataField="alert_quantity" ReadOnly="true" >
+                                <HeaderStyle CssClass="is-hidden-mobile"></HeaderStyle>
+                                <ItemStyle CssClass="is-hidden-mobile"></ItemStyle>
+                            </asp:BoundField>
                         </Columns>
                     </asp:GridView>
                 </div>
@@ -215,7 +206,7 @@
                 <asp:Label ID="lblErr" runat="server" ForeColor="Red"></asp:Label>
                 <asp:Button ID="btnLoad" runat="server" OnClick="btnLoad_Click" Text="Load Table" CssClass="button" />
             </div>
-            <div id="insert_inventory" style="display: none" class="column" runat="server">
+            <div id="insert_inventory" style="display: none; overflow: auto" class="column" runat="server">
                 <div class="box">
                     <div class="columns">
                         <div class="column is-half">
@@ -237,16 +228,16 @@
                                     <asp:DropDownList ID="ddlInsertLab" runat="server"></asp:DropDownList>
                                 </div>
                             </div>
-                            <div class="field is-grouped">
+                            <div class="field">
+                                <asp:Label ID="Label6" CssClass="label" runat="server">Warning Quantity:   </asp:Label>
                                 <div class="control">
-                                    <asp:Button ID="btnInsert" runat="server" Text="Insert" OnClick="btnInsert_Click" CssClass="button" />
+                                    <asp:TextBox ID="txtInsertWarningQuant" CssClass="input" placeholder="15" runat="server"></asp:TextBox>
                                 </div>
-                                <asp:Label ID="lblInsertInfo" CssClass="label" runat="server" ForeColor="Red"></asp:Label>
                             </div>
                         </div>
                         <div class="column">
                             <div class="field">
-                                <asp:Label ID="Label9" CssClass="label" runat="server">Item Code:   </asp:Label>
+                                <asp:Label ID="Label9" CssClass="label" runat="server">Model:   </asp:Label>
                                 <div class="control">
                                     <asp:TextBox ID="txtInsertItemCode" CssClass="input" placeholder="TN4956" runat="server"></asp:TextBox>
                                 </div>
@@ -263,9 +254,20 @@
                                     <asp:TextBox ID="txtInsertCategory" CssClass="input" placeholder="Cables" runat="server"></asp:TextBox>
                                 </div>
                             </div>
+                            <div class="field">
+                                <asp:Label ID="Label13" CssClass="label" runat="server">Alert Quantity:   </asp:Label>
+                                <div class="control">
+                                    <asp:TextBox ID="txtInsertAlertQuant" CssClass="input" placeholder="10" runat="server"></asp:TextBox>
+                                </div>
+                            </div>
                         </div>
                     </div>
-
+                    <div class="field is-grouped">
+                        <div class="control">
+                            <asp:Button ID="btnInsert" runat="server" Text="Insert/Update" OnClick="btnInsert_Click" CssClass="button is-link is-light" />
+                        </div>
+                        <asp:Label ID="lblInsertInfo" CssClass="label" runat="server" ForeColor="Red"></asp:Label>
+                    </div> 
                 </div>
 
                 <div id="UpdateDiv" class="box has-text-centered" style="display: none;">
@@ -274,7 +276,7 @@
                     <asp:Button ID="btnUpdate" runat="server" Text="Update" OnClick="btnUpdate_Click" CssClass="button" />
                     <asp:Label ID="lblUpdateInfo" runat="server" ForeColor="Red"></asp:Label>
                 </div>
-                <div class="box message" id="search_inventory">
+                <div class="box message" style="overflow: auto" id="search_inventory">
                     <div class="message-header">
                         <h4>Search</h4>
                     </div>
@@ -305,11 +307,47 @@
                         </div>
                         <div class="field is-grouped">
                             <div class="control">
-                                <asp:DataGrid runat="server" ID="dgSearchResult" AllowPaging="true" PageSize="5" CssClass="table"></asp:DataGrid>
-                                <asp:GridView runat="server" ID="gvSearchResult" AllowPaging="True" PageSize="5" CssClass="table">
+                                <asp:GridView runat="server" ID="gvSearchResult" AllowPaging="True" PageSize="5" CssClass="table is-mobile is-half-desktop" AutoGenerateColumns="False" OnRowCommand="gvSearchResult_OnRowCommand">
                                     <Columns>
-                                        <asp:BoundField HeaderText="ID" DataField="ID" ReadOnly="true" Visible="false" />
-                                        <asp:BoundField HeaderText="Item" DataField="ItemCode" ReadOnly="true" />
+                                        <asp:BoundField HeaderText="ID" DataField="ID" ReadOnly="true" Visible="false" >
+                                            <HeaderStyle CssClass="is-hidden-mobile"></HeaderStyle>
+                                            <ItemStyle CssClass="is-hidden-mobile"></ItemStyle>
+                                        </asp:BoundField>
+                                        <asp:BoundField HeaderText="Item" DataField="ItemCode" ReadOnly="true" >
+                                            <HeaderStyle CssClass=""></HeaderStyle>
+                                            <ItemStyle CssClass=""></ItemStyle>
+                                        </asp:BoundField>
+                                        <asp:BoundField HeaderText="Quantity" DataField="quantity" ReadOnly="true"  >
+                                            <HeaderStyle CssClass=""></HeaderStyle>
+                                            <ItemStyle CssClass=""></ItemStyle>
+                                        </asp:BoundField>
+                                        <asp:BoundField HeaderText="Lab" DataField="lab" ReadOnly="true" >
+                                            <HeaderStyle CssClass=""></HeaderStyle>
+                                            <ItemStyle CssClass="" Width="40px"></ItemStyle>
+                                        </asp:BoundField>
+                                        <asp:BoundField HeaderText="Description" DataField="description" ReadOnly="true" >
+                                            <HeaderStyle CssClass="is-hidden-mobile"></HeaderStyle>
+                                            <ItemStyle CssClass="is-hidden-mobile" Width="40px"></ItemStyle>
+                                        </asp:BoundField>
+                                        <asp:BoundField HeaderText="Category" DataField="category" ReadOnly="true" >
+                                            <HeaderStyle CssClass="is-hidden-mobile"></HeaderStyle>
+                                            <ItemStyle CssClass="is-hidden-mobile"></ItemStyle>
+                                        </asp:BoundField>
+                                        <asp:BoundField HeaderText="Model" DataField="model" ReadOnly="true">
+                                            <HeaderStyle CssClass="is-hidden-mobile"></HeaderStyle>
+                                            <ItemStyle CssClass="is-hidden-mobile"></ItemStyle>
+                                        </asp:BoundField>
+                                        <asp:BoundField HeaderText="Warning Quant" DataField="warning_quantity" ReadOnly="true">
+                                            <HeaderStyle CssClass="is-hidden-mobile" Width="40px"></HeaderStyle>
+                                            <ItemStyle CssClass="is-hidden-mobile"></ItemStyle>
+                                        </asp:BoundField>
+                                        <asp:BoundField HeaderText="Alert Quant" DataField="alert_quantity" ReadOnly="true">
+                                            <HeaderStyle CssClass="is-hidden-mobile" Width="40px"></HeaderStyle>
+                                            <ItemStyle CssClass="is-hidden-mobile"></ItemStyle>
+                                        </asp:BoundField>
+                                        <asp:ButtonField CommandName="populate" Text="<i class='fa fa-file-upload'></i>"
+                                                         ButtonType="Link"
+                                                         ControlStyle-CssClass="btn btn-primary" />
                                     </Columns>
                                 </asp:GridView>
                             </div>

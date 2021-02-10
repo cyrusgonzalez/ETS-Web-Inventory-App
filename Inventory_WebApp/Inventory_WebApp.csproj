@@ -50,6 +50,9 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.3.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="log4net, Version=2.0.12.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.12\lib\net45\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data.SQLite, Version=1.0.112.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Data.SQLite.Core.1.0.112.0\lib\net46\System.Data.SQLite.dll</HintPath>
@@ -96,6 +99,7 @@
     <Content Include="Pages\InventoryPage2.aspx" />
     <Content Include="Pages\LabPage.aspx" />
     <Content Include="Pages\ItemsPage.aspx" />
+    <Content Include="Pages\StyleSheet1.css" />
     <Content Include="Pages\SuppliersPage.aspx" />
     <Content Include="Web.config" />
     <Content Include="Pages\InventoryPage.aspx" />
@@ -107,7 +111,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DatabaseInterface\DBOps2.cs" />
-    <Compile Include="DatabaseInterface\DBOps1.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -170,6 +173,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="log4net.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="packages.config" />
     <Content Include="Temp\Site1.Master" />
     <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />

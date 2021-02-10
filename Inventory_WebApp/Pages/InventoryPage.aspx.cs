@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Web.UI.WebControls;
 using Inventory_WebApp.DatabaseInterface;
+using Exception = System.Exception;
 
 namespace Inventory_WebApp.Pages
 {
@@ -57,11 +58,11 @@ namespace Inventory_WebApp.Pages
                         insert_inventory.Style.Add("display","none");
                     }
 
-                    if ((DataTable)dgSearchResult.DataSource != null)
+                    if ((GridView)gvSearchResult.DataSource != null)
                     {
-                        DataTable dt = (DataTable)dgSearchResult.DataSource;
-                        if (dt.Rows.Count == 0)
-                        {
+                        GridView tempGvDataSource = (GridView)gvSearchResult.DataSource;
+                        if (tempGvDataSource.Rows.Count == 0)
+                        { 
                             lblPageInfo.Text = "No rows matched your search key";
                             lblPageInfo.ForeColor = System.Drawing.Color.Red;
                             lblPageInfo.DataBind();
@@ -208,7 +209,6 @@ namespace Inventory_WebApp.Pages
                     DataSet ds = db.ReadInventoryTable();
                     ds.Tables["table"].DefaultView.Sort = CheckSort() ?? "";           //read from ViewState['gvitemsort'] as Quantity ASC/LAB DESC
                     Session["SortedView"] = ds.Tables["table"].DefaultView.ToTable();
-
                 }
 
                 if (Session["Filters"] == null)
@@ -304,6 +304,20 @@ namespace Inventory_WebApp.Pages
             {
                 DBOps db = new DBOps();
                 DataSet ds = db.GetInventoryColumns();
+                for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                {
+                    if (ds.Tables[0].Rows[i]["name"].ToString().Trim().ToLower().Contains("id") ||
+                        ds.Tables[0].Rows[i]["name"].ToString().Trim().ToLower().Contains("quantity"))
+                    {
+                        ds.Tables[0].Rows.RemoveAt(i);
+                    }   
+                }
+                //DataRow[] result = ds.Tables[0].Select("name = 'id'");
+                //foreach (DataRow row in ds.Tables[0].Rows)
+                //{
+                //    if (row["name"].ToString().Trim().ToLower().Contains("id") || row["name"].ToString().Trim().ToLower().Contains("quantity"))
+                //        ds.Tables[0].Rows.Remove(row);
+                //}
                 ddlColumn.DataSource = ds;
                 ddlColumn.DataTextField = "name";
                 ddlColumn.DataValueField = "name";
@@ -623,6 +637,8 @@ namespace Inventory_WebApp.Pages
                 string lab = ddlInsertLab.SelectedValue;
                 string description = txtInsertDescription.Text;
                 string category = txtInsertCategory.Text;
+                int alertQuantity = int.Parse(txtInsertAlertQuant.Text?? string.Empty);
+                int warnQuantity = int.Parse(txtInsertWarningQuant.Text?? string.Empty);
                 long itemQuantity;
                 if (long.TryParse(txtInsertQuantity.Text, out itemQuantity))
                 {
@@ -636,13 +652,14 @@ namespace Inventory_WebApp.Pages
                     lblPageInfo.DataBind();
                 }
 
+                //int retval = db.InsertInventoryTable(itemName, itemCode, itemQuantity, lab, category, description);
 
-                int retval = db.InsertInventoryTable(itemName, itemCode, itemQuantity, lab, category, description);
-                lblInsertInfo.Text = retval.ToString() + " row inserted";
-                lblInsertInfo.DataBind();
+                int retval = db.InsertUpdateInventoryTable(itemName, itemCode, itemQuantity, lab, category, description,warnQuantity, alertQuantity);   
+                //lblInsertInfo.Text = retval.ToString() + " row inserted";
+                //lblInsertInfo.DataBind();
 
-                lblPageInfo.Text = retval.ToString() + " row inserted";
-                lblPageInfo.DataBind();
+                //lblPageInfo.Text = retval.ToString() + " row inserted";
+                //lblPageInfo.DataBind();
 
                 string callerfunc = new StackFrame(1).GetMethod().Name;
                 RefreshTable(callerfunc);
@@ -658,6 +675,8 @@ namespace Inventory_WebApp.Pages
                 txtInsertItemCode.Text = "";
                 txtInsertCategory.Text = "";
                 txtInsertDescription.Text = "";
+                txtInsertAlertQuant.Text = "";
+                txtInsertWarningQuant.Text = "";
                 ddlInsertLab.SelectedIndex = 0;
             }
 
@@ -717,35 +736,74 @@ namespace Inventory_WebApp.Pages
 
             Type searchColumnType = GetMyType(type.ToArray()[0]);
 
+            //Optimization: Try querying/Linq querying the datasource of the main grid gvItems. Will save a DB Trip
+
             DBOps db = new DBOps();
             DataSet ds = db.ReadInventoryTable();
-            //DataSet ds = (DataSet)gvitem.DataSource;
             DataTable dt = ds.Tables["Table"];
-            DataTable result;
+            DataTable result = new DataTable();
 
 
             if (searchColumnType == typeof(int))
             {
+                try
+                {
+                    long itemQuantity;
+                    if (long.TryParse(txtSearchtext.Text, out itemQuantity))
+                    {
+                        itemQuantity = long.Parse(txtSearchtext.Text);
+                    }
+                    else
+                    {
+                        ClientScript.RegisterStartupScript(GetType(), "NumericCheck", "alert('Please enter a Numeric Quantity in the Search Box or Check the selected column.');", true);
+                        lblPageInfo.Text = "Please enter a Numeric Quantity in the Search Box or Check the selected column.";
+                        lblPageInfo.DataBind();
+                    }
+                }
+                catch(Exception ex)
+                {
+                    //log error here
+                }
+
                 var query = from row in dt.AsEnumerable()
                             where row.Field<Int64>(col) == Int64.Parse(txtSearchtext.Text)
                             select row;
-                result = query.CopyToDataTable();
+                // Source: https://stackoverflow.com/questions/3259895/if-linq-result-is-empty to handle no matches 23 Jan 2021
+                if (query.Any()) //attempts to see if there is at least one element in the list
+                {
+                    result = query.CopyToDataTable();
+                }
+                
             }
             else
             {
                 var query = from row in dt.AsEnumerable()
                             where row.Field<string>(col) != null && row.Field<string>(col).ToLower().Contains(txtSearchtext.Text.ToLower())
                             select row;
-                result = query.CopyToDataTable();
+
+                if (query.Any())
+                {
+                    result = query.CopyToDataTable();
+                }
             }
 
 
             int count = result.Rows.Count;
-            lblSearchInfo.Text = count.ToString() + " row(s) matched";
-            lblSearchInfo.DataBind();
 
-            dgSearchResult.DataSource = result;
-            dgSearchResult.DataBind();
+            if (count > 0)
+            {
+                lblSearchInfo.Text = count.ToString() + " row(s) matched";
+                lblSearchInfo.DataBind();
+
+                gvSearchResult.DataSource = result;
+                gvSearchResult.DataBind();
+            }
+            else
+            {
+                lblSearchInfo.Text = "No matches for your query: " + col + " = " + txtSearchtext.Text.ToLower();
+                lblSearchInfo.DataBind();
+            }
+            
         }
 
         #endregion
@@ -772,13 +830,16 @@ namespace Inventory_WebApp.Pages
             try
             {
                 GridViewRow row = e.Row;
-                int Quantity = int.Parse((row.FindControl("lblQuantity") as Label)?.Text ?? string.Empty);
+                int quantity = int.Parse((row.FindControl("lblQuantity") as Label)?.Text ?? string.Empty);
+                int warnQuantity = int.Parse(gvitem.DataKeys[e.Row.RowIndex]["warning_quantity"].ToString());
+                int alertQuantity = int.Parse(gvitem.DataKeys[e.Row.RowIndex]["alert_quantity"].ToString());
                 //CheckRowQuantityColor(e.Row.RowIndex);
-                if (Quantity < 15)       //Change this hardcode to a properties file config. one for medium , one for low
+
+                if (quantity < warnQuantity)      
                 {
                     row.BackColor = System.Drawing.Color.Orange;
                 }
-                if (Quantity < 10)
+                if (quantity < alertQuantity)
                 {
                     row.ForeColor = System.Drawing.Color.White;
                     row.BackColor = System.Drawing.Color.Red;
@@ -818,26 +879,12 @@ namespace Inventory_WebApp.Pages
                     row.Cells.AddAt(8, cell);
                     //row.Cells.Add(cell);
                 }
-
-
-                ////code to move the delete button to the right end of the table after the edit button
-                //if (row.Cells.Count > 7)
-                //{
-                //    cell = row.Cells[8];
-                //    row.Cells.Remove(cell);
-                //    row.Cells.AddAt(row.Cells.Count, cell);
-                //}
-
-
-
+                
             }
             catch (Exception ex)
             {
                 throw;
             }
-
-
-
         }
 
         protected void gvitem_RowUpdating(object sender, GridViewUpdateEventArgs e)
@@ -899,7 +946,7 @@ namespace Inventory_WebApp.Pages
                     int RowIndex = int.Parse(e.CommandArgument.ToString());
                     GridViewRow changedRow = gvitem.Rows[RowIndex];
                     string item = gvitem.Rows[RowIndex].Cells[1].Text;
-                    string lab = gvitem.Rows[RowIndex].Cells[8].Text;
+                    string lab = gvitem.Rows[RowIndex].Cells[9].Text;
                     Int32 changedQuantity;
 
                     if (changedRow.FindControl("lblQuantity") is null)
@@ -933,7 +980,7 @@ namespace Inventory_WebApp.Pages
                     int RowIndex = int.Parse(e.CommandArgument.ToString());
                     GridViewRow changedRow = gvitem.Rows[RowIndex];
                     string item = gvitem.Rows[RowIndex].Cells[1].Text;
-                    string lab = gvitem.Rows[RowIndex].Cells[8].Text;
+                    string lab = gvitem.Rows[RowIndex].Cells[9].Text;
                     Int32 changedQuantity;
                     if (changedRow.FindControl("lblQuantity") is null)
                     {
@@ -965,7 +1012,7 @@ namespace Inventory_WebApp.Pages
                     int RowIndex = int.Parse(e.CommandArgument.ToString());
                     GridViewRow changedRow = gvitem.Rows[RowIndex];
                     string item = gvitem.Rows[RowIndex].Cells[1].Text;
-                    string lab = gvitem.Rows[RowIndex].Cells[8].Text;
+                    string lab = gvitem.Rows[RowIndex].Cells[9].Text;
                     Int32 changedQuantity;
                     if (changedRow.FindControl("lblQuantity") is null)
                     {
@@ -1258,16 +1305,53 @@ namespace Inventory_WebApp.Pages
         protected void CheckRowQuantityColor(Int32 rowIndex)
         {
             GridViewRow row = gvitem.Rows[rowIndex];
-            int Quantity = int.Parse((row.FindControl("lblQuantity") as Label)?.Text ?? "0");
-            if (Quantity < 15)       //Change this hardcode to a properties file config. one for medium , one for low
+            int quantity = int.Parse((row.FindControl("lblQuantity") as Label)?.Text ?? "0");
+            if (quantity < 15)       
             {
                 row.BackColor = System.Drawing.Color.Orange;
             }
-            if (Quantity < 10)
+            if (quantity < 10)
             {
                 row.BackColor = System.Drawing.Color.Red;
             }
         }
 
+
+        protected void gvSearchResult_OnRowCommand(object sender, GridViewCommandEventArgs e)
+        {
+            if (e.CommandName.ToLower() == "populate")
+            {
+                //capture row arguments
+                int RowIndex = int.Parse(e.CommandArgument.ToString());
+                GridViewRow changedRow = gvSearchResult.Rows[RowIndex];
+                string itemcodeText = gvSearchResult.Rows[RowIndex].Cells[1].Text;
+                string quantityText = gvSearchResult.Rows[RowIndex].Cells[2].Text;
+                string labText = gvSearchResult.Rows[RowIndex].Cells[3].Text;
+                string descriptionText = gvSearchResult.Rows[RowIndex].Cells[4].Text;
+                string categoryText = gvSearchResult.Rows[RowIndex].Cells[5].Text;
+                string modelText = gvSearchResult.Rows[RowIndex].Cells[6].Text;
+                string warningQuant = gvSearchResult.Rows[RowIndex].Cells[7].Text;
+                string alertQuant = gvSearchResult.Rows[RowIndex].Cells[8].Text;
+
+                //push them to insert/update form. 
+                txtInsertItem.Text = DBquoteToHTML(itemcodeText);
+                txtInsertQuantity.Text = DBquoteToHTML(quantityText);
+                txtInsertDescription.Text = DBquoteToHTML(descriptionText);
+                ddlInsertLab.SelectedValue = DBquoteToHTML(labText);
+                txtInsertCategory.Text = DBquoteToHTML(categoryText);
+                txtInsertItemCode.Text = DBquoteToHTML(modelText);
+                txtInsertAlertQuant.Text = DBquoteToHTML(alertQuant);
+                txtInsertWarningQuant.Text = DBquoteToHTML(warningQuant);
+            }
+        }
+
+        protected String DBquoteToHTML(String text)
+        {
+            text = text.Replace("&#39;", "'");
+            text = text.Replace("&quot;","\"");
+            text = text.Replace("&nbsp;", "");
+
+            return text;
+        }
     }
 }
