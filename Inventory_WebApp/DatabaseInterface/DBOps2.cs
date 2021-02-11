@@ -2,6 +2,7 @@
 using System.Data;
 using System.Data.SQLite;
 using System.IO;
+using System.Web.UI.WebControls;
 using System.Xml;
 using log4net;
 
@@ -80,10 +81,14 @@ namespace Inventory_WebApp.DatabaseInterface
         }
 
         #region Constructor and Destructor
+        /// <summary>
+        /// These aren't in use right now, and can be safely ignored.
+        /// Use them if you want to do something everytime a DB Operation is required.
+        /// Be sure to clean up any open file handlers and close files after the DB operation is complete in the ~DBOps destructor function
+        /// </summary>
+
         public DBOps()
         {
-            //InitLogger();
-            //InitConfig();
             string path;
             XmlDocument conf = new XmlDocument();
             //conf.Load("./properties.xml");
@@ -98,8 +103,6 @@ namespace Inventory_WebApp.DatabaseInterface
                     this._loggerpath = conf.GetElementsByTagName("logfile")[0].ChildNodes[0].Value;
                 }
             }
-
-
         }
 
         ~DBOps()
@@ -828,7 +831,38 @@ namespace Inventory_WebApp.DatabaseInterface
             return ds;
         }
         #endregion
-        
+
+        #region EMail Interfaces
+
+        public DataSet GetConfig(string configName)
+        {
+            DataSet ds = new DataSet();
+            try
+            {
+                using (SQLiteConnection con = new SQLiteConnection(this.DataBaseSource))
+                {
+                    con.Open();
+                    string sql = "select * from appconfigs where configname = @configName";
+                    SQLiteCommand command = new SQLiteCommand(con);
+                    command.CommandText = sql;
+                    command.Parameters.AddWithValue("@configName", configName);
+                    command.Prepare();
+                    SQLiteDataAdapter da = new SQLiteDataAdapter(command);
+                    da.Fill(ds);
+                }
+            }
+            catch (Exception ex)
+            {
+                log.Error("Database Error in GetConfig: ", ex);
+            }
+
+            return ds;
+        }
+
+
+
+        #endregion
+
 
         //TODO: DEVELOP THE BELOW FUNCTIONS - RIGHT NOW  WE'RE DOING THIS MANUALLY
         //public void InitLogger()
