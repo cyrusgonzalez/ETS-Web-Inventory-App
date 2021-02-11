@@ -62,11 +62,11 @@
                     <div class="level-item has-text-centered">
                         <div class="field is-horizontal">
                             <div class="field-label">
-                                <asp:Label runat="server" CssClass="label" ID="Label12"> Lab: </asp:Label>
+                                <asp:Label runat="server" CssClass="label is-small" ID="Label12"> Lab: </asp:Label>
                             </div>
                             <div class="field-body">
                                 <div class="control">
-                                    <div class="select is-one-third-mobile">
+                                    <div class="select is-one-third-mobile is-small">
                                         <asp:DropDownList ID="ddlLabselect" CssClass="" runat="server" EnableTheming="true" OnSelectedIndexChanged="ddlLabselect_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
                                     </div>
                                 </div>
@@ -76,11 +76,11 @@
                     <div class="level-item has-text-centered">
                         <div class="field is-horizontal">
                             <div class="field-label">
-                                <asp:Label runat="server" CssClass="label" ID="Label10"> Category: </asp:Label>
+                                <asp:Label runat="server" CssClass="label is-small" ID="Label10"> Category: </asp:Label>
                             </div>
                             <div class="field-body">
                                 <div class="control">
-                                    <div class="select">
+                                    <div class="select is-small">
                                         <asp:DropDownList ID="ddlCategorySelect" CssClass="" runat="server" EnableTheming="true" OnSelectedIndexChanged="ddlCategorySelect_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
                                     </div>
                                 </div>
@@ -90,11 +90,11 @@
                     <div class="level-item has-text-centered">
                         <div class="field is-horizontal">
                             <div class="field-label">
-                                <asp:Label runat="server" CssClass="label" ID="Label5"> Item: </asp:Label>
+                                <asp:Label runat="server" CssClass="label is-small" ID="Label5"> Item: </asp:Label>
                             </div>
                             <div class="field-body">
                                 <div class="control">
-                                    <div class="select is-flex">
+                                    <div class="select is-flex is-small">
                                         <asp:DropDownList ID="ddlItemSelect" CssClass="" runat="server" EnableTheming="true" OnSelectedIndexChanged="ddlItemSelect_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
                                     </div>
                                 </div>

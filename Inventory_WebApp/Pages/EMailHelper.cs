@@ -86,9 +86,12 @@ namespace Inventory_WebApp.Pages
                 using (var message = new MailMessage(fromAddress, toAddress)
                 {
                     Subject = subject,
-                    Body = body
+                    Body = body,
+                    IsBodyHtml = false, //true for multiple row table i think.
+                    BodyEncoding = System.Text.Encoding.UTF8,
                 })
                 {
+
                     smtp.Send(message); //trySend() in case of failure.
                 }
 
