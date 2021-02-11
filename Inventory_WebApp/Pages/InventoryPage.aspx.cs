@@ -49,14 +49,14 @@ namespace Inventory_WebApp.Pages
                 //Check if search results returned any rows
                 try
                 {
-                    if (HiddenFieldShowHideSearchPanel.Value == "Show")
-                    {
-                        insert_inventory.Style.Remove("display");
-                    }
-                    if (HiddenFieldShowHideSearchPanel.Value == "Hidden")
-                    {
-                        insert_inventory.Style.Add("display","none");
-                    }
+                    //if (HiddenFieldShowHideSearchPanel.Value == "Show")
+                    //{
+                    //    insert_inventory.Style.Remove("display");
+                    //}
+                    //if (HiddenFieldShowHideSearchPanel.Value == "Hidden")
+                    //{
+                    //    insert_inventory.Style.Add("display","none");
+                    //}
 
                     if ((GridView)gvSearchResult.DataSource != null)
                     {
