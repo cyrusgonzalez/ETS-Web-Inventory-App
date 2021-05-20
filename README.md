@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="dependencies/header-logo.png"><br>
+  <img src="images/header-logo.png"><br>
 </div>
 
 -----------------
@@ -90,11 +90,11 @@ This project, or parts of it can be helpful samples for you if you are looking t
 
 # Architecture Diagrams <a name="digs"></a>
 <div align="center">
-  <img src="dependencies/architecture-digs.png"><br>
+  <img src="images/architecture-digs.png"><br>
 </div>
 
 <div align="center">
-  <img src="dependencies/db-schema.png"><br>
+  <img src="images/db-schema.png"><br>
 </div>
 
 
