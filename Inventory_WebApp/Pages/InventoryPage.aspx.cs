@@ -851,10 +851,11 @@ namespace Inventory_WebApp.Pages
                     row.ForeColor = System.Drawing.Color.White;
                     row.BackColor = System.Drawing.Color.Red;
 
-                    EMailHelper x = new EMailHelper();
-                    string itemCode = gvitem.DataKeys[e.Row.RowIndex]["ItemCode"].ToString();
-                    string lab = gvitem.DataKeys[e.Row.RowIndex]["lab"].ToString();
-                    x.sendItemEmail(itemCode, lab, quantity);
+                    //Single ITem Email Tests
+                    //EMailHelper x = new EMailHelper();
+                    //string itemCode = gvitem.DataKeys[e.Row.RowIndex]["ItemCode"].ToString();
+                    //string lab = gvitem.DataKeys[e.Row.RowIndex]["lab"].ToString();
+                    //x.sendItemEmail(itemCode, lab, quantity);
                 }
                 
             }

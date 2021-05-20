@@ -67,12 +67,15 @@ namespace Inventory_WebApp.Pages
             try
             {
                 string from = db.GetConfig("senderEmail").Tables[0].Rows[0]["configval1"].ToString();
-                string to = db.GetConfig("receiverEmail").Tables[0].Rows[0]["configval1"].ToString();
                 MailAddress fromAddress = new MailAddress(from, "ETS_Inventory");
-                MailAddress toAddress = new MailAddress(to, "ETS Team");
                 string fromPassword = db.GetConfig("senderPassword").Tables[0].Rows[0]["configval1"].ToString();
                 string body = prepItemEmail(item, lab, quantity);
                 string subject = "ETS Inventory: Low Item Quantity Alert";
+
+
+                //multiple senders
+                DataTable toTable = db.GetConfig("receiverEmail").Tables[0];
+                
 
                 var smtp = new SmtpClient
                 {
@@ -83,15 +86,20 @@ namespace Inventory_WebApp.Pages
                     UseDefaultCredentials = false,
                     Credentials = new NetworkCredential(fromAddress.Address, fromPassword)
                 };
-                using (var message = new MailMessage(fromAddress, toAddress)
+                using (var message = new MailMessage() //new MailMessage(fromAddress, toAddress)
                 {
+                    From = fromAddress,
                     Subject = subject,
                     Body = body,
                     IsBodyHtml = false, //true for multiple row table i think.
                     BodyEncoding = System.Text.Encoding.UTF8,
                 })
                 {
-
+                    foreach (DataRow dr in toTable.Rows)
+                    {
+                        message.To.Add(new MailAddress(dr["configval1"].ToString()));
+                    }
+                    //MailAddress toAddress = new MailAddress(to, "ETS Team");
                     smtp.Send(message); //trySend() in case of failure.
                 }
 
