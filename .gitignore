@@ -4,4 +4,4 @@
 /Models
 /.vs
 /packages
-*.log
+.log
