@@ -17,17 +17,6 @@
 # ETS-Inventory (v0.0.1) : A tool to manage simple inventory tracking and notification
 
 
-## Labs Page
-
-This page allows a user to view, insert and update details of labs. 
-
-**TODO**: 
-1. Delete Labs.
-2. Merge the Insert/Update into a combined panel.
-3. Reimplement Search and Populate for Labs. (like the Inventory Page.)
-
-
-
 # What is it? <a name="what_is_it"></a>
 
 This repository is a host for the code I write as part of an Inventory tool built for the [Engineering Technology Services](https://www.engr.colostate.edu/ets/) at CSU. 
