@@ -9,7 +9,7 @@
 - [Main Features](#main-features)  
 - [Project Structure](#project_structure)
 - [How to Run ETS_Inventory_WA](#how-to-run)
-- [Architechture Diagrams](#digs)   
+- [Architure Diagrams](#digs)   
 - [Discussion and Development](#dev)
 - [Contribution](#contri)
 
@@ -30,7 +30,7 @@ This page allows a user to view, insert and update details of labs.
 
 # What is it? <a name="what_is_it"></a>
 
-This repository is a host for the code I write as part of an Inventory tool built for the [Engineering Technical Services](https://www.engr.colostate.edu/ets/) at CSU. 
+This repository is a host for the code I write as part of an Inventory tool built for the [Engineering Technology Services](https://www.engr.colostate.edu/ets/) at CSU. 
 It consists of a thin client-server tool accessible via hosting it on an IIS server. I use a simple SQLite Database file to store and retrieve records.
 I've set up the IIS , .NET Framework and libraries required to host and run applications on a machine in the Engineering Department(win-compute-12).
 This version of the tool (v0.0.1) has 2 different pages: One for Labs, and One for Inventory.
@@ -92,7 +92,7 @@ This project, or parts of it can be helpful samples for you if you are looking t
 
 
 # Discussion and Development <a name="dev"></a>
-All development and discussion was done with Nick Stratton, Jeff Penn and the Engineering Technical Services team at the Dept of Engineering. This Project was developed as an proposed proposed internal tool to aid in the management of inventory at the various [labs](https://www.engr.colostate.edu/ets/lab-and-classroom-overview/) in the Engineering Department.
+All development and discussion was done with Nick Stratton, Jeff Penn and the Engineering Technology Services team at the Dept of Engineering. This Project was developed as an proposed proposed internal tool to aid in the management of inventory at the various [labs](https://www.engr.colostate.edu/ets/lab-and-classroom-overview/) in the Engineering Department.
 
 # Contributing to PerfFlow <a name="contri"></a>
 All contributions, bug reports, bug fixes, documentation improvements, enhancements, and ideas are welcome.
