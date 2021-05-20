@@ -90,10 +90,10 @@ This project, or parts of it can be helpful samples for you if you are looking t
 
 # Architecture Diagrams <a name="digs"></a>
 <div align="center">
-  <img src="images/architecture-digs.JPG"><br>
+  <img src="images/architecture-dig.JPG"><br>
 </div>
 
-< div align="center">
+<div align="center">
   <img src="images/db-schema.JPG"><br>
 </div>
 
