@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="images/perfflowjs-crop.png"><br>
+  <img src="dependencies/header-logo.png"><br>
 </div>
 
 -----------------
@@ -89,6 +89,13 @@ This project, or parts of it can be helpful samples for you if you are looking t
 6. The sample webserver will be started by VS running it on your local system.
 
 # Architecture Diagrams <a name="digs"></a>
+<div align="center">
+  <img src="dependencies/architecture-digs.png"><br>
+</div>
+
+<div align="center">
+  <img src="dependencies/db-schema.png"><br>
+</div>
 
 
 # Discussion and Development <a name="dev"></a>
