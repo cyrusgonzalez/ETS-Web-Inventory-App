@@ -15,6 +15,8 @@ namespace Inventory_WebApp.Pages
     /// </summary>
     public partial class InventoryETS : System.Web.UI.Page
     {
+        private static readonly log4net.ILog _appLog = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         /// <summary>
         /// Function Page_Load 
         /// Functionality: 
@@ -72,7 +74,12 @@ namespace Inventory_WebApp.Pages
 
                         }
                     }
-
+                    //_appLog.Debug($"Page Loaded Sucessfully, Debug");
+                    //_appLog.Info($"App had loaded successfully, Info");
+                    //_appLog.Error("No Errors here!, Error");
+                    //_appLog.Warn($"Keep an eye out for warnings, Warn {lblPageInfo.ForeColor}");
+                    //_appLog.Fatal("Fatal Errors can occur in the most unexpected of places");
+                    TimeCheckEmailSender();
                 }
                 catch (Exception ex)
                 {
@@ -843,7 +850,14 @@ namespace Inventory_WebApp.Pages
                 {
                     row.ForeColor = System.Drawing.Color.White;
                     row.BackColor = System.Drawing.Color.Red;
+
+                    //Single ITem Email Tests
+                    //EMailHelper x = new EMailHelper();
+                    //string itemCode = gvitem.DataKeys[e.Row.RowIndex]["ItemCode"].ToString();
+                    //string lab = gvitem.DataKeys[e.Row.RowIndex]["lab"].ToString();
+                    //x.sendItemEmail(itemCode, lab, quantity);
                 }
+                
             }
             catch (Exception ex)
             {
@@ -943,6 +957,7 @@ namespace Inventory_WebApp.Pages
             {
                 if (e.CommandName.ToLower() == "increment")
                 {
+
                     int RowIndex = int.Parse(e.CommandArgument.ToString());
                     GridViewRow changedRow = gvitem.Rows[RowIndex];
                     string item = gvitem.Rows[RowIndex].Cells[1].Text;
@@ -1353,5 +1368,37 @@ namespace Inventory_WebApp.Pages
 
             return text;
         }
+
+        protected void TimeCheckEmailSender()
+        {
+            DataTable allAlertItems = new DataTable();
+            DataColumn dcItem = new DataColumn("itemCode", typeof(string));
+            DataColumn dcLab = new DataColumn("lab", typeof(string));
+            DataColumn dcQuant = new DataColumn("quantity", typeof(int));
+            allAlertItems.Columns.Add(dcItem);
+            allAlertItems.Columns.Add(dcLab);
+            allAlertItems.Columns.Add(dcQuant);
+
+            var systemTime = System.DateTime.Now.ToString("hh:mm:ss");
+
+            DBOps db = new DBOps();
+            DataSet ds = db.ReadInventoryTable();
+            DataTable dt = ds.Tables[0];
+
+            EMailHelper eml = new EMailHelper();
+            if(systemTime.Equals("09:44:55"))
+            {
+                DataRow[] alertRows = dt.Select("quantity < alert_quantity");
+                foreach (DataRow dr in alertRows)
+                {
+                    eml.sendItemEmail(dr["itemCode"].ToString(), dr["lab"].ToString(), int.Parse(dr["quantity"].ToString()));
+                }
+            }
+
+            //EMailHelper x = new EMailHelper();
+            //x.sendEmail();
+
+        }
+
     }
 }

@@ -114,6 +114,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Pages\EMailHelper.cs" />
     <Compile Include="Pages\InventoryPage2.aspx.cs">
       <DependentUpon>InventoryPage2.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
