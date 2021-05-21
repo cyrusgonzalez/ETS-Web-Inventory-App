@@ -93,7 +93,7 @@ If you just want to use it, you will want to deploy this app on a windows/IIS se
 # Discussion and Development <a name="dev"></a>
 All development and discussion was done with Nick Stratton, Jeff Penn and the Engineering Technology Services team at the Dept of Engineering. This Project was developed as an proposed proposed internal tool to aid in the management of inventory at the various [labs](https://www.engr.colostate.edu/ets/lab-and-classroom-overview/) in the Engineering Department.
 
-# Contributing to PerfFlow <a name="contri"></a>
+# Contributing to ETS-Inventory <a name="contri"></a>
 All contributions, bug reports, bug fixes, documentation improvements, enhancements, and ideas are welcome.
 
 #### Created by [Sanket Mehrotra](https://github.com/mehrotrasan16)
