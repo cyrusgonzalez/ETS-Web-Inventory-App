@@ -52,12 +52,33 @@ This version of the tool (v0.0.1) has 2 different pages: One for Labs, and One f
 # Where to use it <a name="where-to-use"></a>
 Work in Progress
 
-# How to run <a name="how-to-run"></a>
+# How to run - in Development Mode <a name="how-to-run"></a>
+If you want to make changes, tweak or fix something, this is how to get the code set up for development on your PC. 
 1. Clone the repository
 2. Navigate to the Inventory_WebApp directory
 3. Open the solution in Visual Studio 2017+
 4. Run a clean-build of the app in `Debug` mode. (regular build is okay, but good practice)
+6. Press `F5`,a local webserver will be started by VS running it on your machine.
+
+# How to Deploy ( 2 ways ) <a name="how-to-run"></a>
+If you just want to use it, you will want to deploy this app on a windows/IIS server. The code on this repo is a development copy of the source, so you would either need to download and compile this code with visual studio, or take the latest stable version running on win-compute-12. (a self-contained directory that can run on your server that can be copied and pasted and run after changing a few permissions)
+## 1. with Visual Studio
+  1. Run a clean-build of the code in `Release` mode
+  2. Go to `Build -> Publish` and select the default settings to deploy to localhost. 
+  3. If the publish works fine, This should set the app working on   
+  4. Run a clean-build of the app in `Debug` mode. (regular build is okay, but good practice)
 6. The sample webserver will be started by VS running it on your local system.
+## 2. using the latest stable version on win-compute-12
+  1. log into `win-compute-12`
+  2. go to `C:\\inetpub\wwwroot\`
+  3. zip the entire `Inventory_WebApp` directory. 
+  4. copy and unzip the directory to your own server/machine, any path should be fine, but if you're not sure, use `C:\\inetpub\wwwroot\`
+     1. give the whole Inventory_WebApp write permissions for the IIS Users group, (the name of the group should be something similar to IUSR or IIS User)
+     2. give the inventory_database_exceptions.log and sample_inventory.db files write permissions for IUSR groups/other IIS user groups  
+  5. make sure IIS server is installed and configured to run .NET 4.7. Leaving a few links to guide you: [link1](https://www.systemsitpro.com/2017/02/how-to-install-iis-10-on-windows-server_3.html) [link2](https://enterprise.arcgis.com/en/web-adaptor/latest/install/iis/enable-iis-2016-components-server.htm)
+  6. you may be able to see your folder under `Sites/Default Web Site/` in the *left sidebar* on the IIS main screen
+  7. right-click the folder and select 'convert to web-application'. the icon for the folder should change to a globe(something similar)
+  8. click on the folder and select 'Explore' on the right sidebar on the IIS screen.
 
 # Architecture Diagrams <a name="digs"></a>
 <div align="center">
