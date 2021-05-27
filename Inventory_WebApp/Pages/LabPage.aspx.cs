@@ -23,7 +23,7 @@ namespace Inventory_WebApp.Pages
                 {
                     lblErr.Text = ex.ToString();
                     lblErr.DataBind();
-                    throw ex;
+                    //throw ex;
                 }
             }
         }
@@ -138,8 +138,7 @@ namespace Inventory_WebApp.Pages
         protected Type GetMyType(string SQLiteType)
         {
             Type returnType;
-            try
-            {
+            
                 switch (SQLiteType.ToLower())
                 {
                     case "integer":
@@ -152,11 +151,8 @@ namespace Inventory_WebApp.Pages
                         returnType = typeof(string);
                         break;
                 }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            
+            
             return returnType;
         }
 

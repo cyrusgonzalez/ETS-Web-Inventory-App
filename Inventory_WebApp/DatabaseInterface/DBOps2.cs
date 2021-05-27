@@ -5,6 +5,7 @@ using System.IO;
 using System.Web.UI.WebControls;
 using System.Xml;
 using log4net;
+using System.Linq;
 
 namespace Inventory_WebApp.DatabaseInterface
 {
@@ -115,6 +116,20 @@ namespace Inventory_WebApp.DatabaseInterface
         #endregion
 
         #region Inventory DB Interface
+        /// <summary>
+        /// InsertUpdateInventoryTable(): A dual purpose combined DB method to update a row if it exists, else insert it into the Inventory Table of the DB
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="itemCode"></param>
+        /// <param name="quantity"></param>
+        /// <param name="lab"></param>
+        /// <param name="category"></param>
+        /// <param name="description"></param>
+        /// <param name="warnQuantity"></param>
+        /// <param name="alertQuantity"></param>
+        /// <returns>
+        /// retval/insertQueryVal :- an integer letting us know how many rows have been inserted/updated. Should always be 1. If two then there are duplicates in the Inventory table which must be deleted.
+        /// </returns>
         public int InsertUpdateInventoryTable(string item,string itemCode, Int64 quantity,string lab, string category, string description,Int64 warnQuantity, Int64 alertQuantity)
         {
             int retval = 0;
@@ -139,6 +154,8 @@ namespace Inventory_WebApp.DatabaseInterface
                         inventory.itemCode = @itemcode
                         and inventory.lab = @lab
                         and inventory.model = @model
+                        and inventory.category = @category
+                        and description = @description
                      ";
 
                     cmd.Parameters.AddWithValue("@itemcode", item);
@@ -155,6 +172,7 @@ namespace Inventory_WebApp.DatabaseInterface
                     if (retval > 0)
                     {
                         //this.logger.WriteAsync("row updated");
+                        log.Info("Rows Inserted: " + retval.ToString() + " row(s) updated from method DBOps.InsertUpdateInventoryTable");
                     }
                     else
                     {
@@ -173,17 +191,14 @@ namespace Inventory_WebApp.DatabaseInterface
 
                         insertQueryretval = cmd.ExecuteNonQuery();
 
+                        log.Info("Database updated " + retval.ToString() + " row updated from method DBOps.InsertUpdateInventoryTable");
                     }
                 }
             }
             catch (Exception ex)
             {
-                using (StreamWriter logger = new StreamWriter(this._loggerpath))
-                {
-                    logger.WriteAsync("DBOps.InsertInventoryTable: " + ex.Message);
-                }
-                //throw;
-            }
+                log.Error("Database Error in DBOps.InsertUpdateInventoryTable:  ", ex);
+            }            
             return (retval == 0)?insertQueryretval:retval;
         }
 
@@ -312,14 +327,9 @@ namespace Inventory_WebApp.DatabaseInterface
             }
             catch (Exception ex)
             {
-                using (StreamWriter logger = new StreamWriter(this._loggerpath))
-                {
-                    logger.WriteAsync("DBOps.ReadInventoryTable: " + ex.Message);
-                }
-
-                /*throw*/;
-                //this.logger.WriteAsync(ex.Message);
+                log.Error("Database Error in DBOps.ReadInventoryTable:  ", ex);
             }
+            log.Info("Database read " + ds.Tables[0].Rows.Count.ToString() + " rows at DBOps.ReadInventoryTable");
             return ds;
         }
 
@@ -340,17 +350,14 @@ namespace Inventory_WebApp.DatabaseInterface
             }
             catch (Exception ex)
             {
-                using (StreamWriter logger = new StreamWriter(this._loggerpath))
-                {
-                    logger.WriteAsync("DBOps.GetInventoryColumns: " + ex.Message);
-                }
-
-                /*throw*/;
+                log.Error("Database Error in DBOps.GetInventoryColumns:  ", ex);
             }
+            string res = string.Join(Environment.NewLine, dbs.Tables[0].Rows.OfType<DataRow>().Select(x => string.Join(" ; ", x.ItemArray))); //https://stackoverflow.com/questions/1104121/how-to-convert-a-datatable-to-a-string-in-c
+            log.Info("Database retrieved " + res + " Inventory columns from method DBOps.GetInventoryColumns");
             return dbs;
         }
 
-        public int DeleteInventoryTable(string itemcode, string lab)
+        public int DeleteInventoryTable(string itemcode, string lab, string category, string model)
         {
             int retval = 0;
             try
@@ -359,32 +366,64 @@ namespace Inventory_WebApp.DatabaseInterface
                 {
                     con.Open();
                     var cmd = new SQLiteCommand(con);
-                    cmd.CommandText = "delete from inventory where itemcode = @itemcode and lab = @lab";
 
-                    cmd.Parameters.AddWithValue("@itemcode", itemcode);
-                    cmd.Parameters.AddWithValue("@lab", lab);
+                    if((String.Equals(category, "")) && (String.Equals(model, ""))){
+                        cmd.CommandText = "delete from inventory where itemcode = @itemcode and lab = @lab";
+
+                        cmd.Parameters.AddWithValue("@itemcode", itemcode);
+                        cmd.Parameters.AddWithValue("@lab", lab);
+                        log.Info("DBOps.DeleteInventoryTable: Passed Only itemcode : " + itemcode + " and lab : " + lab);
+                    }
+                    else if (String.Equals(category, ""))
+                    {
+                        cmd.CommandText = "delete from inventory where itemcode = @itemcode and lab = @lab and model = @model";
+
+                        cmd.Parameters.AddWithValue("@itemcode", itemcode);
+                        cmd.Parameters.AddWithValue("@lab", lab);
+                        cmd.Parameters.AddWithValue("@model", model);
+                        log.Info("DBOps.DeleteInventoryTable: Passed itemcode: " + itemcode + " and lab: " + lab + " and model: " + model);
+                    }
+                    else if(String.Equals(model, ""))
+                    {
+                        cmd.CommandText = "delete from inventory where itemcode = @itemcode and lab = @lab and category = @category";
+
+                        cmd.Parameters.AddWithValue("@itemcode", itemcode);
+                        cmd.Parameters.AddWithValue("@lab", lab);
+                        cmd.Parameters.AddWithValue("@category", category);
+                        log.Info("DBOps.DeleteInventoryTable: Passed itemcode: " + itemcode + " and lab: " + lab + " and category: " + category);
+                    }
+                    else
+                    {
+                        cmd.CommandText = "delete from inventory where itemcode = @itemcode and lab = @lab and category = @category and model = @model";
+
+                        cmd.Parameters.AddWithValue("@itemcode", itemcode);
+                        cmd.Parameters.AddWithValue("@lab", lab);
+                        cmd.Parameters.AddWithValue("@category", category);
+                        cmd.Parameters.AddWithValue("@model", model);
+                        log.Info("DBOps.DeleteInventoryTable: Passed itemcode: " + itemcode + " and lab: " + lab  + " and model: " + model + " and category: " + category);
+                    }
+
                     cmd.Prepare();
 
                     retval = cmd.ExecuteNonQuery();
                     if (retval <= 0)
                     {
-                        //this.logger.WriteAsync("no row updated");
+                        log.Info("DBOps.DeleteInventoryTable:  0 rows deleted");
+                    }
+                    else if (retval == 1)
+                    {
+                        log.Info("DBOps.DeleteInventoryTable:  1 rows deleted");
                     }
                     else
                     {
-                        //this.logger.WriteAsync(retval + " Rows updated");
+                        log.Error("DBOps.DeleteInventoryTable: " + retval.ToString() + " rows deleted");
                     }
 
                 }
             }
             catch (Exception ex)
             {
-                using (StreamWriter logger = new StreamWriter(this._loggerpath))
-                {
-                    logger.WriteAsync("DBOps.DeleteInventoryTable: " + ex.Message);
-                }
-
-                /*throw*/;
+                log.Error("Database Error in DBOps.DeleteInventoryTable:  ", ex);
             }
             return retval;
         }
@@ -635,7 +674,12 @@ namespace Inventory_WebApp.DatabaseInterface
         #endregion
 
         #region Labs DB Interface
-
+        /// <summary>
+        /// ReadLabsTable(): single purpose dp read function to get all records from the labs table in the DB
+        /// </summary>
+        /// <returns>
+        /// a DataSet with one table, table[0], with all the rows of the labs table.
+        /// </returns>
         public DataSet ReadLabsTable()
         {
             DataSet ds = new DataSet();
@@ -654,16 +698,21 @@ namespace Inventory_WebApp.DatabaseInterface
             }
             catch (Exception ex)
             {
-                using (StreamWriter logger = new StreamWriter(this._loggerpath))
-                {
-                    logger.WriteAsync("DBOps.ReadLabsTable: " + ex.Message);
-                }
-
-                /*throw*/;
+                log.Error("Database Error in DBOps.ReadLabsTable:  ", ex);
             }
+            log.Info("Database Info " + ds.Tables[0].Rows.Count.ToString() + " rows read from method DBOps.ReadLabsTable");
             return ds;
         }
 
+        /// <summary>
+        /// InsertLabsTable(): single purpose db update function written to insert new labs into the DB. 
+        /// </summary>
+        /// <param name="labname"></param>
+        /// <param name="building"></param>
+        /// <param name="roomno"></param>
+        /// <returns>
+        /// retval: 1 - row inserted successfully, 0 unsuccessful insertion.
+        /// </returns>
         public int InsertLabsTable(string labname, string building, string roomno)
         {
             int retval = 0;
@@ -682,29 +731,34 @@ namespace Inventory_WebApp.DatabaseInterface
                         command.Prepare();
 
                         retval = command.ExecuteNonQuery();
-                        if (retval != 0)
-                        {
-                            //this.logger.WriteAsync("row inserted");
-                        }
-                        else
-                        {
-                            //this.logger.WriteAsync("No row inserted");
-                        }
+                        //if (retval != 0)
+                        //{
+                        //    //this.logger.WriteAsync("row inserted");
+                        //}
+                        //else
+                        //{
+                        //    //this.logger.WriteAsync("No row inserted");
+                        //}
                     }
                 }
             }
             catch (Exception ex)
             {
-                using (StreamWriter logger = new StreamWriter(this._loggerpath))
-                {
-                    logger.WriteAsync("DBOps.InsertLabsTable: " + ex.Message);
-                }
-
-                /*throw*/;
+                log.Error("Database Error in DBOps.InsertLabsTable:  ", ex);
             }
+            log.Info("Database updated " + retval.ToString() + " row inserted from method DBOps.InsertLabsTable");
             return retval;
         }
 
+        /// <summary>
+        /// UpdateLabsTable(): single ppurpose db update function written to update lab details in the Lab table in the DB.
+        /// </summary>
+        /// <param name="labname"></param>
+        /// <param name="building"></param>
+        /// <param name="roomno"></param>
+        /// <returns>
+        /// retval: number of rows updated with this query
+        /// </returns>
         public int UpdateLabsTable(string labname, string building, string roomno)
         {
             int retval = 0;
@@ -723,29 +777,37 @@ namespace Inventory_WebApp.DatabaseInterface
                         command.Prepare();
 
                         retval = command.ExecuteNonQuery();
-                        if (retval != 0)
-                        {
-                            //this.logger.WriteAsync("row updated");
-                        }
-                        else
-                        {
-                            //this.logger.WriteAsync("No row updated");
-                        }
+                        //if (retval != 0)
+                        //{
+                        //    //this.logger.WriteAsync("row updated");
+                        //    log.Info("DBOps.UpdateLabsTable:" + retval.ToString()  +" rows updated");
+                        //}
+                        //else
+                        //{
+                        //    //this.logger.WriteAsync("No row updated");
+                        //    log.Info("Database Error in DBOps.UpdateLabsTable: 0 rows updated");
+                        //}
                     }
                 }
             }
             catch (Exception ex)
             {
-                using (StreamWriter logger = new StreamWriter(this._loggerpath))
-                {
-                    logger.WriteAsync("DBOps.UpdateLabsTable: " + ex.Message);
-                }
-
-                /*throw*/;
+                //using (StreamWriter logger = new StreamWriter(this._loggerpath))
+                //{
+                //    logger.WriteAsync("DBOps.UpdateLabsTable: " + ex.Message);
+                //}
+                log.Error("Database Error in DBOps.UpdateLabsTable:  ", ex);
             }
+            log.Info("Database updated " + retval.ToString() + " rows from method DBOps.UpdateLabsTable");
             return retval;
         }
 
+        /// <summary>
+        /// GetLabColumns(): single purpose DB query function written to get column names from the labs table. Usable only in SQLite, not for SQL Server or MySQL
+        /// </summary>
+        /// <returns>
+        /// Dataset with one table, which has rows with the neames of columns of the labs table
+        /// </returns>
         public DataSet GetLabColumns()
         {
             DataSet dbs = new DataSet();
@@ -768,11 +830,19 @@ namespace Inventory_WebApp.DatabaseInterface
                 //    logger.WriteAsync("DBOps.GetLabColumns: " + ex.Message);
                 //}
 
-                /*throw*/;
+                log.Error("Database Error in DBOps.GetLabColumns:  ", ex);
             }
+            string res = string.Join(Environment.NewLine, dbs.Tables[0].Rows.OfType<DataRow>().Select(x => string.Join(" ; ", x.ItemArray))); //https://stackoverflow.com/questions/1104121/how-to-convert-a-datatable-to-a-string-in-c
+            log.Info("Database retrieved " + res + " lab columns from method DBOps.GetLabColumns");
             return dbs;
         }
 
+        /// <summary>
+        /// GetLabs(): A single purpose function written to query the Labs table in the DB to get stored values.
+        /// </summary>
+        /// <returns>
+        /// DataSet with one table, table[0] with categories for rows
+        /// </returns>
         public DataSet GetLabs()
         {
             DataSet ds = new DataSet();
@@ -791,18 +861,24 @@ namespace Inventory_WebApp.DatabaseInterface
             }
             catch(Exception ex)
             {
-                using (StreamWriter logger = new StreamWriter(this._loggerpath))
-                {
-                    logger.WriteAsync("DBOps.GetLabs: " + ex.Message);
-                }
-
-                /*throw*/;
+                //using (StreamWriter logger = new StreamWriter(this._loggerpath))
+                //{
+                //    logger.WriteAsync(" " + ex.Message);
+                //}
+                log.Error("Database Error in DBOps.GetLabs::  ", ex);
             }
+            log.Info("Database retrieved " + ds.Tables[0].Rows.Count.ToString() + " labs from method DBOps.GetLabs");
             return ds;
         }
         #endregion
 
         #region Category DB Interface
+        /// <summary>
+        /// GetCategories() A single purpose function written queries the Inventory table to return unique categories in the DB.
+        /// </summary>
+        /// <returns>
+        /// DataSet with one table, table[0] with categories for rows
+        /// </returns>
         public DataSet GetCategories()
         {
             DataSet ds = new DataSet();
@@ -821,19 +897,27 @@ namespace Inventory_WebApp.DatabaseInterface
             }
             catch (Exception ex)
             {
-                using (StreamWriter logger = new StreamWriter(this._loggerpath))
-                {
-                    logger.WriteAsync("DBOps.GetCategories: " + ex.Message);
-                }
-
-                /*throw*/;
+                //using (StreamWriter logger = new StreamWriter(this._loggerpath))
+                //{
+                //    logger.WriteAsync("DBOps.GetCategories: " + ex.Message);
+                //}
+                log.Error("Database Error in DBOps.GetCategories:  ", ex);
             }
+            
+            log.Info("Database retrieved " + ds.Tables[0].Rows.Count.ToString() + " categories from method DBOps.GetConfig: ");
             return ds;
         }
         #endregion
 
         #region EMail Interfaces
 
+        /// <summary>
+        /// GetConfig() : A general purpose function written to query the appconfigs table in the DB to get stored values.
+        /// </summary>
+        /// <param name="configName"></param>
+        /// <returns>
+        /// A DataSet with one table, table[0] with the configs as rows and their values in a second column
+        /// </returns>
         public DataSet GetConfig(string configName)
         {
             DataSet ds = new DataSet();
@@ -853,13 +937,12 @@ namespace Inventory_WebApp.DatabaseInterface
             }
             catch (Exception ex)
             {
-                log.Error("Database Error in GetConfig: ", ex);
+                log.Error("Database Error in DBOps.GetConfig:  ", ex);
             }
 
+            log.Info("Database retrieved " + ds.Tables[0].Rows.Count.ToString() + " configs from method DBOps.GetConfig: ");
             return ds;
         }
-
-
 
         #endregion
 

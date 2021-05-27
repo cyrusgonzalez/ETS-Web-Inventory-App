@@ -508,7 +508,7 @@ namespace Inventory_WebApp.Pages
                 string item = gvitem.Rows[RowIndex].Cells[1].Text;
                 string lab = gvitem.Rows[RowIndex].Cells[6].Text;
 
-                int retval = db.DeleteInventoryTable(item, lab);
+                int retval = db.DeleteInventoryTable(item, lab,"","");
                 if (retval > 0)
                 {
                     lblPageInfo.Text = "Row deleted successfully.";

@@ -141,7 +141,7 @@
                         OnRowUpdating="gvitem_RowUpdating"
                         OnRowCommand="gvitem_RowCommand"
                         OnRowDeleting="gvitem_RowDeleting"
-                        DataKeyNames="ItemCode,Model,lab,warning_quantity,alert_quantity"
+                        DataKeyNames="ItemCode,model,category,lab,warning_quantity,alert_quantity"
                         AllowSorting="true"
                         OnSorting="gvitem_Sorting">
                         <Columns>
@@ -155,11 +155,11 @@
                             <HeaderStyle CssClass="is-hidden-mobile"></HeaderStyle>
                                 <ItemStyle CssClass="is-hidden-mobile"></ItemStyle>
                             </asp:BoundField>
-                            <asp:BoundField HeaderText="Categories/Tags" DataField="category" ReadOnly="true" SortExpression="Category" >
+                            <asp:BoundField HeaderText="Category" DataField="category" ReadOnly="true" SortExpression="Category"  >
                                 <HeaderStyle CssClass="is-hidden-mobile"></HeaderStyle>
                                 <ItemStyle CssClass="is-hidden-mobile"></ItemStyle>
                                 </asp:BoundField>
-                            <asp:ButtonField CommandName="increment" Text="<i class='fa fa-plus'></i>"
+                            <asp:ButtonField HeaderText="+" ShowHeader="false" CommandName="increment" Text="<i class='fa fa-plus'></i>"
                                 ButtonType="Link"
                                 ControlStyle-CssClass="btn btn-primary" />
                             <asp:TemplateField HeaderText="Quantity" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Center" ItemStyle-Width="40px" SortExpression="Quantity">
@@ -171,11 +171,11 @@
                                     <%--<asp:Label ID="lblCity" runat="server" Text='<%# Eval("City")%>'></asp:Label>--%>
                                 </ItemTemplate>
                             </asp:TemplateField>
-                            <asp:ButtonField CommandName="decrement" Text="<i class='fa fa-minus'></i>"
+                            <asp:ButtonField HeaderText="-" ShowHeader="false" CommandName="decrement" Text="<i class='fa fa-minus'></i>"
                                 ButtonType="Link"
                                 ControlStyle-CssClass="btn btn-primary" />
                             <asp:BoundField HeaderText="Lab" DataField="lab" ReadOnly="true" SortExpression="Lab" />
-                            <asp:TemplateField ShowHeader="False">
+                            <asp:TemplateField HeaderText="Delete" ShowHeader="False">
                                 <ItemTemplate>
                                     <asp:LinkButton ID="DeleteButton" runat="server" Text="<i class='fa fa-times'></i>" ButtonType="Link"
                                         CommandName="delete" OnClientClick="return confirm('Are you sure you want to delete this item?');"
@@ -191,6 +191,8 @@
                                 <ItemStyle CssClass="is-hidden-mobile"></ItemStyle>
                             </asp:BoundField>
                         </Columns>
+                        <EditRowStyle BackColor="LightCyan"
+                            ForeColor="DarkBlue" />
                     </asp:GridView>
                 </div>
                 <script type="text/javascript">

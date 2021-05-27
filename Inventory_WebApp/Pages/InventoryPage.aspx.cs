@@ -885,7 +885,7 @@ namespace Inventory_WebApp.Pages
                 GridViewRow row = e.Row;
                 TableCell cell;
 
-                if (row.Cells.Count > 7)
+                if (row.Cells.Count > 7) //(row.RowType != DataControlRowType.Header)
                 {
                     //Code to move the Edit button to the right end of the table
                     cell = row.Cells[0];
@@ -893,13 +893,16 @@ namespace Inventory_WebApp.Pages
                     row.Cells.AddAt(8, cell);
                     //row.Cells.Add(cell);
                 }
-                
+
             }
             catch (Exception ex)
             {
-                throw;
+                //throw;
             }
         }
+
+
+
 
         protected void gvitem_RowUpdating(object sender, GridViewUpdateEventArgs e)
         {
@@ -1058,14 +1061,13 @@ namespace Inventory_WebApp.Pages
             try
             {
                 DBOps db = new DBOps();
-                // GridViewRow gvr = (GridViewRow)(((Button)e.CommandSource).NamingContainer);
-
                 int RowIndex = e.RowIndex;
+                string item = gvitem.DataKeys[RowIndex]["ItemCode"].ToString();
+                string lab = gvitem.DataKeys[RowIndex]["lab"].ToString();
+                string category = gvitem.DataKeys[RowIndex]["category"].ToString();
+                string model = gvitem.DataKeys[RowIndex]["model"].ToString();
 
-                string item = gvitem.Rows[RowIndex].Cells[1].Text;
-                string lab = gvitem.Rows[RowIndex].Cells[8].Text;
-
-                int retval = db.DeleteInventoryTable(item, lab);
+                int retval = db.DeleteInventoryTable(item, lab, category, model);
                 if (retval > 0)
                 {
                     lblPageInfo.Text = "Row deleted successfully.";
@@ -1311,7 +1313,7 @@ namespace Inventory_WebApp.Pages
             }
             catch (Exception ex)
             {
-                throw;
+                //throw; 
             }
         }
 
