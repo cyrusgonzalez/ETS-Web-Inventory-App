@@ -163,6 +163,8 @@ namespace Inventory_WebApp.Pages
                         gvitem.DataBind();
                     }
                 }
+                
+                //TODO: Add extra if/else checks for the other two dropdowns.
 
 
             }
