@@ -794,8 +794,9 @@ namespace Inventory_WebApp.DatabaseInterface
 
                 log.Error("Database Error in DBOps.GetLabColumns:  ", ex);
             }
-            string res = string.Join(Environment.NewLine, dbs.Tables[0].Rows.OfType<DataRow>().Select(x => string.Join(" ; ", x.ItemArray))); //https://stackoverflow.com/questions/1104121/how-to-convert-a-datatable-to-a-string-in-c
-            log.Info("Database retrieved " + res + " lab columns from method DBOps.GetLabColumns");
+            //string res = string.Join(Environment.NewLine, dbs.Tables[0].Rows.OfType<DataRow>().Select(x => string.Join(" ; ", x.ItemArray))); //https://stackoverflow.com/questions/1104121/how-to-convert-a-datatable-to-a-string-in-c
+            //log.Info("Database retrieved " + res + " lab columns from method DBOps.GetLabColumns");
+            log.Info("Database retrieved " + dbs.Tables[0].Rows.Count.ToString() + " lab columns from method DBOps.GetLabColumns");
             return dbs;
         }
 

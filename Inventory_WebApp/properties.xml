@@ -1,5 +1,4 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <properties>
   <datasource>\db\ETSinventory.db</datasource>
-  <logfile>\logs\inventory_database_exceptions.log</logfile>
 </properties>
