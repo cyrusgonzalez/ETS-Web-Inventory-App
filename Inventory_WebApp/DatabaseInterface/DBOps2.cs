@@ -43,7 +43,7 @@ namespace Inventory_WebApp.DatabaseInterface
                 //log.Debug("Database Read: " + database);
                 if (!String.IsNullOrEmpty(database))
                 {
-                    DataBaseSource = "Data Source=" + AppDomain.CurrentDomain.BaseDirectory + "/db/ETSinventory.db";  // "Data Source=" + database;
+                    DataBaseSource = "Data Source=" + AppDomain.CurrentDomain.BaseDirectory + database; //"/db/ETSinventory.db";  // "Data Source=" + database;
                 }
             }
         }
