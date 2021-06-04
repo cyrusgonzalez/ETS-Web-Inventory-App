@@ -106,14 +106,14 @@
                     </div>
                 </nav>
 
-                <div class="field is-horizontal">
+                <%--<div class="field is-horizontal">
                     <div class="field is-horizontal">
                         <div class="field-body">
                             <div class="field is-narrow">
                             </div>
                         </div>
                     </div>
-                </div>
+                </div>--%>
             </div>
         </section>
         <div class="columns">

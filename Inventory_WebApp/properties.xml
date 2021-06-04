@@ -1,7 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <properties>
-  <datasource>C:\\Users\\sanketm\\Documents\\ETS_Inventory\\sample_inventory.db</datasource>
-  <emailto>nick.stratton@colostate.edu</emailto>
-  <emailfrom>ETSInventory_Warning@gmail.com</emailfrom>
-  <logfile>C:\\Users\\sanketm\\Documents\\ETS_Inventory\\Log\\log.log</logfile>
+  <datasource>\db\ETSinventory.db</datasource>
+  <logfile>\logs\inventory_database_exceptions.log</logfile>
 </properties>

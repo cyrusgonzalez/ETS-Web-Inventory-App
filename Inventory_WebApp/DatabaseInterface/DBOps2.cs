@@ -24,10 +24,35 @@ namespace Inventory_WebApp.DatabaseInterface
         /// 2. _config: a handle to a config file (Not used at the moment)
         /// 3. _loggerpath: a path to a log file that we can write database exceptions and errors to. File must exist and have the right permissions or else this line will fail and crash the whole app.
         /// </summary>
-        private string DataBaseSource = "Data Source=" + AppDomain.CurrentDomain.BaseDirectory + "sample_inventory.db";  //C:\\Users\\sanketm\\Documents\\ETS_Inventory\\sample_inventory.db";
-        private XmlTextReader _config;
-        private string _loggerpath = AppDomain.CurrentDomain.BaseDirectory +"./inventory_db_exceptions.log"; // READ from Config File new StreamWriter("C:\\Users\\sanketm\\Documents\\ETS_Inventory\\Log\\log.log");
+        private string DataBaseSource; //= "Data Source=" + AppDomain.CurrentDomain.BaseDirectory + "sample_inventory.db";  //C:\\Users\\sanketm\\Documents\\ETS_Inventory\\sample_inventory.db";
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private XmlTextReader _config;
+        //private string _loggerpath = AppDomain.CurrentDomain.BaseDirectory + "./inventory_db_exceptions.log"; // Now specified in log4j.config
+
+        #region Constructor and Destructor
+        public DBOps()
+        {
+            // 1.read properties.xml
+            // 2. Set database source
+            XmlDocument xmlDoc = new XmlDocument();
+            xmlDoc.Load(AppDomain.CurrentDomain.BaseDirectory + "properties.xml");
+            XmlNodeList xmlNodeList = xmlDoc.SelectNodes("/properties");
+            foreach (XmlNode xn in xmlNodeList)
+            {
+                string database = xn["datasource"].InnerText;
+                //log.Debug("Database Read: " + database);
+                if (!String.IsNullOrEmpty(database))
+                {
+                    DataBaseSource = "Data Source=" + AppDomain.CurrentDomain.BaseDirectory + database; //"/db/ETSinventory.db";  // "Data Source=" + database;
+                }
+            }
+        }
+
+        ~DBOps()
+        {
+            this.DataBaseSource = null;
+        }
+        #endregion
 
         /// <summary>
         /// GetDBs(): A function to get all existing tables from the sqlite database.
@@ -52,13 +77,9 @@ namespace Inventory_WebApp.DatabaseInterface
             }
             catch (Exception ex)
             {
-                using (StreamWriter logger = new StreamWriter(this._loggerpath))
-                {
-                    logger.WriteAsync("DBOps.GetDBs: " + ex.Message);
-                }
-
-                /*throw*/;
+                log.Error("Database Error in DBOps.GetDBs:  ", ex);
             }
+
             return dbs;
         }
 
@@ -81,39 +102,7 @@ namespace Inventory_WebApp.DatabaseInterface
             return temp;
         }
 
-        #region Constructor and Destructor
-        /// <summary>
-        /// These aren't in use right now, and can be safely ignored.
-        /// Use them if you want to do something everytime a DB Operation is required.
-        /// Be sure to clean up any open file handlers and close files after the DB operation is complete in the ~DBOps destructor function
-        /// </summary>
 
-        public DBOps()
-        {
-            string path;
-            XmlDocument conf = new XmlDocument();
-            //conf.Load("./properties.xml");
-            XmlNodeList nodeList = (conf.SelectNodes("properties"));
-
-            foreach (XmlNode elem in nodeList)
-            {
-                path = elem.ChildNodes[0].InnerText;
-                if (path != null || path != "")
-                {
-                    this.DataBaseSource = "data source=" + conf.GetElementsByTagName("datasource")[0].ChildNodes[0].Value;
-                    this._loggerpath = conf.GetElementsByTagName("logfile")[0].ChildNodes[0].Value;
-                }
-            }
-        }
-
-        ~DBOps()
-        {
-            //this.logger.Close();
-            //this._config.Close();
-            this.DataBaseSource = null;
-            this._loggerpath = null;
-        }
-        #endregion
 
         #region Inventory DB Interface
         /// <summary>
@@ -130,7 +119,7 @@ namespace Inventory_WebApp.DatabaseInterface
         /// <returns>
         /// retval/insertQueryVal :- an integer letting us know how many rows have been inserted/updated. Should always be 1. If two then there are duplicates in the Inventory table which must be deleted.
         /// </returns>
-        public int InsertUpdateInventoryTable(string item,string itemCode, Int64 quantity,string lab, string category, string description,Int64 warnQuantity, Int64 alertQuantity)
+        public int InsertUpdateInventoryTable(string item, string itemCode, Int64 quantity, string lab, string category, string description, Int64 warnQuantity, Int64 alertQuantity)
         {
             int retval = 0;
             int insertQueryretval = 0;
@@ -198,8 +187,8 @@ namespace Inventory_WebApp.DatabaseInterface
             catch (Exception ex)
             {
                 log.Error("Database Error in DBOps.InsertUpdateInventoryTable:  ", ex);
-            }            
-            return (retval == 0)?insertQueryretval:retval;
+            }
+            return (retval == 0) ? insertQueryretval : retval;
         }
 
         public int InsertInventoryTable(string item, string itemCode, Int64 quantity, string lab, string category, string description)
@@ -257,18 +246,16 @@ namespace Inventory_WebApp.DatabaseInterface
                     }
                 }
             }
+
             catch (Exception ex)
             {
-                using (StreamWriter logger = new StreamWriter(this._loggerpath))
-                {
-                    logger.WriteAsync("DBOps.InsertInventoryTable: " + ex.Message);
-                }
-                //throw;
+                log.Error("Database Error in DBOps.InsertInventoryTable:  ", ex);
             }
+            log.Info("Database inserted " + ((retval == 0) ? insertQueryretval : retval).ToString() + " rows at DBOps.InsertInventoryTable");
             return (retval == 0) ? insertQueryretval : retval;
         }
 
-        public int UpdateInventoryTable(string itemcode, Int64 quantity,string lab)
+        public int UpdateInventoryTable(string itemcode, Int64 quantity, string lab)
         {
             int retval = 0;
             try
@@ -298,13 +285,9 @@ namespace Inventory_WebApp.DatabaseInterface
             }
             catch (Exception ex)
             {
-                using (StreamWriter logger = new StreamWriter(this._loggerpath))
-                {
-                    logger.WriteAsync("DBOps.UpdateInventoryTable: " + ex.Message);
-                }
-                //this.logger.WriteAsync("Update Inventory Table: " + ex.Message);
-                /*throw*/;
+                log.Error("Database Error in DBOps.UpdateInventoryTable:  ", ex);
             }
+            log.Info("Database inserted " + retval.ToString() + " rows at DBOps.UpdateInventoryTable");
             return retval;
         }
 
@@ -352,8 +335,9 @@ namespace Inventory_WebApp.DatabaseInterface
             {
                 log.Error("Database Error in DBOps.GetInventoryColumns:  ", ex);
             }
-            string res = string.Join(Environment.NewLine, dbs.Tables[0].Rows.OfType<DataRow>().Select(x => string.Join(" ; ", x.ItemArray))); //https://stackoverflow.com/questions/1104121/how-to-convert-a-datatable-to-a-string-in-c
-            log.Info("Database retrieved " + res + " Inventory columns from method DBOps.GetInventoryColumns");
+            //string res = string.Join(Environment.NewLine, dbs.Tables[0].Rows.OfType<DataRow>().Select(x => string.Join(" ; ", x.ItemArray))); //https://stackoverflow.com/questions/1104121/how-to-convert-a-datatable-to-a-string-in-c
+            //log.Info("Database retrieved " + res + " Inventory columns from method DBOps.GetInventoryColumns");
+            log.Debug("Database retrieved " + dbs.Tables[0].Rows.Count.ToString() + " Inventory columns from method DBOps.GetInventoryColumns");
             return dbs;
         }
 
@@ -367,7 +351,8 @@ namespace Inventory_WebApp.DatabaseInterface
                     con.Open();
                     var cmd = new SQLiteCommand(con);
 
-                    if((String.Equals(category, "")) && (String.Equals(model, ""))){
+                    if ((String.Equals(category, "")) && (String.Equals(model, "")))
+                    {
                         cmd.CommandText = "delete from inventory where itemcode = @itemcode and lab = @lab";
 
                         cmd.Parameters.AddWithValue("@itemcode", itemcode);
@@ -383,7 +368,7 @@ namespace Inventory_WebApp.DatabaseInterface
                         cmd.Parameters.AddWithValue("@model", model);
                         log.Info("DBOps.DeleteInventoryTable: Passed itemcode: " + itemcode + " and lab: " + lab + " and model: " + model);
                     }
-                    else if(String.Equals(model, ""))
+                    else if (String.Equals(model, ""))
                     {
                         cmd.CommandText = "delete from inventory where itemcode = @itemcode and lab = @lab and category = @category";
 
@@ -400,7 +385,7 @@ namespace Inventory_WebApp.DatabaseInterface
                         cmd.Parameters.AddWithValue("@lab", lab);
                         cmd.Parameters.AddWithValue("@category", category);
                         cmd.Parameters.AddWithValue("@model", model);
-                        log.Info("DBOps.DeleteInventoryTable: Passed itemcode: " + itemcode + " and lab: " + lab  + " and model: " + model + " and category: " + category);
+                        log.Info("DBOps.DeleteInventoryTable: Passed itemcode: " + itemcode + " and lab: " + lab + " and model: " + model + " and category: " + category);
                     }
 
                     cmd.Prepare();
@@ -458,13 +443,9 @@ namespace Inventory_WebApp.DatabaseInterface
             }
             catch (Exception ex)
             {
-                using (StreamWriter logger = new StreamWriter(this._loggerpath))
-                {
-                    logger.WriteAsync("DBOps.InsertItemsTable: " + ex.Message);
-                }
-
-                /*throw*/;
+                log.Error("Database Error in DBOps.InsertItemsTable:  ", ex);
             }
+            log.Info("Database updated " + retval.ToString() + " rows at DBOps.InsertItemsTable");
             return retval;
         }
 
@@ -497,13 +478,9 @@ namespace Inventory_WebApp.DatabaseInterface
             }
             catch (Exception ex)
             {
-                using (StreamWriter logger = new StreamWriter(this._loggerpath))
-                {
-                    logger.WriteAsync("DBOps.UpdateItemsTable: " + ex.Message);
-                }
-
-                /*throw*/;
+                log.Error("Database Error in DBOps.UpdateItemsTable:  ", ex);
             }
+            log.Info("Database updated " + retval.ToString() + " rows at DBOps.UpdateItemsTable");
             return retval;
         }
 
@@ -526,13 +503,10 @@ namespace Inventory_WebApp.DatabaseInterface
             }
             catch (Exception ex)
             {
-                //using (StreamWriter logger = new StreamWriter(this._loggerpath))
-                //{
-                //    logger.WriteAsync("DBOps.ReadItemsTable: " + ex.Message);
-                //}
-
-                /*throw*/;
+                log.Error("Database Error in DBOps.ReadItemsTable:  ", ex);
             }
+
+            log.Info("Database got " + ds.Tables[0].Rows.Count.ToString() + " rows from method DBOps.ReadItemsTable");
             return ds;
         }
 
@@ -553,13 +527,10 @@ namespace Inventory_WebApp.DatabaseInterface
             }
             catch (Exception ex)
             {
-                using (StreamWriter logger = new StreamWriter(this._loggerpath))
-                {
-                    logger.WriteAsync("DBOps.GetItems: " + ex.Message);
-                }
-
-                /*throw*/;
+                log.Error("Database Error in DBOps.GetItems:  ", ex);
             }
+
+            log.Info("Database got " + ds.Tables[0].Rows.Count.ToString() + " rows from method DBOps.GetItems");
             return ds;
         }
         #endregion
@@ -594,13 +565,10 @@ namespace Inventory_WebApp.DatabaseInterface
             }
             catch (Exception ex)
             {
-                using (StreamWriter logger = new StreamWriter(this._loggerpath))
-                {
-                    logger.WriteAsync("DBOps.InsertSupplierTable: " + ex.Message);
-                }
-
-                /*throw*/;
+                log.Error("Database Error in DBOps.InsertSupplierTable:  ", ex);
             }
+
+            log.Info("Database inserted " + retval.ToString() + " rows from method DBOps.InsertSupplierTable");
             return retval;
         }
 
@@ -633,13 +601,10 @@ namespace Inventory_WebApp.DatabaseInterface
             }
             catch (Exception ex)
             {
-                using (StreamWriter logger = new StreamWriter(this._loggerpath))
-                {
-                    logger.WriteAsync("DBOps.UpdateSupplierTable: " + ex.Message);
-                }
-
-                /*throw*/;
+                log.Error("Database Error in DBOps.UpdateSupplierTable:  ", ex);
             }
+
+            log.Info("Database updated " + retval.ToString() + " rows from method DBOps.UpdateSupplierTable");
             return retval;
         }
 
@@ -662,13 +627,10 @@ namespace Inventory_WebApp.DatabaseInterface
             }
             catch (Exception ex)
             {
-                using (StreamWriter logger = new StreamWriter(this._loggerpath))
-                {
-                    logger.WriteAsync("DBOps.ReadSupplierTable: " + ex.Message);
-                }
-
-                /*throw*/;
+                log.Error("Database Error in DBOps.ReadSupplierTable:  ", ex);
             }
+
+            log.Info("Database retrieved " + ds.Tables[0].Rows.Count.ToString() + " rows from method DBOps.ReadSupplierTable");
             return ds;
         }
         #endregion
@@ -859,7 +821,7 @@ namespace Inventory_WebApp.DatabaseInterface
                     }
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 //using (StreamWriter logger = new StreamWriter(this._loggerpath))
                 //{
@@ -903,7 +865,7 @@ namespace Inventory_WebApp.DatabaseInterface
                 //}
                 log.Error("Database Error in DBOps.GetCategories:  ", ex);
             }
-            
+
             log.Info("Database retrieved " + ds.Tables[0].Rows.Count.ToString() + " categories from method DBOps.GetConfig: ");
             return ds;
         }
@@ -1109,6 +1071,4 @@ namespace Inventory_WebApp.DatabaseInterface
         //    }
         //}
     }
-
-
 }

@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.28307.1082
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Inventory_WebApp", "Inventory_WebApp\Inventory_WebApp.csproj", "{ACC1F4C2-764C-4420-84C3-9C0FF630CBBC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Inventory_WebAppTests", "Inventory_WebAppTests\Inventory_WebAppTests.csproj", "{79EF3F9C-BFF6-454C-8EEE-13784CB6A375}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{ACC1F4C2-764C-4420-84C3-9C0FF630CBBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ACC1F4C2-764C-4420-84C3-9C0FF630CBBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ACC1F4C2-764C-4420-84C3-9C0FF630CBBC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{79EF3F9C-BFF6-454C-8EEE-13784CB6A375}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{79EF3F9C-BFF6-454C-8EEE-13784CB6A375}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{79EF3F9C-BFF6-454C-8EEE-13784CB6A375}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{79EF3F9C-BFF6-454C-8EEE-13784CB6A375}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
