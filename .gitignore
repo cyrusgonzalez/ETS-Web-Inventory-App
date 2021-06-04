@@ -5,3 +5,4 @@
 /.vs
 /packages
 .log
+/Inventory_WebAppTests/obj

@@ -24,10 +24,23 @@ namespace Inventory_WebApp.DatabaseInterface
         /// 2. _config: a handle to a config file (Not used at the moment)
         /// 3. _loggerpath: a path to a log file that we can write database exceptions and errors to. File must exist and have the right permissions or else this line will fail and crash the whole app.
         /// </summary>
-        private string DataBaseSource = "Data Source=" + AppDomain.CurrentDomain.BaseDirectory + "sample_inventory.db";  //C:\\Users\\sanketm\\Documents\\ETS_Inventory\\sample_inventory.db";
+        private string DataBaseSource; //= "Data Source=" + AppDomain.CurrentDomain.BaseDirectory + "sample_inventory.db";  //C:\\Users\\sanketm\\Documents\\ETS_Inventory\\sample_inventory.db";
         private XmlTextReader _config;
-        private string _loggerpath = AppDomain.CurrentDomain.BaseDirectory +"./inventory_db_exceptions.log"; // READ from Config File new StreamWriter("C:\\Users\\sanketm\\Documents\\ETS_Inventory\\Log\\log.log");
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+#region Constructor and Destructor
+        public DBOps()
+        {
+            // 1.read properties.xml
+            // 2. Set database source
+            // 3. set
+        }
+
+        ~DBOps()
+        {
+            this.DataBaseSource = null;
+        }
+#endregion
 
         /// <summary>
         /// GetDBs(): A function to get all existing tables from the sqlite database.
@@ -81,39 +94,7 @@ namespace Inventory_WebApp.DatabaseInterface
             return temp;
         }
 
-        #region Constructor and Destructor
-        /// <summary>
-        /// These aren't in use right now, and can be safely ignored.
-        /// Use them if you want to do something everytime a DB Operation is required.
-        /// Be sure to clean up any open file handlers and close files after the DB operation is complete in the ~DBOps destructor function
-        /// </summary>
-
-        public DBOps()
-        {
-            string path;
-            XmlDocument conf = new XmlDocument();
-            //conf.Load("./properties.xml");
-            XmlNodeList nodeList = (conf.SelectNodes("properties"));
-
-            foreach (XmlNode elem in nodeList)
-            {
-                path = elem.ChildNodes[0].InnerText;
-                if (path != null || path != "")
-                {
-                    this.DataBaseSource = "data source=" + conf.GetElementsByTagName("datasource")[0].ChildNodes[0].Value;
-                    this._loggerpath = conf.GetElementsByTagName("logfile")[0].ChildNodes[0].Value;
-                }
-            }
-        }
-
-        ~DBOps()
-        {
-            //this.logger.Close();
-            //this._config.Close();
-            this.DataBaseSource = null;
-            this._loggerpath = null;
-        }
-        #endregion
+        
 
         #region Inventory DB Interface
         /// <summary>
