@@ -6,3 +6,5 @@
 /packages
 .log
 /Inventory_WebAppTests/obj
+/Inventory_WebAppTests/bin/Debug
+/Inventory_WebApp/log

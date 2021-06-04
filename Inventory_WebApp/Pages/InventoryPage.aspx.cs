@@ -312,7 +312,7 @@ namespace Inventory_WebApp.Pages
             try
             {
                 DBOps db = new DBOps();
-                DataSet ds = db.GetInventoryColumns();
+                DataSet ds = db.GetInventoryColumns();  
                 for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
                 {
                     if (ds.Tables[0].Rows[i]["name"].ToString().Trim().ToLower().Contains("id") ||

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <properties>
-  <datasource>..\\db\\sample_inventory.db</datasource>
-  <logfile>..\\logs\\inventory_webapp.log</logfile>
+  <datasource>\db\ETSinventory.db</datasource>
+  <logfile>\logs\inventory_database_exceptions.log</logfile>
 </properties>

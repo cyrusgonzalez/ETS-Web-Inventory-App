@@ -260,5 +260,19 @@ namespace Inventory_WebApp.Pages
         {
             //placeholder method to catch and handle event. Actual updating done in gvitem_RowUpdatingcustom
         }
+
+        protected void gvitem_RowDeleting(object sender, GridViewDeleteEventArgs e)
+        {
+            try
+            {
+
+            }
+            catch
+            {
+                lblErr.ForeColor = System.Drawing.Color.Red;
+                lblErr.Text = "An error occurred while attempting to delete the row.";
+                lblErr.DataBind();
+            }
+        }
     }
 }

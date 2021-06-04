@@ -54,6 +54,7 @@
         </div>--%>
         <div class="columns has-addons-centered has-text-centered">
             <div class="column">
+                <asp:Label ID="lblErr" runat="server" ForeColor="Red"></asp:Label>
                 <asp:GridView runat="server" ID="gvitem" CssClass="table"
                     HorizontalAlign="Center"
                     BorderColor="000080"
@@ -103,9 +104,15 @@
                                 <asp:Label ID="lblRoomNo" Text='<%# Bind("RoomNo") %>' runat="server" Style="text-align: center"></asp:Label>
                             </ItemTemplate>
                         </asp:TemplateField>
+                        <asp:TemplateField HeaderText="Delete" ShowHeader="False">
+                                <ItemTemplate>
+                                    <asp:LinkButton ID="DeleteButton" runat="server" Text="<i class='fa fa-times'></i>" ButtonType="Link"
+                                        CommandName="delete" OnClientClick="return confirm('Are you sure you want to delete this item?');"
+                                        AlternateText="Delete" />
+                                </ItemTemplate>
+                            </asp:TemplateField>
                     </Columns>
                 </asp:GridView>
-                <asp:Label ID="lblErr" runat="server" ForeColor="Red"></asp:Label>
                 <asp:Button ID="btnLoad" runat="server" OnClick="btnLoad_Click" Text="Load Table" CssClass="button " />
             </div>
             <div class="column" id="insert_lab" style="display: none">
