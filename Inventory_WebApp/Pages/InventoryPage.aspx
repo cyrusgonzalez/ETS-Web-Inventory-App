@@ -182,11 +182,11 @@
                                         AlternateText="Delete" />
                                 </ItemTemplate>
                             </asp:TemplateField>
-                            <asp:BoundField HeaderText="Warning Quantity" DataField="warning_quantity" ReadOnly="true">
+                            <asp:BoundField HeaderText="Warning Quantity" DataField="warning_quantity" ReadOnly="true" Visible="false">
                                 <HeaderStyle CssClass="is-hidden-mobile"></HeaderStyle>
                                 <ItemStyle CssClass="is-hidden-mobile"></ItemStyle>
                             </asp:BoundField>
-                            <asp:BoundField HeaderText="Alert Quantity" DataField="alert_quantity" ReadOnly="true" >
+                            <asp:BoundField HeaderText="Alert Quantity" DataField="alert_quantity" ReadOnly="true" Visible="false" >
                                 <HeaderStyle CssClass="is-hidden-mobile"></HeaderStyle>
                                 <ItemStyle CssClass="is-hidden-mobile"></ItemStyle>
                             </asp:BoundField>
