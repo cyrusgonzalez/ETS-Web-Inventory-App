@@ -255,6 +255,8 @@ namespace Inventory_WebApp.Pages
 
                     EnumerableRowCollection<DataRow> query = dt.AsEnumerable();
 
+                    // Logic to Chain Filters one after the other
+
                     if (FilterExpression.ContainsKey("lab") && FilterExpression["lab"] != "All")
                     {
                         query = from row in dt.AsEnumerable()
@@ -1090,7 +1092,10 @@ namespace Inventory_WebApp.Pages
                 lblPageInfo.DataBind();
                 //throw;
             }
-            RefreshTable();
+            string callerfunc = new StackFrame(0).GetMethod().Name;
+            CreateUpdateFilterExpression(callerfunc, ddlLabselect.SelectedValue);
+            RefreshTable(callerfunc);
+            //RefreshTable();
         }
 
         //protected DataTable SortColumnBy(string columnName, Type columnType)
@@ -1404,5 +1409,18 @@ namespace Inventory_WebApp.Pages
 
         }
 
+        protected void ddlpageSize_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int size;
+            bool success = int.TryParse(ddlpageSize.SelectedValue,out size);
+            if(success)
+            {
+                gvitem.PageSize = size;
+            }
+            string callerfunc = new StackFrame(0).GetMethod().Name;
+            CreateUpdateFilterExpression(callerfunc, ddlLabselect.SelectedValue);
+            RefreshTable(callerfunc);
+            //RefreshTable();
+        }
     }
 }

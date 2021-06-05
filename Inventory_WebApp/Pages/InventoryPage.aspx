@@ -116,6 +116,7 @@
                 </div>--%>
             </div>
         </section>
+        <br />
         <div class="columns">
             <div class="column box has-text-centered">
                 <div class="table-responsive">
@@ -126,7 +127,7 @@
                         Width="100%"
                         AutoGenerateColumns="false"
                         AllowPaging="true"
-                        PageSize="7"
+                        PageSize="15"
                         PagerSettings-Position="Bottom"
                         PagerSettings-Mode="Numeric"
                         PagerStyle-HorizontalAlign="Center"
@@ -195,6 +196,7 @@
                             ForeColor="DarkBlue" />
                     </asp:GridView>
                 </div>
+
                 <script type="text/javascript">
 
                     function confirmDelete() {
@@ -205,8 +207,21 @@
                     }
 
                 </script>
+                <br />
                 <asp:Label ID="lblErr" runat="server" ForeColor="Red"></asp:Label>
                 <asp:Button ID="btnLoad" runat="server" OnClick="btnLoad_Click" Text="Load Table" CssClass="button" />
+                <br />
+                <br />
+                <div class="field">
+                    <asp:Label runat="server">Show </asp:Label>
+                        <asp:DropDownList ID="ddlpageSize" runat="server" CssClass="dropdown" OnSelectedIndexChanged="ddlpageSize_SelectedIndexChanged" AutoPostBack="true">
+                            <asp:ListItem Text="15" Value="15" Selected="True"></asp:ListItem>
+                            <asp:ListItem Text="20" Value="20"></asp:ListItem>
+                            <asp:ListItem Text="50" Value="50"></asp:ListItem>
+                            <asp:ListItem Text="All" Value="100"></asp:ListItem>
+                        </asp:DropDownList>
+                    <asp:Label runat="server"> rows </asp:Label>
+                </div>
             </div>
             <div id="insert_inventory" style="display: none; overflow: auto" class="column" runat="server">
                 <div class="box">
