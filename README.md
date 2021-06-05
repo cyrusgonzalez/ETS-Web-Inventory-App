@@ -74,7 +74,7 @@ If you just want to use it, you will want to deploy this app on a windows/IIS se
   3. zip the entire `Inventory_WebApp` directory. 
   4. copy and unzip the directory to your own server/machine, any path should be fine, but if you're not sure, use `C:\\inetpub\wwwroot\`
      1. give the whole Inventory_WebApp write permissions for the IIS Users group, (the name of the group should be something similar to IUSR or IIS User)
-     2. give the inventory_webapp.log and sample_inventory.db files write permissions for IUSR groups/other IIS user groups  
+     2. give the inventory_database_exceptions.log and ETSinventory.db files write permissions for IUSR groups/other IIS user groups  
   5. make sure IIS server is installed and configured to run .NET 4.7. Leaving a few links to guide you: [link1](https://www.systemsitpro.com/2017/02/how-to-install-iis-10-on-windows-server_3.html) [link2](https://enterprise.arcgis.com/en/web-adaptor/latest/install/iis/enable-iis-2016-components-server.htm)
   6. you may be able to see your folder under `Sites/Default Web Site/` in the *left sidebar* on the IIS main screen
   7. right-click the folder and select 'convert to web-application'. the icon for the folder should change to a globe(something similar)
