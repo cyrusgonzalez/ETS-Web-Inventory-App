@@ -142,16 +142,12 @@
                         OnRowUpdating="gvitem_RowUpdating"
                         OnRowCommand="gvitem_RowCommand"
                         OnRowDeleting="gvitem_RowDeleting"
-                        DataKeyNames="ItemCode,model,category,lab,warning_quantity,alert_quantity"
+                        DataKeyNames="ItemCode,category,lab,warning_quantity,alert_quantity"
                         AllowSorting="true"
                         OnSorting="gvitem_Sorting">
                         <Columns>
                             <asp:BoundField HeaderText="ID" DataField="ID" ReadOnly="true" Visible="false" />
                             <asp:BoundField HeaderText="Item" DataField="ItemCode" ReadOnly="true" SortExpression="Item" />
-                            <asp:BoundField HeaderText="Model" DataField="model" ReadOnly="true">
-                                <HeaderStyle CssClass="is-hidden-mobile"></HeaderStyle>
-                                <ItemStyle CssClass="is-hidden-mobile"></ItemStyle>
-                            </asp:BoundField>
                             <asp:BoundField HeaderText="Description" DataField="description" ReadOnly="true" >
                             <HeaderStyle CssClass="is-hidden-mobile"></HeaderStyle>
                                 <ItemStyle CssClass="is-hidden-mobile"></ItemStyle>

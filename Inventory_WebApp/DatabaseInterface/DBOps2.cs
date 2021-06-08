@@ -161,13 +161,13 @@ namespace Inventory_WebApp.DatabaseInterface
                     if (retval > 0)
                     {
                         //this.logger.WriteAsync("row updated");
-                        log.Info("Rows Inserted: " + retval.ToString() + " row(s) updated from method DBOps.InsertUpdateInventoryTable");
+                        log.Info("Database Inserted: " + retval.ToString() + " row(s) from method DBOps.InsertUpdateInventoryTable");
                     }
                     else
                     {
                         //this.logger.WriteAsync("No row updated");
                         //Need to insert instead
-                        cmd.CommandText = "INSERT INTO inventory(itemcode, model, quantity,lab, category, description,alert_quantity,warning_quantity) VALUES(@itemcode, @model, @quantity, @lab, @category, @description, @alertquantity, @warningquantity)";
+                        cmd.CommandText = "INSERT INTO inventory(itemcode, model, quantity,lab, category, description,alert_quantity,warning_quantity) VALUES(@itemcode, @model, @quantity, @lab, @category, @description, @alertquantity, @warnquantity)";
                         cmd.Parameters.AddWithValue("@itemcode", item);
                         cmd.Parameters.AddWithValue("@model", itemCode);
                         cmd.Parameters.AddWithValue("@quantity", quantity);
@@ -180,7 +180,7 @@ namespace Inventory_WebApp.DatabaseInterface
 
                         insertQueryretval = cmd.ExecuteNonQuery();
 
-                        log.Info("Database updated " + retval.ToString() + " row updated from method DBOps.InsertUpdateInventoryTable");
+                        log.Info("Database inserted " + insertQueryretval.ToString() + " row from method DBOps.InsertUpdateInventoryTable");
                     }
                 }
             }
