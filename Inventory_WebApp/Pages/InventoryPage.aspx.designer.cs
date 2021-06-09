@@ -112,6 +112,15 @@ namespace Inventory_WebApp.Pages {
         protected global::System.Web.UI.WebControls.Button btnLoad;
         
         /// <summary>
+        /// ddlpageSize control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlpageSize;
+        
+        /// <summary>
         /// insert_inventory control.
         /// </summary>
         /// <remarks>
@@ -191,24 +200,6 @@ namespace Inventory_WebApp.Pages {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtInsertWarningQuant;
-        
-        /// <summary>
-        /// Label9 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label9;
-        
-        /// <summary>
-        /// txtInsertItemCode control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtInsertItemCode;
         
         /// <summary>
         /// Label8 control.

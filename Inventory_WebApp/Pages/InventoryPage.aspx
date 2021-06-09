@@ -116,6 +116,7 @@
                 </div>--%>
             </div>
         </section>
+        <br />
         <div class="columns">
             <div class="column box has-text-centered">
                 <div class="table-responsive">
@@ -126,7 +127,7 @@
                         Width="100%"
                         AutoGenerateColumns="false"
                         AllowPaging="true"
-                        PageSize="7"
+                        PageSize="15"
                         PagerSettings-Position="Bottom"
                         PagerSettings-Mode="Numeric"
                         PagerStyle-HorizontalAlign="Center"
@@ -141,16 +142,12 @@
                         OnRowUpdating="gvitem_RowUpdating"
                         OnRowCommand="gvitem_RowCommand"
                         OnRowDeleting="gvitem_RowDeleting"
-                        DataKeyNames="ItemCode,model,category,lab,warning_quantity,alert_quantity"
+                        DataKeyNames="ItemCode,category,lab,warning_quantity,alert_quantity"
                         AllowSorting="true"
                         OnSorting="gvitem_Sorting">
                         <Columns>
                             <asp:BoundField HeaderText="ID" DataField="ID" ReadOnly="true" Visible="false" />
                             <asp:BoundField HeaderText="Item" DataField="ItemCode" ReadOnly="true" SortExpression="Item" />
-                            <asp:BoundField HeaderText="Model" DataField="model" ReadOnly="true">
-                                <HeaderStyle CssClass="is-hidden-mobile"></HeaderStyle>
-                                <ItemStyle CssClass="is-hidden-mobile"></ItemStyle>
-                            </asp:BoundField>
                             <asp:BoundField HeaderText="Description" DataField="description" ReadOnly="true" >
                             <HeaderStyle CssClass="is-hidden-mobile"></HeaderStyle>
                                 <ItemStyle CssClass="is-hidden-mobile"></ItemStyle>
@@ -195,6 +192,7 @@
                             ForeColor="DarkBlue" />
                     </asp:GridView>
                 </div>
+
                 <script type="text/javascript">
 
                     function confirmDelete() {
@@ -205,8 +203,21 @@
                     }
 
                 </script>
+                <br />
                 <asp:Label ID="lblErr" runat="server" ForeColor="Red"></asp:Label>
                 <asp:Button ID="btnLoad" runat="server" OnClick="btnLoad_Click" Text="Load Table" CssClass="button" />
+                <br />
+                <br />
+                <div class="field">
+                    <asp:Label runat="server">Show </asp:Label>
+                        <asp:DropDownList ID="ddlpageSize" runat="server" CssClass="dropdown" OnSelectedIndexChanged="ddlpageSize_SelectedIndexChanged" AutoPostBack="true">
+                            <asp:ListItem Text="15" Value="15" Selected="True"></asp:ListItem>
+                            <asp:ListItem Text="20" Value="20"></asp:ListItem>
+                            <asp:ListItem Text="50" Value="50"></asp:ListItem>
+                            <asp:ListItem Text="All" Value="100"></asp:ListItem>
+                        </asp:DropDownList>
+                    <asp:Label runat="server"> rows </asp:Label>
+                </div>
             </div>
             <div id="insert_inventory" style="display: none; overflow: auto" class="column" runat="server">
                 <div class="box">
@@ -238,12 +249,6 @@
                             </div>
                         </div>
                         <div class="column">
-                            <div class="field">
-                                <asp:Label ID="Label9" CssClass="label" runat="server">Model:   </asp:Label>
-                                <div class="control">
-                                    <asp:TextBox ID="txtInsertItemCode" CssClass="input" placeholder="TN4956" runat="server"></asp:TextBox>
-                                </div>
-                            </div>
                             <div class="field">
                                 <asp:Label ID="Label8" CssClass="label" runat="server">Description:   </asp:Label>
                                 <div class="control">
@@ -309,33 +314,31 @@
                         </div>
                         <div class="field is-grouped">
                             <div class="control">
-                                <asp:GridView runat="server" ID="gvSearchResult" AllowPaging="True" PageSize="5" CssClass="table is-mobile is-half-desktop" AutoGenerateColumns="False" OnRowCommand="gvSearchResult_OnRowCommand">
+                                <asp:GridView runat="server" ID="gvSearchResult" AllowPaging="True" PageSize="5" CssClass="table is-mobile is-half-desktop" AutoGenerateColumns="False" OnRowCommand="gvSearchResult_OnRowCommand"
+                                    DataKeyNames="ItemCode,quantity,lab,description,category,warning_quantity,alert_quantity"
+                                    >
                                     <Columns>
-                                        <asp:BoundField HeaderText="ID" DataField="ID" ReadOnly="true" Visible="false" >
+                                        <asp:BoundField HeaderText="ID" DataField="ID" ReadOnly="true" Visible="false">
                                             <HeaderStyle CssClass="is-hidden-mobile"></HeaderStyle>
                                             <ItemStyle CssClass="is-hidden-mobile"></ItemStyle>
                                         </asp:BoundField>
-                                        <asp:BoundField HeaderText="Item" DataField="ItemCode" ReadOnly="true" >
+                                        <asp:BoundField HeaderText="Item" DataField="ItemCode" ReadOnly="true">
                                             <HeaderStyle CssClass=""></HeaderStyle>
                                             <ItemStyle CssClass=""></ItemStyle>
                                         </asp:BoundField>
-                                        <asp:BoundField HeaderText="Quantity" DataField="quantity" ReadOnly="true"  >
+                                        <asp:BoundField HeaderText="Quantity" DataField="quantity" ReadOnly="true">
                                             <HeaderStyle CssClass=""></HeaderStyle>
                                             <ItemStyle CssClass=""></ItemStyle>
                                         </asp:BoundField>
-                                        <asp:BoundField HeaderText="Lab" DataField="lab" ReadOnly="true" >
+                                        <asp:BoundField HeaderText="Lab" DataField="lab" ReadOnly="true">
                                             <HeaderStyle CssClass=""></HeaderStyle>
                                             <ItemStyle CssClass="" Width="40px"></ItemStyle>
                                         </asp:BoundField>
-                                        <asp:BoundField HeaderText="Description" DataField="description" ReadOnly="true" >
+                                        <asp:BoundField HeaderText="Description" DataField="description" ReadOnly="true">
                                             <HeaderStyle CssClass="is-hidden-mobile"></HeaderStyle>
                                             <ItemStyle CssClass="is-hidden-mobile" Width="40px"></ItemStyle>
                                         </asp:BoundField>
-                                        <asp:BoundField HeaderText="Category" DataField="category" ReadOnly="true" >
-                                            <HeaderStyle CssClass="is-hidden-mobile"></HeaderStyle>
-                                            <ItemStyle CssClass="is-hidden-mobile"></ItemStyle>
-                                        </asp:BoundField>
-                                        <asp:BoundField HeaderText="Model" DataField="model" ReadOnly="true">
+                                        <asp:BoundField HeaderText="Category" DataField="category" ReadOnly="true">
                                             <HeaderStyle CssClass="is-hidden-mobile"></HeaderStyle>
                                             <ItemStyle CssClass="is-hidden-mobile"></ItemStyle>
                                         </asp:BoundField>
@@ -348,8 +351,8 @@
                                             <ItemStyle CssClass="is-hidden-mobile"></ItemStyle>
                                         </asp:BoundField>
                                         <asp:ButtonField CommandName="populate" Text="<i class='fa fa-file-upload'></i>"
-                                                         ButtonType="Link"
-                                                         ControlStyle-CssClass="btn btn-primary" />
+                                            ButtonType="Link"
+                                            ControlStyle-CssClass="btn btn-primary" />
                                     </Columns>
                                 </asp:GridView>
                             </div>
