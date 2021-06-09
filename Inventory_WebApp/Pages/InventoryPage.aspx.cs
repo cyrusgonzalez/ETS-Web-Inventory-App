@@ -15,7 +15,7 @@ namespace Inventory_WebApp.Pages
     /// </summary>
     public partial class InventoryETS : System.Web.UI.Page
     {
-        private static readonly log4net.ILog _appLog = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog _appLog = log4net.LogManager.GetLogger("App-logs");
 
         /// <summary>
         /// Function Page_Load 
@@ -74,6 +74,7 @@ namespace Inventory_WebApp.Pages
 
                         }
                     }
+                    //Testing app logger.
                     //_appLog.Debug($"Page Loaded Sucessfully, Debug");
                     //_appLog.Info($"App had loaded successfully, Info");
                     //_appLog.Error("No Errors here!, Error");
@@ -83,8 +84,9 @@ namespace Inventory_WebApp.Pages
                 }
                 catch (Exception ex)
                 {
-                    lblPageInfo.Text = "An error occurred in Page Load." + ex.Message; 
+                    lblPageInfo.Text = "An error occurred in Page Load. Please check logs";
                     //throw ex;
+                    _appLog.Error("Error on page load.", ex);
                 }
                 //lblPageInfo.ForeColor = System.Drawing.ColorTranslator.FromHtml("#0099ff"); //original blue color
 
@@ -93,6 +95,7 @@ namespace Inventory_WebApp.Pages
                 lblPageInfo.Text = "";
                 lblSearchInfo.Text = "";
                 lblUpdateInfo.Text = "";
+                _appLog.Info("Page Load Log");
             }
         }
 
@@ -644,7 +647,7 @@ namespace Inventory_WebApp.Pages
                 DBOps db = new DBOps();
 
                 string itemName = txtInsertItem.Text;
-                string itemCode = txtInsertItemCode.Text;
+                //string itemCode = txtInsertItemCode.Text;
                 string lab = ddlInsertLab.SelectedValue;
                 string description = txtInsertDescription.Text;
                 string category = txtInsertCategory.Text;
@@ -665,7 +668,7 @@ namespace Inventory_WebApp.Pages
 
                 //int retval = db.InsertInventoryTable(itemName, itemCode, itemQuantity, lab, category, description);
 
-                int retval = db.InsertUpdateInventoryTable(itemName, itemCode, itemQuantity, lab, category, description,warnQuantity, alertQuantity);   
+                int retval = db.InsertUpdateInventoryTable(itemName, itemQuantity, lab, category, description,warnQuantity, alertQuantity);   
                 //lblInsertInfo.Text = retval.ToString() + " row inserted";
                 //lblInsertInfo.DataBind();
 
@@ -683,7 +686,7 @@ namespace Inventory_WebApp.Pages
             {
                 txtInsertItem.Text = "";
                 txtInsertQuantity.Text = "";
-                txtInsertItemCode.Text = "";
+                //txtInsertItemCode.Text = "";
                 txtInsertCategory.Text = "";
                 txtInsertDescription.Text = "";
                 txtInsertAlertQuant.Text = "";
@@ -967,8 +970,10 @@ namespace Inventory_WebApp.Pages
 
                     int RowIndex = int.Parse(e.CommandArgument.ToString());
                     GridViewRow changedRow = gvitem.Rows[RowIndex];
-                    string item = gvitem.Rows[RowIndex].Cells[1].Text;
-                    string lab = gvitem.Rows[RowIndex].Cells[9].Text;
+                    string item = gvitem.DataKeys[RowIndex]["ItemCode"].ToString();
+                    string lab = gvitem.DataKeys[RowIndex]["lab"].ToString();
+                    //string category = gvitem.DataKeys[RowIndex]["category"].ToString();
+
                     Int32 changedQuantity;
 
                     if (changedRow.FindControl("lblQuantity") is null)
@@ -1001,8 +1006,8 @@ namespace Inventory_WebApp.Pages
                 {
                     int RowIndex = int.Parse(e.CommandArgument.ToString());
                     GridViewRow changedRow = gvitem.Rows[RowIndex];
-                    string item = gvitem.Rows[RowIndex].Cells[1].Text;
-                    string lab = gvitem.Rows[RowIndex].Cells[9].Text;
+                    string item = gvitem.DataKeys[RowIndex]["ItemCode"].ToString();
+                    string lab = gvitem.DataKeys[RowIndex]["lab"].ToString();
                     Int32 changedQuantity;
                     if (changedRow.FindControl("lblQuantity") is null)
                     {
@@ -1033,8 +1038,8 @@ namespace Inventory_WebApp.Pages
                 {
                     int RowIndex = int.Parse(e.CommandArgument.ToString());
                     GridViewRow changedRow = gvitem.Rows[RowIndex];
-                    string item = gvitem.Rows[RowIndex].Cells[1].Text;
-                    string lab = gvitem.Rows[RowIndex].Cells[9].Text;
+                    string item = gvitem.DataKeys[RowIndex]["ItemCode"].ToString();
+                    string lab = gvitem.DataKeys[RowIndex]["lab"].ToString();
                     Int32 changedQuantity;
                     if (changedRow.FindControl("lblQuantity") is null)
                     {
@@ -1069,9 +1074,9 @@ namespace Inventory_WebApp.Pages
                 string item = gvitem.DataKeys[RowIndex]["ItemCode"].ToString();
                 string lab = gvitem.DataKeys[RowIndex]["lab"].ToString();
                 string category = gvitem.DataKeys[RowIndex]["category"].ToString();
-                string model = gvitem.DataKeys[RowIndex]["model"].ToString();
+                //string model = gvitem.DataKeys[RowIndex]["model"].ToString();
 
-                int retval = db.DeleteInventoryTable(item, lab, category, model);
+                int retval = db.DeleteInventoryTable(item, lab, category);
                 if (retval > 0)
                 {
                     lblPageInfo.Text = "Row deleted successfully.";
@@ -1080,7 +1085,7 @@ namespace Inventory_WebApp.Pages
                 else
                 {
                     lblPageInfo.ForeColor = System.Drawing.Color.Red;
-                    lblPageInfo.Text = "An error occurred while attempting to delete the row.";
+                    lblPageInfo.Text = "An error occurred while attempting to delete the row. 0 rows deleted";
                     lblPageInfo.DataBind();
                     //lblPageInfo.ForeColor = System.Drawing.ColorTranslator.FromHtml("#0099ff"); //original blue color
                 }
@@ -1330,14 +1335,34 @@ namespace Inventory_WebApp.Pages
         {
             GridViewRow row = gvitem.Rows[rowIndex];
             int quantity = int.Parse((row.FindControl("lblQuantity") as Label)?.Text ?? "0");
-            if (quantity < 15)       
+            int warnQuantity = int.Parse(gvitem.DataKeys[rowIndex]["warning_quantity"].ToString());
+            int alertQuantity = int.Parse(gvitem.DataKeys[rowIndex]["alert_quantity"].ToString());
+
+            if (quantity < warnQuantity)
             {
                 row.BackColor = System.Drawing.Color.Orange;
             }
-            if (quantity < 10)
+            if (quantity < alertQuantity)
             {
+                row.ForeColor = System.Drawing.Color.White;
                 row.BackColor = System.Drawing.Color.Red;
+
+                //Single ITem Email Tests
+                //EMailHelper x = new EMailHelper();
+                //string itemCode = gvitem.DataKeys[e.Row.RowIndex]["ItemCode"].ToString();
+                //string lab = gvitem.DataKeys[e.Row.RowIndex]["lab"].ToString();
+                //x.sendItemEmail(itemCode, lab, quantity);
             }
+            //GridViewRow row = gvitem.Rows[rowIndex];
+            //int quantity = int.Parse((row.FindControl("lblQuantity") as Label)?.Text ?? "0");
+            //if (quantity < 15)       
+            //{
+            //    row.BackColor = System.Drawing.Color.Orange;
+            //}
+            //if (quantity < 10)
+            //{
+            //    row.BackColor = System.Drawing.Color.Red;
+            //}
         }
 
 
@@ -1346,6 +1371,7 @@ namespace Inventory_WebApp.Pages
             if (e.CommandName.ToLower() == "populate")
             {
                 //capture row arguments
+                //TODO: Use datakeys to prevent this Cells[x] confusion.
                 int RowIndex = int.Parse(e.CommandArgument.ToString());
                 GridViewRow changedRow = gvSearchResult.Rows[RowIndex];
                 string itemcodeText = gvSearchResult.Rows[RowIndex].Cells[1].Text;
@@ -1353,9 +1379,9 @@ namespace Inventory_WebApp.Pages
                 string labText = gvSearchResult.Rows[RowIndex].Cells[3].Text;
                 string descriptionText = gvSearchResult.Rows[RowIndex].Cells[4].Text;
                 string categoryText = gvSearchResult.Rows[RowIndex].Cells[5].Text;
-                string modelText = gvSearchResult.Rows[RowIndex].Cells[6].Text;
-                string warningQuant = gvSearchResult.Rows[RowIndex].Cells[7].Text;
-                string alertQuant = gvSearchResult.Rows[RowIndex].Cells[8].Text;
+                //string modelText = gvSearchResult.Rows[RowIndex].Cells[6].Text;
+                string warningQuant = gvSearchResult.Rows[RowIndex].Cells[6].Text;
+                string alertQuant = gvSearchResult.Rows[RowIndex].Cells[7].Text;
 
                 //push them to insert/update form. 
                 txtInsertItem.Text = DBquoteToHTML(itemcodeText);
@@ -1363,7 +1389,7 @@ namespace Inventory_WebApp.Pages
                 txtInsertDescription.Text = DBquoteToHTML(descriptionText);
                 ddlInsertLab.SelectedValue = DBquoteToHTML(labText);
                 txtInsertCategory.Text = DBquoteToHTML(categoryText);
-                txtInsertItemCode.Text = DBquoteToHTML(modelText);
+                //txtInsertItemCode.Text = DBquoteToHTML(modelText);
                 txtInsertAlertQuant.Text = DBquoteToHTML(alertQuant);
                 txtInsertWarningQuant.Text = DBquoteToHTML(warningQuant);
             }

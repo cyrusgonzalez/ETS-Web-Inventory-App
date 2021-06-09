@@ -43,12 +43,12 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup> 
+  <PropertyGroup>
     <ContentSQLiteInteropFiles>true</ContentSQLiteInteropFiles>
     <CopySQLiteInteropFiles>false</CopySQLiteInteropFiles>
     <CleanSQLiteInteropFiles>false</CleanSQLiteInteropFiles>
     <CollectSQLiteInteropFiles>false</CollectSQLiteInteropFiles>
- </PropertyGroup>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.3.0\lib\net45\EntityFramework.dll</HintPath>
@@ -102,7 +102,6 @@
     <Content Include="dependencies\pure-drawer.css" />
     <Content Include="dependencies\times-solid.svg" />
     <Content Include="Global.asax" />
-    <Content Include="Pages\InventoryPage2.aspx" />
     <Content Include="Pages\LabPage.aspx" />
     <Content Include="Pages\ItemsPage.aspx" />
     <Content Include="Pages\StyleSheet1.css" />
@@ -121,13 +120,6 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Pages\EMailHelper.cs" />
-    <Compile Include="Pages\InventoryPage2.aspx.cs">
-      <DependentUpon>InventoryPage2.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Pages\InventoryPage2.aspx.designer.cs">
-      <DependentUpon>InventoryPage2.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Pages\ItemsPage.aspx.cs">
       <DependentUpon>ItemsPage.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

@@ -119,7 +119,7 @@ namespace Inventory_WebApp.DatabaseInterface
         /// <returns>
         /// retval/insertQueryVal :- an integer letting us know how many rows have been inserted/updated. Should always be 1. If two then there are duplicates in the Inventory table which must be deleted.
         /// </returns>
-        public int InsertUpdateInventoryTable(string item, string itemCode, Int64 quantity, string lab, string category, string description, Int64 warnQuantity, Int64 alertQuantity)
+        public int InsertUpdateInventoryTable(string item, Int64 quantity, string lab, string category, string description, Int64 warnQuantity, Int64 alertQuantity)
         {
             int retval = 0;
             int insertQueryretval = 0;
@@ -135,20 +135,17 @@ namespace Inventory_WebApp.DatabaseInterface
                     quantity = @quantity,
                     lab = @lab,
                     description = @description,
-                    model = @model,
                     category = @category,
                     alert_quantity = @alertquantity,
                     warning_quantity = @warnquantity
                     where
                         inventory.itemCode = @itemcode
                         and inventory.lab = @lab
-                        and inventory.model = @model
                         and inventory.category = @category
                         and description = @description
                      ";
 
                     cmd.Parameters.AddWithValue("@itemcode", item);
-                    cmd.Parameters.AddWithValue("@model", itemCode);
                     cmd.Parameters.AddWithValue("@quantity", quantity);
                     cmd.Parameters.AddWithValue("@lab", lab);
                     cmd.Parameters.AddWithValue("@category", category);
@@ -167,9 +164,8 @@ namespace Inventory_WebApp.DatabaseInterface
                     {
                         //this.logger.WriteAsync("No row updated");
                         //Need to insert instead
-                        cmd.CommandText = "INSERT INTO inventory(itemcode, model, quantity,lab, category, description,alert_quantity,warning_quantity) VALUES(@itemcode, @model, @quantity, @lab, @category, @description, @alertquantity, @warnquantity)";
+                        cmd.CommandText = "INSERT INTO inventory(itemcode, quantity,lab, category, description,alert_quantity,warning_quantity) VALUES(@itemcode, @quantity, @lab, @category, @description, @alertquantity, @warnquantity)";
                         cmd.Parameters.AddWithValue("@itemcode", item);
-                        cmd.Parameters.AddWithValue("@model", itemCode);
                         cmd.Parameters.AddWithValue("@quantity", quantity);
                         cmd.Parameters.AddWithValue("@lab", lab);
                         cmd.Parameters.AddWithValue("@category", category);
@@ -191,7 +187,7 @@ namespace Inventory_WebApp.DatabaseInterface
             return (retval == 0) ? insertQueryretval : retval;
         }
 
-        public int InsertInventoryTable(string item, string itemCode, Int64 quantity, string lab, string category, string description)
+        public int InsertInventoryTable(string item, Int64 quantity, string lab, string category, string description)
         {
             int retval = 0;
             int insertQueryretval = 0;
@@ -207,16 +203,13 @@ namespace Inventory_WebApp.DatabaseInterface
                     quantity = @quantity,
                     lab = @lab,
                     description = @description,
-                    model = @model,
                     category = @category
                     where
                         inventory.itemCode = @itemcode
                         and inventory.lab = @lab
-                        and inventory.model = @model
                      ";
 
                     cmd.Parameters.AddWithValue("@itemcode", item);
-                    cmd.Parameters.AddWithValue("@model", itemCode);
                     cmd.Parameters.AddWithValue("@quantity", quantity);
                     cmd.Parameters.AddWithValue("@lab", lab);
                     cmd.Parameters.AddWithValue("@category", category);
@@ -232,9 +225,8 @@ namespace Inventory_WebApp.DatabaseInterface
                     {
                         //this.logger.WriteAsync("No row updated");
                         //Need to insert instead
-                        cmd.CommandText = "INSERT INTO inventory(itemcode, model, quantity,lab, category, description) VALUES(@itemcode, @model, @quantity, @lab, @category, @description)";
+                        cmd.CommandText = "INSERT INTO inventory(itemcode, quantity,lab, category, description) VALUES(@itemcode, @quantity, @lab, @category, @description)";
                         cmd.Parameters.AddWithValue("@itemcode", item);
-                        cmd.Parameters.AddWithValue("@model", itemCode);
                         cmd.Parameters.AddWithValue("@quantity", quantity);
                         cmd.Parameters.AddWithValue("@lab", lab);
                         cmd.Parameters.AddWithValue("@category", category);
@@ -264,7 +256,7 @@ namespace Inventory_WebApp.DatabaseInterface
                 {
                     con.Open();
                     var cmd = new SQLiteCommand(con);
-                    cmd.CommandText = "update inventory set quantity = @quantity where itemcode = @itemcode and lab = @lab";
+                    cmd.CommandText = "update inventory set quantity = @quantity where itemcode = @itemcode and lab = @lab"; // TODO: Do we need more here? like the category and description?
 
                     cmd.Parameters.AddWithValue("@itemcode", itemcode);
                     cmd.Parameters.AddWithValue("@quantity", quantity);
@@ -341,7 +333,63 @@ namespace Inventory_WebApp.DatabaseInterface
             return dbs;
         }
 
-        public int DeleteInventoryTable(string itemcode, string lab, string category, string model)
+
+        public int DeleteInventoryTable(string itemcode, string lab, string category)
+        {
+            int retval = 0;
+            try
+            {
+                using (var con = new SQLiteConnection(this.DataBaseSource))
+                {
+                    con.Open();
+                    var cmd = new SQLiteCommand(con);
+
+                    if (String.Equals(category, ""))
+                    {
+                        cmd.CommandText = "delete from inventory where itemcode = @itemcode and lab = @lab";
+
+                        cmd.Parameters.AddWithValue("@itemcode", itemcode);
+                        cmd.Parameters.AddWithValue("@lab", lab);
+                        log.Info("DBOps.DeleteInventoryTable: Passed Only itemcode : " + itemcode + " and lab : " + lab);
+                    }
+                    else
+                    {
+                        cmd.CommandText = "delete from inventory where itemcode = @itemcode and lab = @lab and category = @category";
+
+                        cmd.Parameters.AddWithValue("@itemcode", itemcode);
+                        cmd.Parameters.AddWithValue("@lab", lab);
+                        cmd.Parameters.AddWithValue("@category", category);
+                        log.Info("DBOps.DeleteInventoryTable: Passed itemcode: " + itemcode + " and lab: " + lab + " and category: " + category);
+                    }
+
+                    cmd.Prepare();
+
+                    retval = cmd.ExecuteNonQuery();
+                    if (retval <= 0)
+                    {
+                        log.Info("DBOps.DeleteInventoryTable:  0 rows deleted");
+                    }
+                    else if (retval == 1)
+                    {
+                        log.Info("DBOps.DeleteInventoryTable:  1 rows deleted");
+                    }
+                    else
+                    {
+                        log.Info("DBOps.DeleteInventoryTable: " + retval.ToString() + " rows deleted");
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                log.Error("Database Error in DBOps.DeleteInventoryTable:  ", ex);
+            }
+            return retval;
+        }
+
+
+        //keeping to use the template in the future
+        /*public int DeleteInventoryTableModel(string itemcode, string lab, string category, string model)
         {
             int retval = 0;
             try
@@ -411,7 +459,7 @@ namespace Inventory_WebApp.DatabaseInterface
                 log.Error("Database Error in DBOps.DeleteInventoryTable:  ", ex);
             }
             return retval;
-        }
+        }*/
         #endregion
 
         #region Items DB Interface
