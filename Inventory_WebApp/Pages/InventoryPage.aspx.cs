@@ -317,22 +317,27 @@ namespace Inventory_WebApp.Pages
             try
             {
                 DBOps db = new DBOps();
-                DataSet ds = db.GetInventoryColumns();  
-                for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
-                {
-                    if (ds.Tables[0].Rows[i]["name"].ToString().Trim().ToLower().Contains("id") ||
-                        ds.Tables[0].Rows[i]["name"].ToString().Trim().ToLower().Contains("quantity"))
-                    {
-                        ds.Tables[0].Rows.RemoveAt(i);
-                    }   
-                }
+                DataSet ds = db.GetInventoryColumns();
+                DataTable dr = ds.Tables["Table"].Select("name not like '%quantity%' and name not like 'id'").CopyToDataTable();
+                //for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                //{
+                //    if (
+                //        ds.Tables[0].Rows[i]["name"].ToString().Trim().ToLower().Contains("id") ||
+                //        ds.Tables[0].Rows[i]["name"].ToString().Trim().ToLower().Contains("quantity") ||
+                //        ds.Tables[0].Rows[i]["name"].ToString().Trim().ToLower().Contains("alert") ||
+                //        ds.Tables[0].Rows[i]["name"].ToString().Trim().ToLower().Contains("warning")
+                //        )
+                //    {
+                //        ds.Tables[0].Rows.RemoveAt(i);
+                //    }   
+                //}
                 //DataRow[] result = ds.Tables[0].Select("name = 'id'");
                 //foreach (DataRow row in ds.Tables[0].Rows)
                 //{
                 //    if (row["name"].ToString().Trim().ToLower().Contains("id") || row["name"].ToString().Trim().ToLower().Contains("quantity"))
                 //        ds.Tables[0].Rows.Remove(row);
                 //}
-                ddlColumn.DataSource = ds;
+                ddlColumn.DataSource = dr; //ds;
                 ddlColumn.DataTextField = "name";
                 ddlColumn.DataValueField = "name";
                 ddlColumn.DataBind();
@@ -1128,16 +1133,7 @@ namespace Inventory_WebApp.Pages
                         DataSet ds = db.ReadInventoryTable();
                         OrderedEnumerableRowCollection<DataRow> query;
                         DataTable result;
-                        if (ViewState["gvitemsort"] != null)
-                        {
-                            string sortExpression = (string)ViewState["gvitemsort"];
-                            if (sortExpression.StartsWith("Lab") ||
-                                sortExpression.StartsWith("Category") ||
-                                 sortExpression.StartsWith("Item"))
-                            {
-                                ViewState["gvitemsort"] = "NONE";
-                            }
-                        }
+                        
 
                         switch ((string)ViewState["gvitemsort"] ?? "NONE")
                         {
@@ -1166,6 +1162,19 @@ namespace Inventory_WebApp.Pages
                                 gvitem.DataSource = result;
                                 gvitem.DataBind();
                                 ViewState["gvitemsort"] = "Quantity SORTEDDESC"; //quantity desc/asc for easier use in the refreshtable func
+                                break;
+                            default:
+                                /*If the Sort Expression is category, lab or item, sort by quantity ascending*/
+                                query = from row in ds.Tables["table"].AsEnumerable()
+                                         orderby row.Field<Int64>("Quantity")
+                                         select row; // Asc query for Melder field;
+                                result = query.CopyToDataTable();
+                                Session["SortedView"] = result;
+
+                                gvitem.DataSource = result;
+                                gvitem.DataBind();
+
+                                ViewState["gvitemsort"] = "Quantity SORTEDASC";
                                 break;
 
                         }
@@ -1202,7 +1211,7 @@ namespace Inventory_WebApp.Pages
 
                                 gvitem.DataSource = result1;
                                 gvitem.DataBind();
-                                ViewState["gvitemsort"] = " Category SORTEDDESC"; //quantity desc/asc for easier use in the refreshtable func
+                                ViewState["gvitemsort"] = "Category SORTEDDESC"; //quantity desc/asc for easier use in the refreshtable func
                                 break;
                             default:
                                 /*If the Sort Expression is quantity, lab or item, sort by category ascending*/
@@ -1255,7 +1264,7 @@ namespace Inventory_WebApp.Pages
                                 ViewState["gvitemsort"] = "Item SORTEDDESC"; //quantity desc/asc for easier use in the refreshtable func
                                 break;
                             default:
-                                /*If the Sort Expression is quantity, lab or item, sort by category ascending*/
+                                /*If the Sort Expression is quantity, lab or category, sort by item ascending*/
                                 query2 = from row in ds2.Tables["table"].AsEnumerable()
                                          orderby row.Field<string>("ItemCode")
                                          select row; // Asc query for Melder field;
@@ -1265,7 +1274,7 @@ namespace Inventory_WebApp.Pages
                                 gvitem.DataSource = result2;
                                 gvitem.DataBind();
 
-                                ViewState["gvitemsort"] = "Category SORTEDASC";
+                                ViewState["gvitemsort"] = "Item SORTEDASC";
                                 break;
 
                         }
@@ -1306,7 +1315,7 @@ namespace Inventory_WebApp.Pages
                                 ViewState["gvitemsort"] = "Lab SORTEDDESC"; //quantity desc/asc for easier use in the refreshtable func
                                 break;
                             default:
-                                /*If the Sort Expression is quantity, lab or item, sort by category ascending*/
+                                /*If the Sort Expression is quantity, category or item, sort by lab ascending*/
                                 query3 = from row in ds3.Tables["table"].AsEnumerable()
                                          orderby row.Field<string>("lab")
                                          select row;
@@ -1316,7 +1325,7 @@ namespace Inventory_WebApp.Pages
                                 gvitem.DataSource = result3;
                                 gvitem.DataBind();
 
-                                ViewState["gvitemsort"] = "Category SORTEDASC";
+                                ViewState["gvitemsort"] = "Lab SORTEDASC";
                                 break;
 
                         }
@@ -1325,7 +1334,7 @@ namespace Inventory_WebApp.Pages
             }
             catch (Exception ex)
             {
-                //throw; 
+                _appLog.Error("Error in gvitem_sorting()", ex);
             }
         }
 
