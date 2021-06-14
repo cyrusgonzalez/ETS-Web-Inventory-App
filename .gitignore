@@ -1,5 +1,6 @@
 .dll
 /Inventory_WebApp/obj/
+/Inventory_WebApp/bin/
 /Properties
 /Models
 /.vs
