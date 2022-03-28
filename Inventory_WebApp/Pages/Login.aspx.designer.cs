@@ -7,11 +7,11 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Inventory_WebApp.Pages
+namespace WebApplication1
 {
 
 
-    public partial class WebForm2
+    public partial class Login
     {
 
         /// <summary>
@@ -24,48 +24,75 @@ namespace Inventory_WebApp.Pages
         protected global::System.Web.UI.HtmlControls.HtmlForm form1;
 
         /// <summary>
-        /// btnLoad control.
+        /// Label1 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnLoad;
+        protected global::System.Web.UI.WebControls.Label Label1;
 
         /// <summary>
-        /// ddlDB control.
+        /// TextBoxUser control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlDB;
+        protected global::System.Web.UI.WebControls.TextBox TextBoxUser;
 
         /// <summary>
-        /// dgRecords control.
+        /// errorUser control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DataGrid dgRecords;
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator errorUser;
 
         /// <summary>
-        /// lblErr control.
+        /// Label2 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblErr;
+        protected global::System.Web.UI.WebControls.Label Label2;
 
         /// <summary>
-        /// Clk_Logout control.
+        /// TextBoxPass control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button Clk_Logout;
+        protected global::System.Web.UI.WebControls.TextBox TextBoxPass;
+
+        /// <summary>
+        /// errorPass control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator errorPass;
+
+        /// <summary>
+        /// Clk_Login control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button Clk_Login;
+
+        /// <summary>
+        /// errorCreds control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label errorCreds;
     }
 }

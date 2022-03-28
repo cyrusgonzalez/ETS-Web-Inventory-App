@@ -9,6 +9,9 @@ namespace Inventory_WebApp.Pages
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            // first case security to not bypass login
+            if (Session["username"] == null) { Response.Redirect("Login.aspx"); }
+
             //First time page load commands to go inside this if block
             if (!IsPostBack)
             {
@@ -79,6 +82,11 @@ namespace Inventory_WebApp.Pages
             dgitem.CurrentPageIndex = e.NewPageIndex;
             RefreshTable();
         }
-
+        
+        protected void Clk_Logout_Click(object sender, EventArgs e)
+        {
+            Session.Abandon();
+            Response.Redirect("Login.aspx");
+        }
     }
 }

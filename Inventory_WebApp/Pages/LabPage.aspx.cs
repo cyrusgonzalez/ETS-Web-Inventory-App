@@ -11,6 +11,9 @@ namespace Inventory_WebApp.Pages
         DataSet searchColumns = new DBOps().GetLabColumns();
         protected void Page_Load(object sender, EventArgs e)
         {
+            // first case security to not bypass login
+            if (Session["username"] == null) { Response.Redirect("Login.aspx"); }
+
             //First time page load commands to go inside this if block
             if (!IsPostBack)
             {
@@ -273,6 +276,12 @@ namespace Inventory_WebApp.Pages
                 lblErr.Text = "An error occurred while attempting to delete the row.";
                 lblErr.DataBind();
             }
+        }
+
+        protected void Clk_Logout_Click(object sender, EventArgs e)
+        {
+            Session.Abandon();
+            Response.Redirect("Login.aspx");
         }
     }
 }

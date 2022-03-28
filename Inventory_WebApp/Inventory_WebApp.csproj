@@ -104,6 +104,7 @@
     <Content Include="Global.asax" />
     <Content Include="Pages\LabPage.aspx" />
     <Content Include="Pages\ItemsPage.aspx" />
+    <Content Include="Pages\Login.aspx" />
     <Content Include="Pages\StyleSheet1.css" />
     <Content Include="Pages\SuppliersPage.aspx" />
     <Content Include="Web.config" />
@@ -133,6 +134,13 @@
     </Compile>
     <Compile Include="Pages\LabPage.aspx.designer.cs">
       <DependentUpon>LabPage.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Login.aspx.cs">
+      <DependentUpon>Login.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Login.aspx.designer.cs">
+      <DependentUpon>Login.aspx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Temp\Site1.Master.cs">

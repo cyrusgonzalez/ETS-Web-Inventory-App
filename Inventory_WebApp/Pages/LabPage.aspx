@@ -203,6 +203,8 @@
                 </div>
             </div>
         </div>
+        <br />
+        <asp:Button ID="Clk_Logout" runat="server" Text="Logout" OnClick="Clk_Logout_Click" />
     </form>
 </body>
 </html>

@@ -7,11 +7,13 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Inventory_WebApp.Pages {
-    
-    
-    public partial class LabPage {
-        
+namespace Inventory_WebApp.Pages
+{
+
+
+    public partial class LabPage
+    {
+
         /// <summary>
         /// form1 control.
         /// </summary>
@@ -20,7 +22,7 @@ namespace Inventory_WebApp.Pages {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlForm form1;
-        
+
         /// <summary>
         /// lblErr control.
         /// </summary>
@@ -29,7 +31,7 @@ namespace Inventory_WebApp.Pages {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblErr;
-        
+
         /// <summary>
         /// gvitem control.
         /// </summary>
@@ -38,7 +40,7 @@ namespace Inventory_WebApp.Pages {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.GridView gvitem;
-        
+
         /// <summary>
         /// btnLoad control.
         /// </summary>
@@ -47,7 +49,7 @@ namespace Inventory_WebApp.Pages {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnLoad;
-        
+
         /// <summary>
         /// Label1 control.
         /// </summary>
@@ -56,7 +58,7 @@ namespace Inventory_WebApp.Pages {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label Label1;
-        
+
         /// <summary>
         /// txtInsertLab control.
         /// </summary>
@@ -65,7 +67,7 @@ namespace Inventory_WebApp.Pages {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtInsertLab;
-        
+
         /// <summary>
         /// Label3 control.
         /// </summary>
@@ -74,7 +76,7 @@ namespace Inventory_WebApp.Pages {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label Label3;
-        
+
         /// <summary>
         /// txtInsertBuilding control.
         /// </summary>
@@ -83,7 +85,7 @@ namespace Inventory_WebApp.Pages {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtInsertBuilding;
-        
+
         /// <summary>
         /// Label2 control.
         /// </summary>
@@ -92,7 +94,7 @@ namespace Inventory_WebApp.Pages {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label Label2;
-        
+
         /// <summary>
         /// txtInsertRoom control.
         /// </summary>
@@ -101,7 +103,7 @@ namespace Inventory_WebApp.Pages {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtInsertRoom;
-        
+
         /// <summary>
         /// btnInsert control.
         /// </summary>
@@ -110,7 +112,7 @@ namespace Inventory_WebApp.Pages {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnInsert;
-        
+
         /// <summary>
         /// lblInsertInfo control.
         /// </summary>
@@ -119,7 +121,7 @@ namespace Inventory_WebApp.Pages {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblInsertInfo;
-        
+
         /// <summary>
         /// Label4 control.
         /// </summary>
@@ -128,7 +130,7 @@ namespace Inventory_WebApp.Pages {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label Label4;
-        
+
         /// <summary>
         /// txtUpdateLab control.
         /// </summary>
@@ -137,7 +139,7 @@ namespace Inventory_WebApp.Pages {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtUpdateLab;
-        
+
         /// <summary>
         /// Label5 control.
         /// </summary>
@@ -146,7 +148,7 @@ namespace Inventory_WebApp.Pages {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label Label5;
-        
+
         /// <summary>
         /// txtUpdateBuilding control.
         /// </summary>
@@ -155,7 +157,7 @@ namespace Inventory_WebApp.Pages {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtUpdateBuilding;
-        
+
         /// <summary>
         /// Label6 control.
         /// </summary>
@@ -164,7 +166,7 @@ namespace Inventory_WebApp.Pages {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label Label6;
-        
+
         /// <summary>
         /// txtUpdateRoom control.
         /// </summary>
@@ -173,7 +175,7 @@ namespace Inventory_WebApp.Pages {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtUpdateRoom;
-        
+
         /// <summary>
         /// btnUpdate control.
         /// </summary>
@@ -182,7 +184,7 @@ namespace Inventory_WebApp.Pages {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnUpdate;
-        
+
         /// <summary>
         /// lblUpdateInfo control.
         /// </summary>
@@ -191,7 +193,7 @@ namespace Inventory_WebApp.Pages {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblUpdateInfo;
-        
+
         /// <summary>
         /// ddlColumn control.
         /// </summary>
@@ -200,7 +202,7 @@ namespace Inventory_WebApp.Pages {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlColumn;
-        
+
         /// <summary>
         /// txtSearchtext control.
         /// </summary>
@@ -209,7 +211,7 @@ namespace Inventory_WebApp.Pages {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtSearchtext;
-        
+
         /// <summary>
         /// btnSearch control.
         /// </summary>
@@ -218,7 +220,7 @@ namespace Inventory_WebApp.Pages {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnSearch;
-        
+
         /// <summary>
         /// lblSearchInfo control.
         /// </summary>
@@ -227,7 +229,7 @@ namespace Inventory_WebApp.Pages {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblSearchInfo;
-        
+
         /// <summary>
         /// dgSearchResult control.
         /// </summary>
@@ -236,5 +238,14 @@ namespace Inventory_WebApp.Pages {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DataGrid dgSearchResult;
+
+        /// <summary>
+        /// Clk_Logout control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button Clk_Logout;
     }
 }

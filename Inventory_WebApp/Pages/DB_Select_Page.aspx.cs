@@ -8,6 +8,9 @@ namespace Inventory_WebApp.Pages
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            // first case security to not bypass login
+            if (Session["username"] == null) { Response.Redirect("Login.aspx"); }
+
             var db = new DBOps();
             DataSet dbs = new DataSet("Databases");
             dbs = db.GetDBs();
@@ -21,6 +24,12 @@ namespace Inventory_WebApp.Pages
         {
             string selecteddb = ddlDB.SelectedValue;
 
+        }
+
+        protected void Clk_Logout_Click(object sender, EventArgs e)
+        {
+            Session.Abandon();
+            Response.Redirect("Login.aspx");
         }
     }
 }

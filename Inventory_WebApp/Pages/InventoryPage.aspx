@@ -208,7 +208,7 @@
                 <asp:Button ID="btnLoad" runat="server" OnClick="btnLoad_Click" Text="Load Table" CssClass="button" />
                 <br />
                 <br />
-                <div class="field">
+                <div class="field" style="text-align: center !important">
                     <asp:Label runat="server">Show </asp:Label>
                         <asp:DropDownList ID="ddlpageSize" runat="server" CssClass="dropdown" OnSelectedIndexChanged="ddlpageSize_SelectedIndexChanged" AutoPostBack="true">
                             <asp:ListItem Text="15" Value="15" Selected="True"></asp:ListItem>
@@ -217,6 +217,7 @@
                             <asp:ListItem Text="All" Value="100"></asp:ListItem>
                         </asp:DropDownList>
                     <asp:Label runat="server"> rows </asp:Label>
+                    <br />
                 </div>
             </div>
             <div id="insert_inventory" style="display: none; overflow: auto" class="column" runat="server">
@@ -296,12 +297,7 @@
                                         <asp:DropDownList ID="ddlColumn" runat="server"></asp:DropDownList>
                                     </div>
                                 </div>
-                                <%--<div class="field">
-                                        <asp:Label ID="Label6" runat="server">Lab:   </asp:Label>
-                                        <div class="control select">
-                                            <asp:DropDownList ID="ddlSearchInventory" runat="server"></asp:DropDownList>
-                                        </div>
-                                    </div>--%>
+                                <%--<asp:Label ID="lblCity" runat="server" Text='<%# Eval("City")%>'></asp:Label>--%>
                             </div>
                             <div class="column">
                                 <div class="field">
@@ -369,9 +365,8 @@
             </div>
         </div>
     
-        <asp:HiddenField ID="HiddenFieldShowHideSearchPanel" runat="server" Value="Hidden" />  
-
-
+        <asp:HiddenField ID="HiddenFieldShowHideSearchPanel" runat="server" Value="Hidden" /> 
+        <asp:Button ID="Clk_Logout" runat="server" Text="Logout" OnClick="Clk_Logout_Click" />
     </form>
 
 </body>
