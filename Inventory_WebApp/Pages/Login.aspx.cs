@@ -25,8 +25,8 @@ namespace WebApplication1
             //SqlCommand command = new SqlCommand();
             //SqlDataAdapter dataAdap = new SqlDataAdapter();
             //DataSet set = new DataSet();
-            string adminUser = "testadmin";
-            string adminPass = "testing123";
+            string adminUser = "administrator";
+            string adminPass = "ENSHelpDesk4912917";
             string userN = TextBoxUser.Text;
             string passW = TextBoxPass.Text;
             if(userN == adminUser && passW == adminPass)
